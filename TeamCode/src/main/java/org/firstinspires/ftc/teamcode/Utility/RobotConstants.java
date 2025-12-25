@@ -45,6 +45,7 @@ public class RobotConstants {
                 servo_offset = 0,
                 shooterTolerance = 30,
                 vera_coefficient = .4167,
+                turret_offset_inch = -0.63696,
 
                 lift_kP = 0.001, //0.0003
                 lift_kD = 0.0,
