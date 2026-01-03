@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class cachedMotor {
     public DcMotorEx thisMotor;
     double cachingTol;
-    double currPower;
+    double currPower=0;
     public cachedMotor(DcMotorEx motor, double cachingTol )
     {
         thisMotor = motor;
@@ -17,6 +17,7 @@ public class cachedMotor {
         {
             currPower = newPower;
         }
+        thisMotor.setPower(currPower);
     }
     public int getCurrentPosition()
     {

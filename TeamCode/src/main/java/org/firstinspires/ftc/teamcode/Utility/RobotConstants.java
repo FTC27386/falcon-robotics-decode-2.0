@@ -12,7 +12,7 @@ public class RobotConstants {
                 BLUE, RED
         }
 
-        public static ALLIANCE_COLOR current_color;
+        public static ALLIANCE_COLOR current_color = ALLIANCE_COLOR.RED;
 
         public static void setAutoEndPose(Pose endPose)
         {
@@ -53,7 +53,7 @@ public class RobotConstants {
                 shooter_kP = -0.002,
                 shooter_kD = 0.00000000,
                 shooter_kV = -0.00039,
-                shooter_kS = 0.07, //"lower limit" power
+                shooter_kS = 0.056, //"lower limit" power
                 turret_kP = 0,
                 turret_kD = 0.0,
                 turret_kL = 0,

@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.RunCommand;
@@ -29,7 +30,8 @@ import java.util.function.Supplier;
 @Config
 @TeleOp(name = "TeleOp")
 public class teleOp extends CommandOpMode {
-
+    ElapsedTime timer;
+    double loop_time;
     Button intake;
     Button relocalize;
     Button shoot;
@@ -46,6 +48,7 @@ public class teleOp extends CommandOpMode {
 
     @Override
     public void initialize() {
+        timer = new ElapsedTime();
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         super.reset();
@@ -90,6 +93,11 @@ public class teleOp extends CommandOpMode {
 
     @Override
     public void run() {
+        loop_time = timer.seconds();
+        timer.reset();
+
+
+
         telemetry.addData("x:", r.getD().x);
         telemetry.addData("y:", r.getD().y);
         telemetry.addData("Actual x:", r.getD().act_x);
@@ -111,6 +119,10 @@ public class teleOp extends CommandOpMode {
         telemetry.addData("lift pose", r.getL().getLiftPose());
         telemetry.addData("In zone", r.getD().inZone());
         telemetry.addData("alliance color?", RobotConstants.current_color);
+        telemetry.addData("loop time in ms", loop_time*1000);
+        telemetry.addData("loop frequency", Math.pow((loop_time),-1));
+        telemetry.addData("turret X", r.getD().realTurretPose.getX());
+        telemetry.addData("turret Y", r.getD().realTurretPose.getY());
         telemetry.update();
         super.run();
     }

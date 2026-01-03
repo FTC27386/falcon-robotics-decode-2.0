@@ -10,6 +10,7 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.controller.PIDController;
 
 import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
+import org.firstinspires.ftc.teamcode.Utility.cachedMotor;
 
 public class shooterSystem extends SubsystemBase {
     boolean isWoundUp = false;
@@ -18,8 +19,8 @@ public class shooterSystem extends SubsystemBase {
     Servo turret1;
     Servo turret2;
     Servo hood;
-    DcMotorEx shooter1;
-    DcMotorEx shooter2;
+    cachedMotor shooter1;
+    cachedMotor shooter2;
     double rawCalcPower,
     angleOffset = 0,
             axonRead = 0,
@@ -39,10 +40,12 @@ public class shooterSystem extends SubsystemBase {
 
     public shooterSystem(final HardwareMap hMap) {
         turretEnc = hMap.get(AnalogInput.class, RobotConstants.turret_encoder_name);
-        shooter1 = hMap.get(DcMotorEx.class, RobotConstants.first_shooter_motor_name);
-        shooter2 = hMap.get(DcMotorEx.class, RobotConstants.second_shooter_motor_name);
-        shooter1.setDirection(DcMotorEx.Direction.REVERSE);
-        shooter2.setDirection(DcMotorEx.Direction.FORWARD);
+        shooter1 = new cachedMotor(
+                hMap.get(DcMotorEx.class, RobotConstants.first_shooter_motor_name),0.06);
+        shooter2 = new cachedMotor(
+                hMap.get(DcMotorEx.class, RobotConstants.second_shooter_motor_name),0.06);
+        shooter1.thisMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        shooter2.thisMotor.setDirection(DcMotorEx.Direction.FORWARD);
         turret1 = hMap.get(Servo.class, RobotConstants.left_turret_servo_name);
         turret2 = hMap.get(Servo.class, RobotConstants.right_turret_servo_name);
         hood = hMap.get(Servo.class, RobotConstants.hood_servo_name);
@@ -76,11 +79,9 @@ public class shooterSystem extends SubsystemBase {
         speedControl.setPID(RobotConstants.shooter_kP, 0, RobotConstants.shooter_kD);
         headingControl.setPID(RobotConstants.turret_kP, 0, RobotConstants.turret_kD);
 
-        currentSpeed = shooter1.getVelocity();
+        currentSpeed = shooter1.thisMotor.getVelocity();
         rawCalcPower = speedControl.calculate(-currentSpeed);
         powerToSet = rawCalcPower + (RobotConstants.shooter_kS) + (speedControl.getSetPoint() * RobotConstants.shooter_kV);
-
-
 
             shooter1.setPower(powerToSet);
             shooter2.setPower(powerToSet);

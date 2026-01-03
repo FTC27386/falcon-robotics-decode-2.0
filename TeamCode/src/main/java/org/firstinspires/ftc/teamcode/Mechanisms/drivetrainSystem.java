@@ -19,10 +19,10 @@ import java.util.function.Supplier;
 
 public class drivetrainSystem extends SubsystemBase {
     public static InterpLUT lut1, lut2;
-    public static Pose
+    public Pose
             currentPose = new Pose(0, 0, Math.toRadians(90)),
             calculatedPose,
-            realTurretPose,
+            realTurretPose = new Pose(0,0),
             targ;
     public Follower follower;
 
