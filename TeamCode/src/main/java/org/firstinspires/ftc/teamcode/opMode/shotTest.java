@@ -13,9 +13,8 @@ import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
-
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.defaultDrive;
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.liftoff;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
@@ -28,8 +27,8 @@ import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
 import java.util.function.Supplier;
 
 @Config
-@TeleOp(name = "TeleOp")
-public class teleOp extends CommandOpMode {
+@TeleOp(name = "Shot Testing")
+public class shotTest extends CommandOpMode {
     ElapsedTime timer;
     double loop_time;
     Button intake;
@@ -40,6 +39,8 @@ public class teleOp extends CommandOpMode {
     GamepadEx driverOp;
     Button climb;
     Button park;
+    public static double hood_pos = 0;
+    public static double flywheel_speed = -1700;
     private Robot r;
     Paths paths;
     PathsMirrored paths_mirrored;
@@ -59,6 +60,7 @@ public class teleOp extends CommandOpMode {
         r.getD().setDefaultCommand(new defaultDrive(r, leftY, leftX, rightX));
         Paths paths = new Paths(r.getD().follower);
         PathsMirrored mirroredPaths = new PathsMirrored(r.getD().follower);
+
 
         intake = driverOp.getGamepadButton(GamepadKeys.Button.SQUARE);
         outtake = driverOp.getGamepadButton(GamepadKeys.Button.CIRCLE);
@@ -93,12 +95,15 @@ public class teleOp extends CommandOpMode {
         loop_time = timer.seconds();
         timer.reset();
 
+
+
         telemetry.addData("x:", r.getD().x);
         telemetry.addData("y:", r.getD().y);
         telemetry.addData("Actual x:", r.getD().act_x);
         telemetry.addData("Actual y:", r.getD().act_y);
         telemetry.addData("Distance", r.getD().yoCalcDist());
         telemetry.addData("Vera Distance", r.getD().other_distance);
+        //telemetry.addData("Actual Distance", r.getD().yoCalcActDist());
         telemetry.addData("target X", r.getD().getTarg().getX());
         telemetry.addData("target Y", r.getD().getTarg().getY());
         telemetry.addData("heading", r.getD().getCurrentPose().getHeading());

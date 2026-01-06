@@ -91,7 +91,7 @@ public class closeZoneAutoRed extends CommandOpMode {
         telemetry.addData("robot heading", Math.toDegrees(r.getD().getCurrentPose().getHeading()));
         telemetry.addData("target X",r.getD().getTarg().getX());
         telemetry.addData("target Y",r.getD().getTarg().getY());
-        telemetry.addData("in zone?", r.getD().inZone());
+        telemetry.addData("in zone?", r.getD().inCloseZone());
         telemetry.update();
     }
 }

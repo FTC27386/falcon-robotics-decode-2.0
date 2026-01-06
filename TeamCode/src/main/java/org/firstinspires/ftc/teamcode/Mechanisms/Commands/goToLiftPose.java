@@ -10,7 +10,6 @@ public class goToLiftPose extends SequentialCommandGroup {
 
     Robot r;
 
-    Paths paths;
 
     public goToLiftPose(Robot r, PathChain parkpath) {
         this.r = r;

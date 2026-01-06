@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 
 public class Robot {
-    GamepadEx gp;
-
     shooterSystem s;
     intakeSystem i;
     drivetrainSystem d;
@@ -53,10 +51,8 @@ public class Robot {
     }
 
     public void setAutoValuesBlue() {
-        s.setSpeed(-1600);
+        s.setSpeed(-1620);
         s.setHoodPosition(0.24);
-        //75
-        //1700
         s.setTurretPosition(48);
     }
     public void setAutoValuesRed() {
@@ -74,5 +70,9 @@ public class Robot {
         s.setSpeed(-2200);
         s.setHoodPosition(.95);
         s.setTurretPosition(-67.3);
+    }
+
+    public void sortShot() {
+
     }
 }

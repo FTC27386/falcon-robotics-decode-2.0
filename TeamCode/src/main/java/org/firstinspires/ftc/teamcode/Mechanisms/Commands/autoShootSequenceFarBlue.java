@@ -4,7 +4,6 @@ import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 
-//This is a command
 public class autoShootSequenceFarBlue extends CommandBase {
 
     private final Robot robot;
