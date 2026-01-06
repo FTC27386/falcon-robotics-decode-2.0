@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
 
 public class autoFarShotRed extends SequentialCommandGroup {
     private final Robot r;
-    private RobotConstants.robotState shootingZone;
 
 
     public autoFarShotRed(Robot r) {

@@ -12,7 +12,6 @@ import java.util.function.Supplier;
 public class defaultDrive extends CommandBase {
     Supplier<Double> axial, lateral, yaw;
     Robot r;
-    GamepadEx gp;
 
     public defaultDrive(Robot r, Supplier<Double> axial, Supplier<Double> lateral, Supplier<Double> yaw) {
         this.axial = axial;
