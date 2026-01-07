@@ -8,7 +8,7 @@ import com.seattlesolvers.solverslib.controller.PIDController;
 
 import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
 
-public class liftSystem extends SubsystemBase {
+public class LiftSystem extends SubsystemBase {
 
     DcMotor lift_motor;
     Servo latch;
@@ -19,7 +19,7 @@ public class liftSystem extends SubsystemBase {
     double lift_target = 0;
     int total_offset = 0;
 
-    public liftSystem(HardwareMap hmap) {
+    public LiftSystem(HardwareMap hmap) {
         motor_controller = new PIDController(RobotConstants.lift_kP, 0, RobotConstants.lift_kD);
         motor_controller.setSetPoint(0);
         lift_motor = hmap.get(DcMotor.class, RobotConstants.lift_motor_name);

@@ -30,7 +30,6 @@ import java.util.function.Supplier;
 @TeleOp(name = "Shot Testing")
 public class shotTest extends CommandOpMode {
     ElapsedTime timer;
-    double loop_time;
     Button intake;
     Button relocalize;
     Button shoot;
@@ -42,6 +41,7 @@ public class shotTest extends CommandOpMode {
     public static double hood_pos = 0;
     public static double flywheel_speed = -1700;
     private Robot r;
+    public static boolean toggleTelemetry = true;
     Paths paths;
     PathsMirrored paths_mirrored;
 
@@ -61,7 +61,6 @@ public class shotTest extends CommandOpMode {
         Paths paths = new Paths(r.getD().follower);
         PathsMirrored mirroredPaths = new PathsMirrored(r.getD().follower);
 
-
         intake = driverOp.getGamepadButton(GamepadKeys.Button.SQUARE);
         outtake = driverOp.getGamepadButton(GamepadKeys.Button.CIRCLE);
         relocalize = driverOp.getGamepadButton(GamepadKeys.Button.OPTIONS);
@@ -76,53 +75,46 @@ public class shotTest extends CommandOpMode {
         intake.whenPressed(new runIntakeTimed(r, 2000));
         outtake.whenPressed(new runIntakeReverseTimed(r, 2000));
         relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc(new Pose(8, 8, Math.toRadians(90)))));
-        changeTarget.whenPressed(new InstantCommand(() -> r.getD().relocTarget(
+        changeTarget.whenPressed(new InstantCommand(() -> r.getD().relocTargetPose(
                new Pose(
                        r.getD().getCurrentPose().getX() - 12
                        ,r.getD().getCurrentPose().getY() + 12
                        ,Math.toRadians(90)
                ))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
-        schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().yoCalcAim())));
-        schedule(new RunCommand(() -> r.getS().setHoodPosition(r.getD().yoCalcHood())));
-        schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().yoCalcSpeed())));
+        schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getAim())));
+        schedule(new RunCommand(() -> r.getS().setHoodPosition(r.getD().getHood())));
+        schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().getSpeed())));
         shoot.whenPressed(new magDump(r));
         park.whenPressed(new liftoff(r));
     }
 
     @Override
     public void run() {
-        loop_time = timer.seconds();
-        timer.reset();
-
-
-
         telemetry.addData("x:", r.getD().x);
         telemetry.addData("y:", r.getD().y);
-        telemetry.addData("Actual x:", r.getD().act_x);
-        telemetry.addData("Actual y:", r.getD().act_y);
-        telemetry.addData("Distance", r.getD().yoCalcDist());
+        telemetry.addData("Distance", r.getD().getDist());
         telemetry.addData("Vera Distance", r.getD().other_distance);
         //telemetry.addData("Actual Distance", r.getD().yoCalcActDist());
-        telemetry.addData("target X", r.getD().getTarg().getX());
-        telemetry.addData("target Y", r.getD().getTarg().getY());
+        telemetry.addData("target X", r.getD().getTargetPose().getX());
+        telemetry.addData("target Y", r.getD().getTargetPose().getY());
         telemetry.addData("heading", r.getD().getCurrentPose().getHeading());
-        telemetry.addData("adjustment", r.getD().yoCalcAim());
+        telemetry.addData("adjustment", r.getD().getAim());
         telemetry.addData("flywheel target velocity", r.getS().getSpeedControl().getSetPoint());
         telemetry.addData("flywheel error", r.getS().getSpeedControl().getPositionError());
         telemetry.addData("flywheel speed", r.getS().getCurrentSpeed());
-        telemetry.addData("Hood", r.getD().yoCalcHood());
+        telemetry.addData("Hood", r.getD().getHood());
         telemetry.addData("flywheel response", r.getS().getFlywheelSignal());
         telemetry.addData("turret ticks", r.getS().getTurretPosition());
         telemetry.addData("lift power", r.getL().getPIDResponse());
         telemetry.addData("lift pose", r.getL().getLiftPose());
         telemetry.addData("In zone", r.getD().inCloseZone());
         telemetry.addData("alliance color?", RobotConstants.current_color);
-        telemetry.addData("loop time in ms", loop_time*1000);
-        telemetry.addData("loop frequency", Math.pow((loop_time),-1));
+        telemetry.addData("loop time in ms", timer.milliseconds());
+        telemetry.addData("loop frequency", Math.pow((timer.seconds()),-1));
         telemetry.addData("turret X", r.getD().realTurretPose.getX());
         telemetry.addData("turret Y", r.getD().realTurretPose.getY());
-        telemetry.update();
+        if (toggleTelemetry) telemetry.update();
         super.run();
     }
 

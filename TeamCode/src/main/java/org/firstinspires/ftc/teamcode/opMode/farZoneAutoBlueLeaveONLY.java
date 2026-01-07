@@ -3,16 +3,9 @@ package org.firstinspires.ftc.teamcode.opMode;
 import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
-import com.seattlesolvers.solverslib.command.InstantCommand;
-import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
-import com.seattlesolvers.solverslib.command.WaitCommand;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.autoFarShotBlue;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
@@ -52,8 +45,8 @@ public class farZoneAutoBlueLeaveONLY extends CommandOpMode {
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());
         telemetry.addData("robot Y", r.getD().getCurrentPose().getY());
         telemetry.addData("robot heading", Math.toDegrees(r.getD().getCurrentPose().getHeading()));
-        telemetry.addData("target X",r.getD().getTarg().getX());
-        telemetry.addData("target Y",r.getD().getTarg().getY());
+        telemetry.addData("target X",r.getD().getTargetPose().getX());
+        telemetry.addData("target Y",r.getD().getTargetPose().getY());
         telemetry.update();
     }
 }

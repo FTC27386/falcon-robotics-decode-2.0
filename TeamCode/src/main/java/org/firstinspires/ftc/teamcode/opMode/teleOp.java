@@ -74,16 +74,16 @@ public class teleOp extends CommandOpMode {
         intake.whenPressed(new runIntakeTimed(r, 2000));
         outtake.whenPressed(new runIntakeReverseTimed(r, 2000));
         relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc(new Pose(8, 8, Math.toRadians(90)))));
-        changeTarget.whenPressed(new InstantCommand(() -> r.getD().relocTarget(
+        changeTarget.whenPressed(new InstantCommand(() -> r.getD().relocTargetPose(
                new Pose(
                        r.getD().getCurrentPose().getX() - 12
                        ,r.getD().getCurrentPose().getY() + 12
                        ,Math.toRadians(90)
                ))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
-        schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().yoCalcAim())));
-        schedule(new RunCommand(() -> r.getS().setHoodPosition(r.getD().yoCalcHood())));
-        schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().yoCalcSpeed())));
+        schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getAim())));
+        schedule(new RunCommand(() -> r.getS().setHoodPosition(r.getD().getHood())));
+        schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().getSpeed())));
         shoot.whenPressed(new magDump(r));
         park.whenPressed(new liftoff(r));
     }
@@ -95,18 +95,16 @@ public class teleOp extends CommandOpMode {
 
         telemetry.addData("x:", r.getD().x);
         telemetry.addData("y:", r.getD().y);
-        telemetry.addData("Actual x:", r.getD().act_x);
-        telemetry.addData("Actual y:", r.getD().act_y);
-        telemetry.addData("Distance", r.getD().yoCalcDist());
+        telemetry.addData("Distance", r.getD().getDist());
         telemetry.addData("Vera Distance", r.getD().other_distance);
-        telemetry.addData("target X", r.getD().getTarg().getX());
-        telemetry.addData("target Y", r.getD().getTarg().getY());
+        telemetry.addData("target X", r.getD().getTargetPose().getX());
+        telemetry.addData("target Y", r.getD().getTargetPose().getY());
         telemetry.addData("heading", r.getD().getCurrentPose().getHeading());
-        telemetry.addData("adjustment", r.getD().yoCalcAim());
+        telemetry.addData("adjustment", r.getD().getAim());
         telemetry.addData("flywheel target velocity", r.getS().getSpeedControl().getSetPoint());
         telemetry.addData("flywheel error", r.getS().getSpeedControl().getPositionError());
         telemetry.addData("flywheel speed", r.getS().getCurrentSpeed());
-        telemetry.addData("Hood", r.getD().yoCalcHood());
+        telemetry.addData("Hood", r.getD().getHood());
         telemetry.addData("flywheel response", r.getS().getFlywheelSignal());
         telemetry.addData("turret ticks", r.getS().getTurretPosition());
         telemetry.addData("lift power", r.getL().getPIDResponse());

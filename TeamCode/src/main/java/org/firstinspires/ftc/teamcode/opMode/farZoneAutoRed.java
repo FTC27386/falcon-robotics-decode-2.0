@@ -66,8 +66,8 @@ public class farZoneAutoRed extends CommandOpMode {
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());
         telemetry.addData("robot Y", r.getD().getCurrentPose().getY());
         telemetry.addData("robot heading", Math.toDegrees(r.getD().getCurrentPose().getHeading()));
-        telemetry.addData("target X",r.getD().getTarg().getX());
-        telemetry.addData("target Y",r.getD().getTarg().getY());
+        telemetry.addData("target X",r.getD().getTargetPose().getX());
+        telemetry.addData("target Y",r.getD().getTargetPose().getY());
         telemetry.update();
     }
 }

@@ -12,7 +12,7 @@ import com.seattlesolvers.solverslib.controller.PIDController;
 import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
 import org.firstinspires.ftc.teamcode.Utility.cachedMotor;
 
-public class shooterSystem extends SubsystemBase {
+public class ShooterSystem extends SubsystemBase {
     boolean isWoundUp = false;
     AnalogInput turretEnc;
     PIDController headingControl, speedControl;
@@ -38,7 +38,7 @@ public class shooterSystem extends SubsystemBase {
             currentSpeed,
             nominalVoltage = 12.00; //voltage at which the shooter was tuned
 
-    public shooterSystem(final HardwareMap hMap) {
+    public ShooterSystem(final HardwareMap hMap) {
         turretEnc = hMap.get(AnalogInput.class, RobotConstants.turret_encoder_name);
         shooter1 = new cachedMotor(
                 hMap.get(DcMotorEx.class, RobotConstants.first_shooter_motor_name),0.06);
@@ -75,7 +75,7 @@ public class shooterSystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Get voltage and compare, hopefully should filter out drops.
-        speedControl.setTolerance(RobotConstants.shooterTolerance);
+        speedControl.setTolerance(RobotConstants.shooter_tolerance);
         speedControl.setPID(RobotConstants.shooter_kP, 0, RobotConstants.shooter_kD);
         headingControl.setPID(RobotConstants.turret_kP, 0, RobotConstants.turret_kD);
 

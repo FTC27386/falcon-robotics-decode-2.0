@@ -7,7 +7,7 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
 
-public class intakeSystem extends SubsystemBase {
+public class IntakeSystem extends SubsystemBase {
     DcMotor intakeMotor;
     Servo gate;
     Servo pivot;
@@ -15,7 +15,7 @@ public class intakeSystem extends SubsystemBase {
             gatePosition = RobotConstants.transfer_open_pos,
             pivotPosition = RobotConstants.pivot_down_pos;
 
-    public intakeSystem(HardwareMap hMap) {
+    public IntakeSystem(HardwareMap hMap) {
         pivot = hMap.get(Servo.class, RobotConstants.intake_servo_name);
         gate = hMap.get(Servo.class, RobotConstants.transfer_servo_name);
         intakeMotor = hMap.get(DcMotor.class, RobotConstants.intake_motor_name);

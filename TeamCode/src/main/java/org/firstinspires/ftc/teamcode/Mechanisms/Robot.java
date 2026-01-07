@@ -2,36 +2,35 @@ package org.firstinspires.ftc.teamcode.Mechanisms;
 
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 
 public class Robot {
-    shooterSystem s;
-    intakeSystem i;
-    drivetrainSystem d;
-    liftSystem l;
+    ShooterSystem s;
+    IntakeSystem i;
+    DrivetrainSystem d;
+    LiftSystem l;
 
 
-    public shooterSystem getS() {
+    public ShooterSystem getS() {
         return s;
     }
 
-    public intakeSystem getI() {
+    public IntakeSystem getI() {
         return i;
     }
 
-    public drivetrainSystem getD() {
+    public DrivetrainSystem getD() {
         return d;
     }
 
-    public liftSystem getL() {
+    public LiftSystem getL() {
         return l;
     }
 
     public Robot(final HardwareMap hmap) {
-        s = new shooterSystem(hmap);
-        i = new intakeSystem(hmap);
-        d = new drivetrainSystem(hmap);
-        l = new liftSystem(hmap);
+        s = new ShooterSystem(hmap);
+        i = new IntakeSystem(hmap);
+        d = new DrivetrainSystem(hmap);
+        l = new LiftSystem(hmap);
         for (LynxModule mod : hmap.getAll(LynxModule.class)) {
             mod.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
@@ -45,9 +44,9 @@ public class Robot {
     }
 
     public void setShooterValues() {
-        s.setSpeed(d.yoCalcSpeed());
-        s.setHoodPosition(d.yoCalcHood());
-        s.setTurretPosition(d.yoCalcAim());
+        s.setSpeed(d.getSpeed());
+        s.setHoodPosition(d.getHood());
+        s.setTurretPosition(d.getAim());
     }
 
     public void setAutoValuesBlue() {
