@@ -51,7 +51,7 @@ public class teleOp extends CommandOpMode {
 
         super.reset();
         r = new Robot(hardwareMap);
-        register(r.getS(), r.getD(), r.getI(), r.getL());
+        register(r.getS(), r.getD(), r.getI(), r.getL(), r.getV());
         driverOp = new GamepadEx(gamepad1);
         Supplier<Double> leftX = driverOp::getLeftX;
         Supplier<Double> leftY = driverOp::getLeftY;
@@ -84,6 +84,7 @@ public class teleOp extends CommandOpMode {
         schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getAim())));
         schedule(new RunCommand(() -> r.getS().setHoodPosition(r.getD().getHood())));
         schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().getSpeed())));
+        schedule(new RunCommand(() -> r.getV().startLimelight(telemetry)));
         shoot.whenPressed(new magDump(r));
         park.whenPressed(new liftoff(r));
     }
@@ -93,6 +94,21 @@ public class teleOp extends CommandOpMode {
         loop_time = timer.seconds();
         timer.reset();
 
+        /*
+        telemetry.addLine(
+            String.format(
+                ".2%f, %.2f, %.2f, %.2f, %.2f, %.2f",
+                r.getD().x,
+                r.getD().y,
+                r.getD().getDist(),
+                r.getS().getSpeedControl().getSetPoint(),
+                r.getD().getHood())
+        );
+        
+         */
+
+        /*
+        telemetry.addData("
         telemetry.addData("x:", r.getD().x);
         telemetry.addData("y:", r.getD().y);
         telemetry.addData("Distance", r.getD().getDist());
@@ -115,6 +131,7 @@ public class teleOp extends CommandOpMode {
         telemetry.addData("loop frequency", Math.pow((loop_time),-1));
         telemetry.addData("turret X", r.getD().realTurretPose.getX());
         telemetry.addData("turret Y", r.getD().realTurretPose.getY());
+         */
         telemetry.update();
         super.run();
     }

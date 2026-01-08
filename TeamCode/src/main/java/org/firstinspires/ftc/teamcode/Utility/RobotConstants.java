@@ -38,7 +38,8 @@ public class RobotConstants {
                 camera = "Webcam 1",
                 turret_encoder_name = "turret_encoder",
                 lift_motor_name = "lift_motor",
-                lift_servo_name = "latch_servo";
+                lift_servo_name = "latch_servo",
+                limelight_name = "limelight";
 
         public static double
                 shooter_tolerance = 30,

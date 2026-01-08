@@ -8,6 +8,7 @@ public class Robot {
     IntakeSystem i;
     DrivetrainSystem d;
     LiftSystem l;
+    VisionSystem v;
 
 
     public ShooterSystem getS() {
@@ -21,16 +22,17 @@ public class Robot {
     public DrivetrainSystem getD() {
         return d;
     }
-
     public LiftSystem getL() {
         return l;
     }
+    public VisionSystem getV() { return v; }
 
     public Robot(final HardwareMap hmap) {
         s = new ShooterSystem(hmap);
         i = new IntakeSystem(hmap);
         d = new DrivetrainSystem(hmap);
         l = new LiftSystem(hmap);
+        v = new VisionSystem(hmap);
         for (LynxModule mod : hmap.getAll(LynxModule.class)) {
             mod.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
@@ -41,6 +43,7 @@ public class Robot {
         s.periodic();
         d.periodic();
         l.periodic();
+        v.periodic();
     }
 
     public void setShooterValues() {
