@@ -27,12 +27,33 @@ public class PathsMirrored {
     public static Pose startingPoseAlternate = new Pose(144-53.5946, 7.587, Math.toRadians(90));
     public PathChain farAutoStartPath;
     public PathChain farLeavePath;
+    public PathChain openGatePath;
+    public PathChain returnFromGatePath;
     public static double flipSide(double xVal)
     {
         return 144.0- xVal;
     }
 
     public PathsMirrored(Follower follower) {
+        openGatePath = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierCurve(
+                                new Pose(flipSide(8), 57.000),
+                                new Pose(flipSide(37.349), 53.865),
+                                new Pose(flipSide(33.863), 73.536),
+                                new Pose(flipSide(15.000), 72.000)
+                        )
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                .build();
+        returnFromGatePath =
+                follower.pathBuilder().addPath(
+                                new BezierLine(new Pose(flipSide(15),72),
+                                        new Pose(flipSide(59.1),79)
+                                )
+                        ).setConstantHeadingInterpolation(Math.toRadians(180))
+                        .build();
         closeAutoStartPath = follower
                 .pathBuilder()
                 .addPath(

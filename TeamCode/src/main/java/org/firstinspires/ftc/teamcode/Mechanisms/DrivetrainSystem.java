@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
 import static org.firstinspires.ftc.teamcode.Utility.RobotConstants.zone_buffer;
+import static org.firstinspires.ftc.teamcode.opMode.teleOp.flywheel_speed;
+import static org.firstinspires.ftc.teamcode.opMode.teleOp.hood_angle;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
@@ -46,7 +48,7 @@ public class DrivetrainSystem extends SubsystemBase {
         if (RobotConstants.current_color == null || RobotConstants.current_color == RobotConstants.ALLIANCE_COLOR.BLUE) {
             targetPose = new Pose(5, 144);
         } else {
-            targetPose = new Pose(139, 144);
+            targetPose = new Pose(135, 144);
         }
 
         //-1400
@@ -64,6 +66,7 @@ public class DrivetrainSystem extends SubsystemBase {
         //-1600
         LUT3.add(85.00, 0.3);
         LUT3.add(90.00, 0.25);
+        LUT3.add(95.70, 0.3);
         LUT3.createLUT();
     }
 
@@ -97,7 +100,7 @@ public class DrivetrainSystem extends SubsystemBase {
         dist = getDist();
         if      (dist >= 45.00 && dist <  65.00) return LUT1.get(dist);
         else if (dist >= 65.00 && dist <  85.00) return LUT2.get(dist);
-        else if (dist >= 85.00 && dist <= 90.00) return LUT3.get(dist);
+        else if (dist >= 85.00 && dist <= 95.00) return LUT3.get(dist);
         else                                     return 0;
     }
 
@@ -105,8 +108,8 @@ public class DrivetrainSystem extends SubsystemBase {
         dist = getDist();
         if      (dist >= 45.00 && dist <  65.00) return -1400;
         else if (dist >= 65.00 && dist <  85.00) return -1500;
-        else if (dist >= 85.00 && dist <= 90.00) return -1600;
-        else                                     return 0;
+        else if (dist >= 85.00 && dist <= 95.00) return -1600;
+        else                                     return -1600;
     }
 
     public void teleOpDrive(double axial, double lateral, double yaw) {

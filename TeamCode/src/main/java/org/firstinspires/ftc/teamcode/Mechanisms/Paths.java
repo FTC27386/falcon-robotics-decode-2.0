@@ -27,12 +27,33 @@ public class Paths {
     public PathChain returnFromHPZonePath;
     public PathChain farAutoStartPath;
     public PathChain farLeavePath;
+    public PathChain openGatePath;
+    public PathChain returnFromGatePath;
 
 
 
 
 
     public Paths(Follower follower) {
+        openGatePath = follower
+                .pathBuilder()
+                .addPath(
+                        new BezierCurve(
+                                new Pose(8.000, 57.000),
+                                new Pose(37.349, 53.865),
+                                new Pose(33.863, 73.536),
+                                new Pose(15.000, 72.000)
+                        )
+                )
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                .build();
+        returnFromGatePath =
+                follower.pathBuilder().addPath(
+                        new BezierLine(new Pose(15,72),
+                                new Pose(59.1,79)
+                                )
+                ).setConstantHeadingInterpolation(Math.toRadians(180))
+                        .build();
         closeAutoStartPath = follower
                 .pathBuilder()
                 .addPath(
@@ -75,7 +96,7 @@ public class Paths {
         intakeMiddleRowPath = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(44.000, 56), new Pose(8.000, 57))
+                        new BezierLine(new Pose(44.000, 57), new Pose(8.000, 57))
                 )
                 .setTangentHeadingInterpolation()
                 .build();

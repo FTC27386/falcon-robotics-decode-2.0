@@ -10,22 +10,21 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.autoCloseShotRed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
-import org.firstinspires.ftc.teamcode.Mechanisms.PathsMirrored;
+import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name="Close Auto Red")
-public class closeZoneAutoRed extends CommandOpMode {
+@Autonomous(name="Close Auto Blue with Gate")
+public class closeZoneAutoBlueGate extends CommandOpMode {
     Follower follower;
     private Robot r;
-    PathsMirrored paths;
+    Paths paths;
 
     @Override
     public void initialize()
@@ -34,9 +33,9 @@ public class closeZoneAutoRed extends CommandOpMode {
 
         r = new Robot(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(PathsMirrored.startingPose);
+        follower.setStartingPose(Paths.startingPose);
         follower.update();
-        paths = new PathsMirrored(follower);
+        paths = new Paths(follower);
         register(r.getS(), r.getI());
         schedule(new RunCommand(()->r.setShooterValues()));
         schedule(new InstantCommand(()->r.getS().setSpeed(-1570)));
@@ -60,8 +59,9 @@ public class closeZoneAutoRed extends CommandOpMode {
                 new followPath(r, paths.prepareIntakeMiddleRowPath),
                 new runIntake(r),
                 new followPathSlow(r, paths.intakeMiddleRowPath),
+                new followPath(r, paths.openGatePath),
                 new ParallelCommandGroup(
-                        new followPath(r,paths.returnFromMiddleRowPath),
+                        new followPath(r,paths.returnFromGatePath),
                         new SequentialCommandGroup(
                                 new WaitCommand(1000),
                                 new idleIntake(r))
@@ -86,7 +86,7 @@ public class closeZoneAutoRed extends CommandOpMode {
     {
         super.run();
         RobotConstants.setAutoEndPose(r.getD().getCurrentPose());
-        RobotConstants.setCurrent_color(RobotConstants.ALLIANCE_COLOR.RED);
+        RobotConstants.setCurrent_color(RobotConstants.ALLIANCE_COLOR.BLUE);
         telemetry.addData("turretPose",r.getS().getTurretPosition());
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());
         telemetry.addData("robot Y", r.getD().getCurrentPose().getY());

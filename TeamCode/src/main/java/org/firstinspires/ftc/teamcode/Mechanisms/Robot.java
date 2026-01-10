@@ -52,6 +52,12 @@ public class Robot {
         s.setTurretPosition(d.getAim());
     }
 
+    public void setManualShooterValues(double speed, double hood) {
+        s.setSpeed(speed);
+        s.setHoodPosition(hood);
+        s.setTurretPosition(d.getAim());
+    }
+
     public void setAutoValuesBlue() {
         s.setSpeed(-1620);
         s.setHoodPosition(0.24);

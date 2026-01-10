@@ -13,10 +13,11 @@ import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.defaultDrive;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.liftoff;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.manualTriple;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeTimed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
@@ -27,23 +28,28 @@ import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
 import java.util.function.Supplier;
 
 @Config
-@TeleOp(name = "Shot Testing")
+@TeleOp(name = "Shot Test")
 public class shotTest extends CommandOpMode {
     ElapsedTime timer;
+    double loop_time;
     Button intake;
     Button relocalize;
     Button shoot;
     Button outtake;
     Button changeTarget;
     GamepadEx driverOp;
+    GamepadEx driver2Op;
     Button climb;
     Button park;
-    public static double hood_pos = 0;
-    public static double flywheel_speed = -1700;
+    Button increaseOffset;
+    Button decreaseOffset;
+    Button increaseAOA;
+    Button decreaseAOA;
     private Robot r;
-    public static boolean toggleTelemetry = true;
     Paths paths;
     PathsMirrored paths_mirrored;
+    public static double flywheel_speed;
+    public static double hood_angle;
 
     @Override
     public void initialize() {
@@ -52,8 +58,9 @@ public class shotTest extends CommandOpMode {
 
         super.reset();
         r = new Robot(hardwareMap);
-        register(r.getS(), r.getD(), r.getI(), r.getL());
+        register(r.getS(), r.getD(), r.getI(), r.getL(), r.getV());
         driverOp = new GamepadEx(gamepad1);
+        driver2Op = new GamepadEx(gamepad2);
         Supplier<Double> leftX = driverOp::getLeftX;
         Supplier<Double> leftY = driverOp::getLeftY;
         Supplier<Double> rightX = driverOp::getRightX;
@@ -68,6 +75,9 @@ public class shotTest extends CommandOpMode {
         shoot = driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER);
         climb = driverOp.getGamepadButton(GamepadKeys.Button.TOUCHPAD);
         park = driverOp.getGamepadButton(GamepadKeys.Button.DPAD_UP);
+        increaseOffset = driver2Op.getGamepadButton(GamepadKeys.Button.DPAD_LEFT);
+        decreaseOffset = driver2Op.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT);
+
 
         climb.whenPressed(new followPath(r,
                 RobotConstants.current_color == null || RobotConstants.current_color == RobotConstants.ALLIANCE_COLOR.RED?
@@ -83,19 +93,22 @@ public class shotTest extends CommandOpMode {
                ))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
         schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getAim())));
-        schedule(new RunCommand(() -> r.getS().setHoodPosition(r.getD().getHood())));
-        schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().getSpeed())));
-        shoot.whenPressed(new magDump(r));
+        //schedule(new RunCommand(() -> r.getV().startLimelight(telemetry)));
+        shoot.whenPressed(new manualTriple(r, flywheel_speed, hood_angle));
         park.whenPressed(new liftoff(r));
+        increaseOffset.whenPressed(new InstantCommand(()->r.getS().nudgeOffset(-4)));
+        decreaseOffset.whenPressed(new InstantCommand(()->r.getS().nudgeOffset(4)));
     }
 
     @Override
     public void run() {
+        loop_time = timer.seconds();
+        timer.reset();
+
+        /*
         telemetry.addData("x:", r.getD().x);
         telemetry.addData("y:", r.getD().y);
         telemetry.addData("Distance", r.getD().getDist());
-        telemetry.addData("Vera Distance", r.getD().other_distance);
-        //telemetry.addData("Actual Distance", r.getD().yoCalcActDist());
         telemetry.addData("target X", r.getD().getTargetPose().getX());
         telemetry.addData("target Y", r.getD().getTargetPose().getY());
         telemetry.addData("heading", r.getD().getCurrentPose().getHeading());
@@ -108,13 +121,19 @@ public class shotTest extends CommandOpMode {
         telemetry.addData("turret ticks", r.getS().getTurretPosition());
         telemetry.addData("lift power", r.getL().getPIDResponse());
         telemetry.addData("lift pose", r.getL().getLiftPose());
-        telemetry.addData("In zone", r.getD().inCloseZone());
+        telemetry.addData("In close zone", r.getD().inCloseZone());
+        telemetry.addData("In far zone", r.getD().inFarZone());
         telemetry.addData("alliance color?", RobotConstants.current_color);
-        telemetry.addData("loop time in ms", timer.milliseconds());
-        telemetry.addData("loop frequency", Math.pow((timer.seconds()),-1));
+        telemetry.addData("loop time in ms", loop_time*1000);
+        telemetry.addData("loop frequency", Math.pow((loop_time),-1));
         telemetry.addData("turret X", r.getD().realTurretPose.getX());
         telemetry.addData("turret Y", r.getD().realTurretPose.getY());
-        if (toggleTelemetry) telemetry.update();
+        */
+
+        telemetry.addData("flywheel target velocity", r.getS().getSpeedControl().getSetPoint());
+        telemetry.addData("distance", r.getD().getDist());
+        telemetry.addData("hood", r.getD().getHood());
+        telemetry.update();
         super.run();
     }
 

@@ -38,9 +38,8 @@ public class closeZoneAutoBlue extends CommandOpMode {
         follower.update();
         paths = new Paths(follower);
         register(r.getS(), r.getI());
-        schedule(new RunCommand(()-> r.setAutoValuesBlue()));
-        schedule(new RunCommand(()->r.getS().setSpeed(-1570)));
-        schedule(new RunCommand(()->r.getS().setHoodPosition(.24)));
+        schedule(new RunCommand(()->r.setShooterValues()));
+        schedule(new InstantCommand(()->r.getS().setSpeed(-1570)));
         schedule(
                 new SequentialCommandGroup(
                         new InstantCommand(()-> r.getI().close()),

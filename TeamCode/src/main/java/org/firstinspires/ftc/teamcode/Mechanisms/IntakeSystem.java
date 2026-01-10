@@ -44,8 +44,7 @@ public class IntakeSystem extends SubsystemBase {
     }
 
     public void idleIntake() {
-        //targetpower = -0.2;
-        targetpower = 0;
+        targetpower = -0.2;
     } // Passively run intake
     public void stopIntake()
     {

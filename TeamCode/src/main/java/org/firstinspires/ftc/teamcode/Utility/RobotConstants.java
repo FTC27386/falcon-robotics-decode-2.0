@@ -20,7 +20,7 @@ public class RobotConstants {
                 BLUE, RED
         }
 
-        public static ALLIANCE_COLOR current_color = ALLIANCE_COLOR.RED;
+        public static ALLIANCE_COLOR current_color;
 
         public static void setAutoEndPose(Pose endPose)
         {
@@ -75,7 +75,7 @@ public class RobotConstants {
                 pivot_down_pos = 1,
                 zone_buffer = 7.5 * Math.sqrt(2);
         public static Pose autoEndPose;
-        public static int top_climb_position = 10800; // 13400 is the real maximum
+        public static int top_climb_position = 10400; // 13400 is the real maximum
         //public static int top_climb_position = 9500; // 13400 is the real maximum
         double Apriltag_20x = 15.010065;
         double Apriltag_20y = 144-10.887049;

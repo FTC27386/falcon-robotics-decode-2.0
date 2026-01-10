@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
@@ -39,11 +40,18 @@ public class teleOp extends CommandOpMode {
     Button outtake;
     Button changeTarget;
     GamepadEx driverOp;
+    GamepadEx driver2Op;
     Button climb;
     Button park;
+    Button increaseOffset;
+    Button decreaseOffset;
+    Button increaseAOA;
+    Button decreaseAOA;
     private Robot r;
     Paths paths;
     PathsMirrored paths_mirrored;
+    public static double flywheel_speed;
+    public static double hood_angle;
 
     @Override
     public void initialize() {
@@ -54,6 +62,7 @@ public class teleOp extends CommandOpMode {
         r = new Robot(hardwareMap);
         register(r.getS(), r.getD(), r.getI(), r.getL(), r.getV());
         driverOp = new GamepadEx(gamepad1);
+        driver2Op = new GamepadEx(gamepad2);
         Supplier<Double> leftX = driverOp::getLeftX;
         Supplier<Double> leftY = driverOp::getLeftY;
         Supplier<Double> rightX = driverOp::getRightX;
@@ -68,6 +77,9 @@ public class teleOp extends CommandOpMode {
         shoot = driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER);
         climb = driverOp.getGamepadButton(GamepadKeys.Button.TOUCHPAD);
         park = driverOp.getGamepadButton(GamepadKeys.Button.DPAD_UP);
+        increaseOffset = driver2Op.getGamepadButton(GamepadKeys.Button.DPAD_LEFT);
+        decreaseOffset = driver2Op.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT);
+
 
         climb.whenPressed(new followPath(r,
                 RobotConstants.current_color == null || RobotConstants.current_color == RobotConstants.ALLIANCE_COLOR.RED?
@@ -84,9 +96,15 @@ public class teleOp extends CommandOpMode {
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
         schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getAim())));
         schedule(new RunCommand(() -> r.getS().setHoodPosition(r.getD().getHood())));
+        schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().getSpeed())));
         //schedule(new RunCommand(() -> r.getV().startLimelight(telemetry)));
         shoot.whenPressed(new BOPBOPBOP(r));
-        park.whenPressed(new liftoff(r));
+        park.whenPressed(new ParallelCommandGroup(
+                new liftoff(r),
+                new InstantCommand(()-> r.getS().setSpeed(0)),
+                new InstantCommand(()->r.getI().stopIntake())));
+        increaseOffset.whenPressed(new InstantCommand(()->r.getS().nudgeOffset(-4)));
+        decreaseOffset.whenPressed(new InstantCommand(()->r.getS().nudgeOffset(4)));
     }
 
     @Override
@@ -119,12 +137,10 @@ public class teleOp extends CommandOpMode {
         telemetry.addData("turret Y", r.getD().realTurretPose.getY());
         */
 
-        /*
         telemetry.addData("flywheel target velocity", r.getS().getSpeedControl().getSetPoint());
         telemetry.addData("distance", r.getD().getDist());
         telemetry.addData("hood", r.getD().getHood());
         telemetry.update();
-         */
         super.run();
     }
 

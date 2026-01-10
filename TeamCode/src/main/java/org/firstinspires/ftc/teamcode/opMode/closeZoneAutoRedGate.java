@@ -10,19 +10,18 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.autoCloseShotRed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.PathsMirrored;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name="Close Auto Red")
-public class closeZoneAutoRed extends CommandOpMode {
+@Autonomous(name="Close Auto Red with Gate")
+public class closeZoneAutoRedGate extends CommandOpMode {
     Follower follower;
     private Robot r;
     PathsMirrored paths;
@@ -60,8 +59,9 @@ public class closeZoneAutoRed extends CommandOpMode {
                 new followPath(r, paths.prepareIntakeMiddleRowPath),
                 new runIntake(r),
                 new followPathSlow(r, paths.intakeMiddleRowPath),
+                new followPath(r,paths.openGatePath),
                 new ParallelCommandGroup(
-                        new followPath(r,paths.returnFromMiddleRowPath),
+                        new followPath(r,paths.returnFromGatePath),
                         new SequentialCommandGroup(
                                 new WaitCommand(1000),
                                 new idleIntake(r))
