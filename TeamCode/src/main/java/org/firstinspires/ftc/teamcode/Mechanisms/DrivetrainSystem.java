@@ -44,7 +44,7 @@ public class DrivetrainSystem extends SubsystemBase {
         follower.setStartingPose(RobotConstants.autoEndPose == null ? new Pose(8, 8, Math.toRadians(90)) : RobotConstants.autoEndPose);
         follower.update();
         if (RobotConstants.current_color == null || RobotConstants.current_color == RobotConstants.ALLIANCE_COLOR.BLUE) {
-            targetPose = new Pose(0, 144);
+            targetPose = new Pose(5, 144);
         } else {
             targetPose = new Pose(139, 144);
         }

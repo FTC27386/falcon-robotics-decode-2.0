@@ -81,6 +81,4 @@ public class RobotConstants {
         double Apriltag_20y = 144-10.887049;
         double Apriltag_24x = 144-15.010065;
         double Apriltag_24y = 144-10.887049;
-
-        Pose2d test = new Pose2d()
 }
