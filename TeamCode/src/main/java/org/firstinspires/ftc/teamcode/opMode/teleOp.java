@@ -13,6 +13,7 @@ import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.defaultDrive;
@@ -83,9 +84,8 @@ public class teleOp extends CommandOpMode {
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
         schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getAim())));
         schedule(new RunCommand(() -> r.getS().setHoodPosition(r.getD().getHood())));
-        schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().getSpeed())));
-        schedule(new RunCommand(() -> r.getV().startLimelight(telemetry)));
-        shoot.whenPressed(new magDump(r));
+        //schedule(new RunCommand(() -> r.getV().startLimelight(telemetry)));
+        shoot.whenPressed(new BOPBOPBOP(r));
         park.whenPressed(new liftoff(r));
     }
 
@@ -95,24 +95,9 @@ public class teleOp extends CommandOpMode {
         timer.reset();
 
         /*
-        telemetry.addLine(
-            String.format(
-                ".2%f, %.2f, %.2f, %.2f, %.2f, %.2f",
-                r.getD().x,
-                r.getD().y,
-                r.getD().getDist(),
-                r.getS().getSpeedControl().getSetPoint(),
-                r.getD().getHood())
-        );
-        
-         */
-
-        /*
-        telemetry.addData("
         telemetry.addData("x:", r.getD().x);
         telemetry.addData("y:", r.getD().y);
         telemetry.addData("Distance", r.getD().getDist());
-        telemetry.addData("Vera Distance", r.getD().other_distance);
         telemetry.addData("target X", r.getD().getTargetPose().getX());
         telemetry.addData("target Y", r.getD().getTargetPose().getY());
         telemetry.addData("heading", r.getD().getCurrentPose().getHeading());
@@ -125,14 +110,21 @@ public class teleOp extends CommandOpMode {
         telemetry.addData("turret ticks", r.getS().getTurretPosition());
         telemetry.addData("lift power", r.getL().getPIDResponse());
         telemetry.addData("lift pose", r.getL().getLiftPose());
-        telemetry.addData("In zone", r.getD().inCloseZone());
+        telemetry.addData("In close zone", r.getD().inCloseZone());
+        telemetry.addData("In far zone", r.getD().inFarZone());
         telemetry.addData("alliance color?", RobotConstants.current_color);
         telemetry.addData("loop time in ms", loop_time*1000);
         telemetry.addData("loop frequency", Math.pow((loop_time),-1));
         telemetry.addData("turret X", r.getD().realTurretPose.getX());
         telemetry.addData("turret Y", r.getD().realTurretPose.getY());
-         */
+        */
+
+        /*
+        telemetry.addData("flywheel target velocity", r.getS().getSpeedControl().getSetPoint());
+        telemetry.addData("distance", r.getD().getDist());
+        telemetry.addData("hood", r.getD().getHood());
         telemetry.update();
+         */
         super.run();
     }
 

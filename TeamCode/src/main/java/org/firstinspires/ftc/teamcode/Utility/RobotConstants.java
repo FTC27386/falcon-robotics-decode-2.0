@@ -1,10 +1,18 @@
 
 package org.firstinspires.ftc.teamcode.Utility;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
+import com.seattlesolvers.solverslib.geometry.Pose2d;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 @Configurable
+@Config
 public class RobotConstants {
 
         public enum ALLIANCE_COLOR
@@ -48,7 +56,7 @@ public class RobotConstants {
                 lift_kP = 0.001, //0.0003
                 lift_kD = 0.0,
                 lift_kF = 0.3,
-                shooter_kP = -0.002,
+                shooter_kP = -0.004,
                 shooter_kD = 0.00000000,
                 shooter_kV = -0.00039,
                 shooter_kS = 0.056, // "lower limit" power
@@ -67,9 +75,12 @@ public class RobotConstants {
                 pivot_down_pos = 1,
                 zone_buffer = 7.5 * Math.sqrt(2);
         public static Pose autoEndPose;
-        public static int top_climb_position = 13000; // 13400 is the real maximum
+        public static int top_climb_position = 10800; // 13400 is the real maximum
+        //public static int top_climb_position = 9500; // 13400 is the real maximum
+        double Apriltag_20x = 15.010065;
+        double Apriltag_20y = 144-10.887049;
+        double Apriltag_24x = 144-15.010065;
+        double Apriltag_24y = 144-10.887049;
 
-
-
-
+        Pose2d test = new Pose2d()
 }

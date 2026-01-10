@@ -36,7 +36,7 @@ public class Paths {
         closeAutoStartPath = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(startingPoseAlternate, new Pose(59.1, 79.0))
+                        new BezierLine(new Pose(0,144), new Pose(59.1, 79.0))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                 .build();

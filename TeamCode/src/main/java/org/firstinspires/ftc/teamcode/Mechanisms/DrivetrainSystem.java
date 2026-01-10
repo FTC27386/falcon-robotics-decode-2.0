@@ -22,8 +22,9 @@ public class DrivetrainSystem extends SubsystemBase {
             realTurretPose = new Pose(0,0),
             targetPose;
     public Follower follower;
-    private final InterpLUT closeLUT = new InterpLUT();
-    private final InterpLUT farLUT = new InterpLUT();
+    private final InterpLUT LUT1 = new InterpLUT();
+    private final InterpLUT LUT2 = new InterpLUT();
+    private final InterpLUT LUT3 = new InterpLUT();
 
     public double
             x,
@@ -43,29 +44,27 @@ public class DrivetrainSystem extends SubsystemBase {
         follower.setStartingPose(RobotConstants.autoEndPose == null ? new Pose(8, 8, Math.toRadians(90)) : RobotConstants.autoEndPose);
         follower.update();
         if (RobotConstants.current_color == null || RobotConstants.current_color == RobotConstants.ALLIANCE_COLOR.BLUE) {
-            targetPose = new Pose(5, 139);
+            targetPose = new Pose(0, 144);
         } else {
-            targetPose = new Pose(139, 139);
+            targetPose = new Pose(139, 144);
         }
 
-        //Init the Look up table
-        closeLUT.add(35.00, 0.028);
-        closeLUT.add(38.48, 0.038);
-        closeLUT.add(41.12, 0.055);
-        closeLUT.add(44.76, 0.12);
-        closeLUT.createLUT();
+        //-1400
+        LUT1.add(45.00, 0.2);
+        LUT1.add(55.00, 0.25);
+        LUT1.add(65.00, 0.4);
+        LUT1.createLUT();
 
-        farLUT.add(44.76, 0.08);
-        farLUT.add(44.77, 0.08);
-        farLUT.add(48.40, 0.082);
-        farLUT.add(51.31, 0.12);
-        farLUT.add(52.31, 0.13);
-        farLUT.add(54.08, 0.15);
-        farLUT.add(56.04, 0.153);
-        farLUT.add(58.15, 0.17);
-        farLUT.add(62.02, 0.19);
-        farLUT.add(67.81, 0.3);
-        farLUT.createLUT();
+        //-1500
+        LUT2.add(65.00, 0.25);
+        LUT2.add(75.00, 0.35);
+        LUT2.add(85.00, 0.4);
+        LUT2.createLUT();
+
+        //-1600
+        LUT3.add(85.00, 0.3);
+        LUT3.add(90.00, 0.25);
+        LUT3.createLUT();
     }
 
     @Override
@@ -96,24 +95,18 @@ public class DrivetrainSystem extends SubsystemBase {
 
     public double getHood() {
         dist = getDist();
-        if (dist > 35.00 && dist < 44.76) {
-            return closeLUT.get(dist);
-        }
-        else if (dist >= 44.76 && dist < 67.81) {
-            return farLUT.get(dist);
-        }
-        else return 0;
+        if      (dist >= 45.00 && dist <  65.00) return LUT1.get(dist);
+        else if (dist >= 65.00 && dist <  85.00) return LUT2.get(dist);
+        else if (dist >= 85.00 && dist <= 90.00) return LUT3.get(dist);
+        else                                     return 0;
     }
 
     public double getSpeed() {
         dist = getDist();
-        if (dist > 35.00 && dist < 44.76) {
-            return -1300;
-        }
-        else if (dist >= 44.76 && dist < 67.81) {
-            return -1450;
-        }
-        else return 0;
+        if      (dist >= 45.00 && dist <  65.00) return -1400;
+        else if (dist >= 65.00 && dist <  85.00) return -1500;
+        else if (dist >= 85.00 && dist <= 90.00) return -1600;
+        else                                     return 0;
     }
 
     public void teleOpDrive(double axial, double lateral, double yaw) {

@@ -5,21 +5,18 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
-import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
 
-public class oneShot extends SequentialCommandGroup {
+public class BOPBOPBOP extends SequentialCommandGroup {
     private final Robot r;
 
 
-    public oneShot(Robot r) {
+    public BOPBOPBOP(Robot r) {
         this.r = r;
         addRequirements(r.getI(), r.getS());
         addCommands(
-                new InstantCommand(() -> r.getI().close()),
-                new preShootSequence(r),
-                new runIntake(r),
-                new pulseGate(r, 100),
-                new idleIntake(r)
+                new oneShot(r),
+                new oneShot(r),
+                new oneShot(r)
         );
     }
 }

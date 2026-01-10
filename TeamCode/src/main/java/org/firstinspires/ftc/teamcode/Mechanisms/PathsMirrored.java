@@ -36,7 +36,7 @@ public class PathsMirrored {
         closeAutoStartPath = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(startingPoseAlternate, new Pose(flipSide(59.1), 79.0))
+                        new BezierLine(new Pose(flipSide(0),144), new Pose(flipSide(59.1), 79.0))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                 .build();

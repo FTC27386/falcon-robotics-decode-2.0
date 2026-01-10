@@ -33,7 +33,7 @@ public class closeZoneAutoBlue extends CommandOpMode {
 
         r = new Robot(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Paths.startingPoseAlternate);
+        follower.setStartingPose(Paths.startingPose);
         follower.update();
         paths = new Paths(follower);
         register(r.getS(), r.getI());
