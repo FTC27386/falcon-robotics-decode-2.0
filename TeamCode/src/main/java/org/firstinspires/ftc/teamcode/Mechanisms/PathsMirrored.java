@@ -67,7 +67,7 @@ public class PathsMirrored {
         prepareIntakeMiddleRowPath = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(flipSide(59.000), 79.000), new Pose(flipSide(44.000), 57))
+                        new BezierLine(new Pose(flipSide(59.1), 79.000), new Pose(flipSide(44.000), 57))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                 .build();
@@ -162,7 +162,7 @@ public class PathsMirrored {
         farAutoStartPath = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(60, 8.5), new Pose(flipSide(56.666),8.5))
+                        new BezierLine(new Pose(flipSide(60), 8.5), new Pose(flipSide(56.666),8.5))
                 )
                 .setConstantHeadingInterpolation(Math.toRadians(0))
                 .build();

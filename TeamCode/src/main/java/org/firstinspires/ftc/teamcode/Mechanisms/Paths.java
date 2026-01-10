@@ -75,7 +75,7 @@ public class Paths {
         intakeMiddleRowPath = follower
                 .pathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(44.000, 57), new Pose(8.000, 57))
+                        new BezierLine(new Pose(44.000, 56), new Pose(8.000, 57))
                 )
                 .setTangentHeadingInterpolation()
                 .build();

@@ -9,6 +9,7 @@ import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.autoCloseShotBlue;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
@@ -38,11 +39,13 @@ public class closeZoneAutoBlue extends CommandOpMode {
         paths = new Paths(follower);
         register(r.getS(), r.getI());
         schedule(new RunCommand(()-> r.setAutoValuesBlue()));
+        schedule(new RunCommand(()->r.getS().setSpeed(-1570)));
+        schedule(new RunCommand(()->r.getS().setHoodPosition(.24)));
         schedule(
                 new SequentialCommandGroup(
                         new InstantCommand(()-> r.getI().close()),
                         new followPath(r, paths.closeAutoStartPath),
-                        new autoCloseShotBlue(r),
+                        new BOPBOPBOP(r),
                         new runIntakeReverseTimed(r, 100),
                         new runIntake(r),
                 new followPathSlow(r, paths.intakeFirstRowPath), //intake 1st line
@@ -53,7 +56,7 @@ public class closeZoneAutoBlue extends CommandOpMode {
                                                 new idleIntake(r))
 
                 ),
-                new autoCloseShotBlue(r),
+                new BOPBOPBOP(r),
                 new runIntakeReverseTimed(r, 100),
                 new followPath(r, paths.prepareIntakeMiddleRowPath),
                 new runIntake(r),
@@ -64,7 +67,7 @@ public class closeZoneAutoBlue extends CommandOpMode {
                                 new WaitCommand(1000),
                                 new idleIntake(r))
                 ),
-                new autoCloseShotBlue(r),
+                new BOPBOPBOP(r),
                 new runIntakeReverseTimed(r, 100),
                 new followPath(r, paths.prepareIntakeBottomRowPath),
                 new runIntake(r),
@@ -75,7 +78,7 @@ public class closeZoneAutoBlue extends CommandOpMode {
                                 new WaitCommand(1000),
                                 new idleIntake(r))
                 ),
-                new autoCloseShotBlue(r),
+                new BOPBOPBOP(r),
                 new runIntakeReverseTimed(r, 100),
                 new followPath(r, paths.goToGatePath)));
     }
