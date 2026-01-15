@@ -39,20 +39,20 @@ public class PathsMirrored {
                 .pathBuilder()
                 .addPath(
                         new BezierCurve(
-                                new Pose(flipSide(8), 57.000),
-                                new Pose(flipSide(37.349), 53.865),
-                                new Pose(flipSide(33.863), 73.536),
-                                new Pose(flipSide(15.000), 72.000)
+                                new Pose(flipSide(14.000), 80.000),
+                                new Pose(flipSide(33.863), 94.949),
+                                new Pose(flipSide(32.867), 70.548),
+                                new Pose(flipSide(16), 70.5)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(90))
                 .build();
         returnFromGatePath =
                 follower.pathBuilder().addPath(
-                                new BezierLine(new Pose(flipSide(15),72),
+                                new BezierLine(new Pose(flipSide(16),70.5),
                                         new Pose(flipSide(59.1),79)
                                 )
-                        ).setConstantHeadingInterpolation(Math.toRadians(180))
+                        ).setLinearHeadingInterpolation(Math.toRadians(90),Math.toRadians(0))
                         .build();
         closeAutoStartPath = follower
                 .pathBuilder()

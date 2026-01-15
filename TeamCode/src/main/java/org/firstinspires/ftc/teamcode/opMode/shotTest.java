@@ -131,6 +131,7 @@ public class shotTest extends CommandOpMode {
         */
 
         telemetry.addData("flywheel target velocity", r.getS().getSpeedControl().getSetPoint());
+        telemetry.addData("current speed", r.getS().getCurrentSpeed());
         telemetry.addData("distance", r.getD().getDist());
         telemetry.addData("hood", r.getD().getHood());
         telemetry.update();

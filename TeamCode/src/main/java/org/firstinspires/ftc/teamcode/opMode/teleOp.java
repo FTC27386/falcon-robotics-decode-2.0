@@ -47,6 +47,8 @@ public class teleOp extends CommandOpMode {
     Button decreaseOffset;
     Button increaseAOA;
     Button decreaseAOA;
+    Button alsoStop;
+    Pose reloc;
     private Robot r;
     Paths paths;
     PathsMirrored paths_mirrored;
@@ -77,6 +79,7 @@ public class teleOp extends CommandOpMode {
         shoot = driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER);
         climb = driverOp.getGamepadButton(GamepadKeys.Button.TOUCHPAD);
         park = driverOp.getGamepadButton(GamepadKeys.Button.DPAD_UP);
+        alsoStop =driver2Op.getGamepadButton(GamepadKeys.Button.DPAD_UP);
         increaseOffset = driver2Op.getGamepadButton(GamepadKeys.Button.DPAD_LEFT);
         decreaseOffset = driver2Op.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT);
 
@@ -96,12 +99,17 @@ public class teleOp extends CommandOpMode {
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
         schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getAim())));
         schedule(new RunCommand(() -> r.getS().setHoodPosition(r.getD().getHood())));
-        schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().getSpeed())));
+        //schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().getSpeed())));
+        schedule(new RunCommand(() -> reloc = r.getD().AprilTagReloc()));
         //schedule(new RunCommand(() -> r.getV().startLimelight(telemetry)));
-        shoot.whenPressed(new BOPBOPBOP(r));
+        shoot.whenPressed(new magDump(r));
         park.whenPressed(new ParallelCommandGroup(
-                new liftoff(r),
-                new InstantCommand(()-> r.getS().setSpeed(0)),
+
+                new InstantCommand(()-> r.getD().toggleShooter()),
+                new InstantCommand(()->r.getI().stopIntake())));
+        alsoStop.whenPressed(new ParallelCommandGroup(
+
+                new InstantCommand(()-> r.getD().toggleShooter()),
                 new InstantCommand(()->r.getI().stopIntake())));
         increaseOffset.whenPressed(new InstantCommand(()->r.getS().nudgeOffset(-4)));
         decreaseOffset.whenPressed(new InstantCommand(()->r.getS().nudgeOffset(4)));
@@ -138,8 +146,13 @@ public class teleOp extends CommandOpMode {
         */
 
         telemetry.addData("flywheel target velocity", r.getS().getSpeedControl().getSetPoint());
+        telemetry.addData("flywheel current velocity", r.getS().getCurrentSpeed());
         telemetry.addData("distance", r.getD().getDist());
         telemetry.addData("hood", r.getD().getHood());
+        telemetry.addData("x:", r.getD().x);
+        telemetry.addData("y:", r.getD().y);
+        telemetry.addData("reloc x", reloc.getX());
+        telemetry.addData("reloc y", reloc.getY());
         telemetry.update();
         super.run();
     }

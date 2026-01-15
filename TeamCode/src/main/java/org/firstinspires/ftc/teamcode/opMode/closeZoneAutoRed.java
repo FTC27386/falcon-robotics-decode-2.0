@@ -31,7 +31,7 @@ public class closeZoneAutoRed extends CommandOpMode {
     public void initialize()
     {
         super.reset();
-
+        RobotConstants.setCurrent_color(RobotConstants.ALLIANCE_COLOR.RED);
         r = new Robot(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(PathsMirrored.startingPose);
@@ -68,6 +68,7 @@ public class closeZoneAutoRed extends CommandOpMode {
                 ),
                 new BOPBOPBOP(r),
                 new runIntakeReverseTimed(r, 100),
+                /*
                 new followPath(r, paths.prepareIntakeBottomRowPath),
                 new runIntake(r),
                 new followPathSlow(r, paths.intakeBottomRowPath),
@@ -79,6 +80,8 @@ public class closeZoneAutoRed extends CommandOpMode {
                 ),
                 new BOPBOPBOP(r),
                 new runIntakeReverseTimed(r, 100),
+
+                 */
                 new followPath(r, paths.goToGatePath)));
     }
     @Override
@@ -86,7 +89,6 @@ public class closeZoneAutoRed extends CommandOpMode {
     {
         super.run();
         RobotConstants.setAutoEndPose(r.getD().getCurrentPose());
-        RobotConstants.setCurrent_color(RobotConstants.ALLIANCE_COLOR.RED);
         telemetry.addData("turretPose",r.getS().getTurretPosition());
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());
         telemetry.addData("robot Y", r.getD().getCurrentPose().getY());

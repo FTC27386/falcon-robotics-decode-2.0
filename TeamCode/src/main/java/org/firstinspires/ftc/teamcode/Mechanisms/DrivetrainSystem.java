@@ -27,6 +27,7 @@ public class DrivetrainSystem extends SubsystemBase {
     private final InterpLUT LUT1 = new InterpLUT();
     private final InterpLUT LUT2 = new InterpLUT();
     private final InterpLUT LUT3 = new InterpLUT();
+    public boolean shooterOff = false;
 
     public double
             x,
@@ -106,10 +107,16 @@ public class DrivetrainSystem extends SubsystemBase {
 
     public double getSpeed() {
         dist = getDist();
+        if (shooterOff) return 0;
         if      (dist >= 45.00 && dist <  65.00) return -1400;
         else if (dist >= 65.00 && dist <  85.00) return -1500;
         else if (dist >= 85.00 && dist <= 95.00) return -1600;
         else                                     return -1600;
+    }
+
+    public void toggleShooter()
+    {
+        shooterOff = !shooterOff;
     }
 
     public void teleOpDrive(double axial, double lateral, double yaw) {
@@ -164,5 +171,21 @@ public class DrivetrainSystem extends SubsystemBase {
     }
     public boolean inFarZone() {
         return (y < -Math.abs(x - 72) + 24 + zone_buffer);
+    }
+
+    public Pose AprilTagReloc() {
+        double a = Math.PI;
+        double a1 = Math.PI;
+        double r = 130.52/25.4;
+        double r2 = 3;
+        double x1 = 20;
+        double y1 = 130;
+        double x2;
+        double y2;
+
+        x2 = x1 + -r*Math.cos(a) + -r2*Math.cos(a1);
+        y2 = y1 + -r*Math.sin(a) + -r2*Math.sin(a1);
+
+        return new Pose(x2,y2);
     }
 }

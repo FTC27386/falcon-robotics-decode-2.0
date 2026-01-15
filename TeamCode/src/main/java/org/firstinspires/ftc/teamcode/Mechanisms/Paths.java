@@ -39,20 +39,20 @@ public class Paths {
                 .pathBuilder()
                 .addPath(
                         new BezierCurve(
-                                new Pose(8.000, 57.000),
-                                new Pose(37.349, 53.865),
-                                new Pose(33.863, 73.536),
-                                new Pose(15.000, 72.000)
+                                new Pose(14.000, 80.000),
+                                new Pose(33.863, 94.949),
+                                new Pose(32.867, 70.548),
+                                new Pose(16, 70.5)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(90))
                 .build();
         returnFromGatePath =
                 follower.pathBuilder().addPath(
-                        new BezierLine(new Pose(15,72),
+                        new BezierLine(new Pose(16,70.5),
                                 new Pose(59.1,79)
                                 )
-                ).setConstantHeadingInterpolation(Math.toRadians(180))
+                ).setLinearHeadingInterpolation(Math.toRadians(90),Math.toRadians(180))
                         .build();
         closeAutoStartPath = follower
                 .pathBuilder()

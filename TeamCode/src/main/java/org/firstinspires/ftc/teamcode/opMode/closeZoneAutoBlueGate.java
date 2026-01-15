@@ -30,7 +30,7 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
     public void initialize()
     {
         super.reset();
-
+        RobotConstants.setCurrent_color(RobotConstants.ALLIANCE_COLOR.BLUE);
         r = new Robot(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(Paths.startingPose);
@@ -47,8 +47,9 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
                         new runIntakeReverseTimed(r, 100),
                         new runIntake(r),
                 new followPathSlow(r, paths.intakeFirstRowPath), //intake 1st line
+                        new followPathSlow(r, paths.openGatePath),
                 new ParallelCommandGroup(
-                                new followPath(r,paths.returnFromTopRowPath),
+                                new followPath(r,paths.returnFromGatePath),
                                 new SequentialCommandGroup(
                                         new WaitCommand(1000),
                                                 new idleIntake(r))
@@ -59,15 +60,16 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
                 new followPath(r, paths.prepareIntakeMiddleRowPath),
                 new runIntake(r),
                 new followPathSlow(r, paths.intakeMiddleRowPath),
-                new followPath(r, paths.openGatePath),
+
                 new ParallelCommandGroup(
-                        new followPath(r,paths.returnFromGatePath),
+                        new followPath(r,paths.returnFromMiddleRowPath),
                         new SequentialCommandGroup(
                                 new WaitCommand(1000),
                                 new idleIntake(r))
                 ),
                 new BOPBOPBOP(r),
                 new runIntakeReverseTimed(r, 100),
+                /*
                 new followPath(r, paths.prepareIntakeBottomRowPath),
                 new runIntake(r),
                 new followPathSlow(r, paths.intakeBottomRowPath),
@@ -79,6 +81,7 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
                 ),
                 new BOPBOPBOP(r),
                 new runIntakeReverseTimed(r, 100),
+                */
                 new followPath(r, paths.goToGatePath)));
     }
     @Override
@@ -86,7 +89,6 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
     {
         super.run();
         RobotConstants.setAutoEndPose(r.getD().getCurrentPose());
-        RobotConstants.setCurrent_color(RobotConstants.ALLIANCE_COLOR.BLUE);
         telemetry.addData("turretPose",r.getS().getTurretPosition());
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());
         telemetry.addData("robot Y", r.getD().getCurrentPose().getY());
