@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
-import static org.firstinspires.ftc.teamcode.Utility.RobotConstants.BLUE_GOAL;
-import static org.firstinspires.ftc.teamcode.Utility.RobotConstants.BLUE_TARGET;
-import static org.firstinspires.ftc.teamcode.Utility.RobotConstants.RED_GOAL;
-import static org.firstinspires.ftc.teamcode.Utility.RobotConstants.RED_TARGET;
 import static org.firstinspires.ftc.teamcode.Utility.RobotConstants.zone_buffer;
+import static org.firstinspires.ftc.teamcode.opMode.teleOp.flywheel_speed;
+import static org.firstinspires.ftc.teamcode.opMode.teleOp.hood_angle;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
@@ -17,15 +15,19 @@ import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
 import org.firstinspires.ftc.teamcode.Utility.UtilMethods;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
+import java.util.function.Supplier;
+
 public class DrivetrainSystem extends SubsystemBase {
     public Pose
-        currentPose = new Pose(0, 0, Math.toRadians(90)),
-        realTurretPose = new Pose(0,0),
-        targetPose,
-        goalPose;
-
+            currentPose = new Pose(0, 0, Math.toRadians(90)),
+            calculatedPose,
+            realTurretPose = new Pose(0,0),
+            targetPose;
     public Follower follower;
-    private final InterpLUT[] LUT = new InterpLUT[3];
+    private final InterpLUT LUT1 = new InterpLUT();
+    private final InterpLUT LUT2 = new InterpLUT();
+    private final InterpLUT LUT3 = new InterpLUT();
+    public boolean shooterOff = false;
 
     public double
             x,
@@ -35,42 +37,45 @@ public class DrivetrainSystem extends SubsystemBase {
             dist,
             heading,
             unnormalizedHeading,
-            field_angle;
+            field_angle,
+            other_distance;
+    public Supplier<Pose> poseSupplier = this::getCurrentPose;
+    boolean robotCentricDrive = false;
+
     public DrivetrainSystem(HardwareMap hMap) {
         follower = Constants.createFollower(hMap);
         follower.setStartingPose(RobotConstants.autoEndPose == null ? new Pose(8, 8, Math.toRadians(90)) : RobotConstants.autoEndPose);
         follower.update();
         if (RobotConstants.current_color == null || RobotConstants.current_color == RobotConstants.ALLIANCE_COLOR.BLUE) {
-            goalPose = BLUE_GOAL;
-            targetPose = BLUE_TARGET;
+            targetPose = new Pose(5, 144);
         } else {
-            goalPose = RED_GOAL;
-            targetPose = RED_TARGET;
+            targetPose = new Pose(135, 144);
         }
 
         //-1400
-        LUT[0].add(45.00, 0.2);
-        LUT[0].add(55.00, 0.25);
-        LUT[0].add(65.00, 0.4);
-        LUT[0].createLUT();
+        LUT1.add(45.00, 0.2);
+        LUT1.add(55.00, 0.25);
+        LUT1.add(65.00, 0.4);
+        LUT1.createLUT();
 
         //-1500
-        LUT[1].add(65.00, 0.25);
-        LUT[1].add(75.00, 0.35);
-        LUT[1].add(85.00, 0.4);
-        LUT[1].createLUT();
+        LUT2.add(65.00, 0.25);
+        LUT2.add(75.00, 0.35);
+        LUT2.add(85.00, 0.4);
+        LUT2.createLUT();
 
         //-1600
-        LUT[2].add(85.00, 0.3);
-        LUT[2].add(90.00, 0.25);
-        LUT[2].add(95.70, 0.3);
-        LUT[2].createLUT();
+        LUT3.add(85.00, 0.3);
+        LUT3.add(90.00, 0.25);
+        LUT3.add(95.70, 0.3);
+        LUT3.createLUT();
     }
 
     @Override
     public void periodic() {
         follower.update();
         currentPose = follower.getPose();
+        calculatedPose = getPredictedPose(1);
         realTurretPose = computeOffset(currentPose, RobotConstants.turret_offset_inches);
 
         x = currentPose.getX();
@@ -82,27 +87,36 @@ public class DrivetrainSystem extends SubsystemBase {
         heading = currentPose.getHeading();
         unnormalizedHeading = follower.getTotalHeading();
     }
-    public double getDist() { return follower.getPose().distanceFrom(goalPose); }
+    public double getDist() { return follower.getPose().distanceFrom(targetPose); }
     public double getAim()  //calculate adjusted turret angle in degrees
     {
         field_angle = (90 - Math.toDegrees(Math.atan2(distanceY, distanceX)));
+        // return Math.toDegrees((heading)-Math.PI/2) + field_angle;
         return -UtilMethods.AngleDifference(Math.toDegrees(unnormalizedHeading), 0) + field_angle;
+        //equivalent: Math.toDegrees(currentpose.getHeading() - Math.PI/2)
+        //(90 - Math.toDegrees(Math.atan2(distanceY,distanceX)))
     }
 
     public double getHood() {
         dist = getDist();
-        if      (dist >= 45.00 && dist <  65.00) return LUT[0].get(dist);
-        else if (dist >= 65.00 && dist <  85.00) return LUT[1].get(dist);
-        else if (dist >= 85.00 && dist <= 95.00) return LUT[2].get(dist);
+        if      (dist >= 45.00 && dist <  65.00) return LUT1.get(dist);
+        else if (dist >= 65.00 && dist <  85.00) return LUT2.get(dist);
+        else if (dist >= 85.00 && dist <= 95.00) return LUT3.get(dist);
         else                                     return 0;
     }
 
     public double getSpeed() {
         dist = getDist();
+        if (shooterOff) return 0;
         if      (dist >= 45.00 && dist <  65.00) return -1400;
         else if (dist >= 65.00 && dist <  85.00) return -1500;
         else if (dist >= 85.00 && dist <= 95.00) return -1600;
         else                                     return -1600;
+    }
+
+    public void toggleShooter()
+    {
+        shooterOff = !shooterOff;
     }
 
     public void teleOpDrive(double axial, double lateral, double yaw) {
@@ -139,14 +153,6 @@ public class DrivetrainSystem extends SubsystemBase {
     public void reloc(Pose reloc) {
         follower.setPose(reloc);
     }
-    public Pose AprilTagReloc() {
-        //get x and y position of limelight
-        //get current robot heading
-        //get current turret set heading
-        //add to find turret heading
-        currentPose.
-        return new Pose(x2,y2);
-    }
 
     public Pose getCurrentPose() {
         return currentPose;
@@ -165,5 +171,21 @@ public class DrivetrainSystem extends SubsystemBase {
     }
     public boolean inFarZone() {
         return (y < -Math.abs(x - 72) + 24 + zone_buffer);
+    }
+
+    public Pose AprilTagReloc() {
+        double a = Math.PI;
+        double a1 = Math.PI;
+        double r = 130.52/25.4;
+        double r2 = 3;
+        double x1 = 20;
+        double y1 = 130;
+        double x2;
+        double y2;
+
+        x2 = x1 + -r*Math.cos(a) + -r2*Math.cos(a1);
+        y2 = y1 + -r*Math.sin(a) + -r2*Math.sin(a1);
+
+        return new Pose(x2,y2);
     }
 }
