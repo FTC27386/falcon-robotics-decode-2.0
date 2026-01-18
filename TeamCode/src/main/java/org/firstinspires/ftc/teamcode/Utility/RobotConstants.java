@@ -77,8 +77,8 @@ public class RobotConstants {
         public static Pose autoEndPose;
         public static int top_climb_position = 10400; // 13400 is the real maximum
         //public static int top_climb_position = 9500; // 13400 is the real maximum
-        double Apriltag_20x = 14.64;
-        double Apriltag_20y = 128.6;
-        double Apriltag_24x = 144-14.64;
-        double Apriltag_24y = 128.6;
+        public double Apriltag_20x = 14.64;
+        public double Apriltag_20y = 144-15.4;
+        public double Apriltag_24x = 144-14.64;
+        public double Apriltag_24y = 128.6;
 }

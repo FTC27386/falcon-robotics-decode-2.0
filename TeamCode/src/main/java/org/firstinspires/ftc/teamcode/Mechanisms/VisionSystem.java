@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
+import com.pedropathing.geometry.Pose;
+import com.qualcomm.hardware.limelightvision.LLFieldMap;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
@@ -8,7 +10,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
 
 import java.util.List;
@@ -16,64 +20,50 @@ import java.util.List;
 public class VisionSystem extends SubsystemBase {
 
     private Limelight3A limelight;
+    private static final double FIELD_SIZE_IN = 144.0;
+    private static final double METERS_TO_INCHES = 39.37;
+
 
     public VisionSystem(final HardwareMap hMap) {
         limelight = hMap.get(Limelight3A.class, RobotConstants.limelight_name);
+        limelight.setPollRateHz(100); // This sets how often we ask Limelight for data (100 times per second)
         limelight.pipelineSwitch(0);
+        limelight.start(); // This tells Limelight to start looking!
     }
 
     public void periodic() {
 
     }
 
-    public void startLimelight(Telemetry telemetry) {
-        limelight.start();
-        LLStatus status = limelight.getStatus();
-
-        telemetry.addData("Name", "%s",
-                status.getName());
-        telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
-                status.getTemp(), status.getCpu(),(int)status.getFps());
-        telemetry.addData("Pipeline", "Index: %d, Type: %s",
-                status.getPipelineIndex(), status.getPipelineType());
+    public void startLimelight(Telemetry telemetry, Pose currentPose) {
+        double robotYawDeg = Math.toDegrees(currentPose.getHeading());
+        limelight.updateRobotOrientation(robotYawDeg);
 
         LLResult result = limelight.getLatestResult();
-        if (result.isValid()) {
-            // Access general information
-            Pose3D botpose = result.getBotpose();
-            double captureLatency = result.getCaptureLatency();
-            double targetingLatency = result.getTargetingLatency();
-            double parseLatency = result.getParseLatency();
 
-            telemetry.addData("LL Latency", captureLatency + targetingLatency);
-            telemetry.addData("Parse Latency", parseLatency);
-            telemetry.addData("PythonOutput", java.util.Arrays.toString(result.getPythonOutput()));
+        if (result != null && result.isValid()) {
+            double tx = result.getTx();
+            double ty = result.getTy();
+            double ta = result.getTa();
 
-            telemetry.addData("tx", result.getTx());
-            telemetry.addData("txnc", result.getTxNC());
-            telemetry.addData("ty", result.getTy());
-            telemetry.addData("tync", result.getTyNC());
+            telemetry.addData("Target X", tx);
+            telemetry.addData("Target Y", ty);
+            telemetry.addData("Target Area", ta);
 
-            telemetry.addData("Botpose", botpose.toString());
+            Pose3D botpose_mt2 = result.getBotpose_MT2();
+            if (botpose_mt2 != null) {
+                double llX_in = botpose_mt2.getPosition().x * METERS_TO_INCHES;
+                double llY_in = botpose_mt2.getPosition().y * METERS_TO_INCHES;
 
-            // Access barcode results
-            List<LLResultTypes.BarcodeResult> barcodeResults = result.getBarcodeResults();
+                // Pedro frame: bottom-left origin
+                double pedroX = llX_in + FIELD_SIZE_IN / 2.0; // forward
+                double pedroY = llY_in + FIELD_SIZE_IN / 2.0; // right
 
-            for (LLResultTypes.BarcodeResult br : barcodeResults) {
-                telemetry.addData("Barcode", "Data: %s", br.getData());
+                telemetry.addData("Pedro X", pedroX);
+                telemetry.addData("Pedro Y", pedroY);
             }
-
-            // Access fiducial results
-            List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
-            for (LLResultTypes.FiducialResult fr : fiducialResults) {
-                telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(), fr.getTargetXDegrees(), fr.getTargetYDegrees());
-            }
+        } else {
+            telemetry.addData("Limelight", "No Targets");
         }
-        else {
-            telemetry.addData("Limelight", "No data available");
-        }
-    }
-    public void stopLimelight() {
-        limelight.stop();
     }
 }

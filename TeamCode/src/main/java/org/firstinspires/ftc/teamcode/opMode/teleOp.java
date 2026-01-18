@@ -49,6 +49,7 @@ public class teleOp extends CommandOpMode {
     Button decreaseAOA;
     Button alsoStop;
     Pose reloc;
+    public static double num = 1;
     private Robot r;
     Paths paths;
     PathsMirrored paths_mirrored;
@@ -100,7 +101,6 @@ public class teleOp extends CommandOpMode {
         schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getAim())));
         schedule(new RunCommand(() -> r.getS().setHoodPosition(r.getD().getHood())));
         //schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().getSpeed())));
-        schedule(new RunCommand(() -> reloc = r.getD().AprilTagReloc()));
         //schedule(new RunCommand(() -> r.getV().startLimelight(telemetry)));
         shoot.whenPressed(new magDump(r));
         park.whenPressed(new ParallelCommandGroup(
@@ -151,8 +151,6 @@ public class teleOp extends CommandOpMode {
         telemetry.addData("hood", r.getD().getHood());
         telemetry.addData("x:", r.getD().x);
         telemetry.addData("y:", r.getD().y);
-        telemetry.addData("reloc x", reloc.getX());
-        telemetry.addData("reloc y", reloc.getY());
         telemetry.update();
         super.run();
     }

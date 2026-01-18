@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Mechanisms;
 import static org.firstinspires.ftc.teamcode.Utility.RobotConstants.zone_buffer;
 import static org.firstinspires.ftc.teamcode.opMode.teleOp.flywheel_speed;
 import static org.firstinspires.ftc.teamcode.opMode.teleOp.hood_angle;
+import static org.firstinspires.ftc.teamcode.opMode.teleOp.num;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
@@ -47,9 +48,9 @@ public class DrivetrainSystem extends SubsystemBase {
         follower.setStartingPose(RobotConstants.autoEndPose == null ? new Pose(8, 8, Math.toRadians(90)) : RobotConstants.autoEndPose);
         follower.update();
         if (RobotConstants.current_color == null || RobotConstants.current_color == RobotConstants.ALLIANCE_COLOR.BLUE) {
-            targetPose = new Pose(5, 144);
+            targetPose = new Pose(0, 144);
         } else {
-            targetPose = new Pose(135, 144);
+            targetPose = new Pose(144, 144);
         }
 
         //-1400
@@ -75,8 +76,8 @@ public class DrivetrainSystem extends SubsystemBase {
     public void periodic() {
         follower.update();
         currentPose = follower.getPose();
-        calculatedPose = getPredictedPose(1);
-        realTurretPose = computeOffset(currentPose, RobotConstants.turret_offset_inches);
+        calculatedPose = getPredictedPose(num);
+        realTurretPose = computeOffset(calculatedPose, RobotConstants.turret_offset_inches);
 
         x = currentPose.getX();
         y = currentPose.getY();
@@ -167,25 +168,11 @@ public class DrivetrainSystem extends SubsystemBase {
     }
 
     public boolean inCloseZone() {
-        return (y > Math.abs(x - 72) + 72 - zone_buffer);
+        //return (y > Math.abs(x - 72) + 72 - zone_buffer);
+        return true;
     }
     public boolean inFarZone() {
-        return (y < -Math.abs(x - 72) + 24 + zone_buffer);
-    }
-
-    public Pose AprilTagReloc() {
-        double a = Math.PI;
-        double a1 = Math.PI;
-        double r = 130.52/25.4;
-        double r2 = 3;
-        double x1 = 20;
-        double y1 = 130;
-        double x2;
-        double y2;
-
-        x2 = x1 + -r*Math.cos(a) + -r2*Math.cos(a1);
-        y2 = y1 + -r*Math.sin(a) + -r2*Math.sin(a1);
-
-        return new Pose(x2,y2);
+        //return (y < -Math.abs(x - 72) + 24 + zone_buffer);
+        return true;
     }
 }

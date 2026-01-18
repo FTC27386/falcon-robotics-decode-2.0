@@ -8,16 +8,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.defaultDrive;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.liftoff;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.manualTriple;
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeTimed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
@@ -28,8 +27,8 @@ import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
 import java.util.function.Supplier;
 
 @Config
-@TeleOp(name = "Shot Test")
-public class shotTest extends CommandOpMode {
+@TeleOp(name = "test")
+public class test extends CommandOpMode {
     ElapsedTime timer;
     double loop_time;
     Button intake;
@@ -45,6 +44,8 @@ public class shotTest extends CommandOpMode {
     Button decreaseOffset;
     Button increaseAOA;
     Button decreaseAOA;
+    Button alsoStop;
+    Pose reloc;
     private Robot r;
     Paths paths;
     PathsMirrored paths_mirrored;
@@ -75,6 +76,7 @@ public class shotTest extends CommandOpMode {
         shoot = driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER);
         climb = driverOp.getGamepadButton(GamepadKeys.Button.TOUCHPAD);
         park = driverOp.getGamepadButton(GamepadKeys.Button.DPAD_UP);
+        alsoStop =driver2Op.getGamepadButton(GamepadKeys.Button.DPAD_UP);
         increaseOffset = driver2Op.getGamepadButton(GamepadKeys.Button.DPAD_LEFT);
         decreaseOffset = driver2Op.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT);
 
@@ -92,48 +94,27 @@ public class shotTest extends CommandOpMode {
                        ,Math.toRadians(90)
                ))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
-        schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getAim())));
-        //schedule(new RunCommand(() -> r.getV().startLimelight(telemetry)));
-        shoot.whenPressed(new manualTriple(r, flywheel_speed, hood_angle));
-        park.whenPressed(new liftoff(r));
+        schedule(new RunCommand(() -> r.getS().setTurretPosition(0.5)));
+        schedule(new RunCommand(() -> r.getS().setHoodPosition(0)));
+        //schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().getSpeed())));
+        schedule(new RunCommand(() -> r.getV().startLimelight(telemetry, r.getD().getCurrentPose())));
+        shoot.whenPressed(new magDump(r));
+        park.whenPressed(new ParallelCommandGroup(
+
+                new InstantCommand(()-> r.getD().toggleShooter()),
+                new InstantCommand(()->r.getI().stopIntake())));
+        alsoStop.whenPressed(new ParallelCommandGroup(
+
+                new InstantCommand(()-> r.getD().toggleShooter()),
+                new InstantCommand(()->r.getI().stopIntake())));
         increaseOffset.whenPressed(new InstantCommand(()->r.getS().nudgeOffset(-4)));
         decreaseOffset.whenPressed(new InstantCommand(()->r.getS().nudgeOffset(4)));
     }
 
     @Override
     public void run() {
-        loop_time = timer.seconds();
-        timer.reset();
-
-        /*
         telemetry.addData("x:", r.getD().x);
         telemetry.addData("y:", r.getD().y);
-        telemetry.addData("Distance", r.getD().getDist());
-        telemetry.addData("target X", r.getD().getTargetPose().getX());
-        telemetry.addData("target Y", r.getD().getTargetPose().getY());
-        telemetry.addData("heading", r.getD().getCurrentPose().getHeading());
-        telemetry.addData("adjustment", r.getD().getAim());
-        telemetry.addData("flywheel target velocity", r.getS().getSpeedControl().getSetPoint());
-        telemetry.addData("flywheel error", r.getS().getSpeedControl().getPositionError());
-        telemetry.addData("flywheel speed", r.getS().getCurrentSpeed());
-        telemetry.addData("Hood", r.getD().getHood());
-        telemetry.addData("flywheel response", r.getS().getFlywheelSignal());
-        telemetry.addData("turret ticks", r.getS().getTurretPosition());
-        telemetry.addData("lift power", r.getL().getPIDResponse());
-        telemetry.addData("lift pose", r.getL().getLiftPose());
-        telemetry.addData("In close zone", r.getD().inCloseZone());
-        telemetry.addData("In far zone", r.getD().inFarZone());
-        telemetry.addData("alliance color?", RobotConstants.current_color);
-        telemetry.addData("loop time in ms", loop_time*1000);
-        telemetry.addData("loop frequency", Math.pow((loop_time),-1));
-        telemetry.addData("turret X", r.getD().realTurretPose.getX());
-        telemetry.addData("turret Y", r.getD().realTurretPose.getY());
-        */
-
-        telemetry.addData("flywheel target velocity", r.getS().getSpeedControl().getSetPoint());
-        telemetry.addData("current speed", r.getS().getCurrentSpeed());
-        telemetry.addData("distance", r.getD().getDist());
-        telemetry.addData("hood", r.getD().getHood());
         telemetry.update();
         super.run();
     }
