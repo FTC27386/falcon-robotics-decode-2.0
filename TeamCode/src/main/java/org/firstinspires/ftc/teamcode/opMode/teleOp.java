@@ -14,11 +14,9 @@ import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.defaultDrive;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.liftoff;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeTimed;
@@ -99,7 +97,7 @@ public class teleOp extends CommandOpMode {
                ))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
         schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getAim())));
-        schedule(new RunCommand(() -> r.getS().setHoodPosition(r.getD().getHood())));
+        schedule(new RunCommand(() -> r.getS().setHoodAngle(r.getD().getHood())));
         //schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().getSpeed())));
         //schedule(new RunCommand(() -> r.getV().startLimelight(telemetry)));
         shoot.whenPressed(new magDump(r));
@@ -145,10 +143,9 @@ public class teleOp extends CommandOpMode {
         telemetry.addData("turret Y", r.getD().realTurretPose.getY());
         */
 
-        telemetry.addData("flywheel target velocity", r.getS().getSpeedControl().getSetPoint());
-        telemetry.addData("flywheel current velocity", r.getS().getCurrentSpeed());
-        telemetry.addData("distance", r.getD().getDist());
+        telemetry.addData("flywheel target velocity", r.getD().getSpeed());
         telemetry.addData("hood", r.getD().getHood());
+        telemetry.addData("distance", r.getD().getDist());
         telemetry.addData("x:", r.getD().x);
         telemetry.addData("y:", r.getD().y);
         telemetry.update();

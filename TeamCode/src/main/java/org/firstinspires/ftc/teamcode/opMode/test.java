@@ -94,8 +94,6 @@ public class test extends CommandOpMode {
                        ,Math.toRadians(90)
                ))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
-        schedule(new RunCommand(() -> r.getS().setTurretPosition(0.5)));
-        schedule(new RunCommand(() -> r.getS().setHoodPosition(0)));
         //schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().getSpeed())));
         schedule(new RunCommand(() -> r.getV().startLimelight(telemetry, r.getD().getCurrentPose())));
         shoot.whenPressed(new magDump(r));
@@ -115,6 +113,10 @@ public class test extends CommandOpMode {
     public void run() {
         telemetry.addData("x:", r.getD().x);
         telemetry.addData("y:", r.getD().y);
+        telemetry.addData("flywheel target velocity", r.getD().getSpeed());
+        telemetry.addData("flywheel current velocity", r.getS().getCurrentSpeed());
+        telemetry.addData("distance", r.getD().getDist());
+        telemetry.addData("hood", r.getD().getHood());
         telemetry.update();
         super.run();
     }

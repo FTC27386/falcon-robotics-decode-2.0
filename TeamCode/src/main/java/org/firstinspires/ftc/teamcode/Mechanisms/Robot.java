@@ -48,35 +48,35 @@ public class Robot {
 
     public void setShooterValues() {
         s.setSpeed(d.getSpeed());
-        s.setHoodPosition(d.getHood());
+        s.setHoodAngle(d.getHood());
         s.setTurretPosition(d.getAim());
     }
 
     public void setManualShooterValues(double speed, double hood) {
         s.setSpeed(speed);
-        s.setHoodPosition(hood);
+        s.setHoodAngle(hood);
         s.setTurretPosition(d.getAim());
     }
 
     public void setAutoValuesBlue() {
         s.setSpeed(-1620);
-        s.setHoodPosition(0.24);
+        s.setHoodAngle(0.24);
         s.setTurretPosition(48);
     }
     public void setAutoValuesRed() {
         s.setSpeed(-1620);
-        s.setHoodPosition(0.24);
+        s.setHoodAngle(0.24);
         //75
         s.setTurretPosition(-48.75);
     }
     public void setAutoValuesFarZoneBlue() {
         s.setSpeed(-2200);
-        s.setHoodPosition(.95);
+        s.setHoodAngle(.95);
         s.setTurretPosition(67.3);
     }
     public void setAutoValuesFarZoneRed() {
         s.setSpeed(-2200);
-        s.setHoodPosition(.95);
+        s.setHoodAngle(.95);
         s.setTurretPosition(-67.3);
     }
 

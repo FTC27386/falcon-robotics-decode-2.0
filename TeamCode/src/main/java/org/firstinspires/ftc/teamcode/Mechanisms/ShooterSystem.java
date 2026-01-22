@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Mechanisms;
 
 import static androidx.core.math.MathUtils.clamp;
 
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -86,6 +85,7 @@ public class ShooterSystem extends SubsystemBase {
 
         turret1.setPosition(turretPosition);
         turret2.setPosition(turretPosition);
+        hoodPosition = clamp(hoodPosition, 0, 0.576);
         hood.setPosition(hoodPosition);
         previousread = degreeRead;
     }
@@ -102,12 +102,12 @@ public class ShooterSystem extends SubsystemBase {
     {
         double turretTicks = 0.5;
         turretTicks += (turretPositionAngle+angleOffset) * RobotConstants.turret_conversion_factor_DEGREES;
-        turretTicks = clamp(turretTicks, .3, .6);
+        turretTicks = clamp(turretTicks, .2, .8);
         this.turretPosition = turretTicks;
     }
 
-    public void setHoodPosition(double hoodPosition) {
-        this.hoodPosition = hoodPosition;
+    public void setHoodAngle(double hoodAngle) {
+        hoodPosition = (hoodAngle - 25) * ((double) 266 /40) * ((double) 1 /300);
     }
 
     public double getTurretPosition() {
