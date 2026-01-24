@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
 import static androidx.core.math.MathUtils.clamp;
-import static org.firstinspires.ftc.teamcode.Utility.RobotConstants.zone_buffer;
 import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.GOAL_POS_BLUE;
 import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.GOAL_POS_RED;
 import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.HOOD_MAX_ANGLE;
@@ -9,8 +8,6 @@ import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.HOOD_MIN_A
 import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.PASS_THROUGH_POINT_RADIUS;
 import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.SCORE_ANGLE;
 import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.SCORE_HEIGHT;
-import static org.firstinspires.ftc.teamcode.opMode.teleOp.flywheel_speed;
-import static org.firstinspires.ftc.teamcode.opMode.teleOp.hood_angle;
 import static org.firstinspires.ftc.teamcode.opMode.teleOp.num;
 
 import com.pedropathing.follower.Follower;
@@ -21,7 +18,6 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.util.InterpLUT;
 
 import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
-import org.firstinspires.ftc.teamcode.Utility.ShooterConstants;
 import org.firstinspires.ftc.teamcode.Utility.UtilMethods;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -107,46 +103,32 @@ public class DrivetrainSystem extends SubsystemBase {
     }
     public void calculateShotVectorAndUpdateTurret() {
 
-        // ---------- constants ----------
-        final double g = 32.174 * 12;     // in/s^2
-        final double EPS = 1e-6;
-
-        // ---------- geometry ----------
+        final double g = 32.174 * 12;     // gravity (in/s^2)
         double distance = realTurretPose.distanceFrom(goalPose);
 
         double dx = goalPose.getX() - realTurretPose.getX();
-        double dy = goalPose.getY() - realTurretPose.getY();
+        double dz = goalPose.getY() - realTurretPose.getY();
 
-        double field_angle = Math.atan2(dy, dx);
+        double field_angle = Math.atan2(dz, dx);
         Vector robotToGoalVector = new Vector(distance, field_angle);
 
         // effective horizontal distance from release point
-        double x_point =
-                robotToGoalVector.getMagnitude() - PASS_THROUGH_POINT_RADIUS;
-        x_point = Math.max(x_point, EPS);   // NEVER clamp to 0
+        double x_point = distance - PASS_THROUGH_POINT_RADIUS; //stationary pass-through horizontal distance (in)
 
         // vertical displacement (can be positive or negative)
-        double y_point = SCORE_HEIGHT;
+        double y_point = SCORE_HEIGHT; // pass-through height (in)
 
         double a = SCORE_ANGLE; // radians
 
-        // ---------- initial ballistic solve ----------
-        hoodAngle = clamp(
-                Math.atan(2.0 * y_point / x_point - Math.tan(a)),
-                HOOD_MIN_ANGLE,
-                HOOD_MAX_ANGLE
-        );
+        hoodAngle = Math.atan(2.0 * y_point / x_point - Math.tan(a));
 
-        double denom1 =
+        double den1 =
                 2.0 * Math.pow(Math.cos(hoodAngle), 2)
                         * (x_point * Math.tan(hoodAngle) - y_point);
 
-        if (denom1 <= EPS) {
-            return; // no physical solution
-        }
+        if (den1 <= 0) return;
 
-        flywheelSpeed =
-                Math.sqrt(g * x_point * x_point / denom1);
+        flywheelSpeed = Math.sqrt(g * x_point * x_point / den1);
 
         // ---------- robot velocity ----------
         Vector robotVelocity = follower.getVelocity();
@@ -154,81 +136,52 @@ public class DrivetrainSystem extends SubsystemBase {
         double coordinateTheta =
                 robotVelocity.getTheta() - robotToGoalVector.getTheta();
 
-        double parallelComponent =
+        double vrr =
                 -Math.cos(coordinateTheta) * robotVelocity.getMagnitude();
+        // robot radial velocity (toward/away from goal) (in/s)
 
-        double perpendicularComponent =
+        double vrt =
                 Math.sin(coordinateTheta) * robotVelocity.getMagnitude();
+        // robot tangential velocity (sideways) (in/s)
 
         // ---------- velocity compensation ----------
-        double vx0 = flywheelSpeed * Math.cos(hoodAngle);
-        double vz  = flywheelSpeed * Math.sin(hoodAngle);
+        double vx = flywheelSpeed * Math.cos(hoodAngle);  // horizontal component
+        double vz  = flywheelSpeed * Math.sin(hoodAngle); // vertical component
+        double time = x_point / vx;                       // time to reach x using stationary solution
 
-        double time = x_point / Math.max(vx0, EPS);
+        double ivr = vx + vrr; // Add robot radial velocity (field-plane forward direction) to horizontal component
 
-        double ivr = vx0 + parallelComponent;
+        double nvr = Math.hypot(ivr, vrt); // Combine forward and sideways robot motion to get total horizontal speed
+        double ndr = nvr * time;           // Convert total horizontal speed into an effective horizontal distance
+                                           // as though the projectile problem only cares about the length of the horizontal path
 
-        double nvr = Math.max(
-                Math.hypot(ivr, perpendicularComponent),
-                EPS
-        );
+        // New launch angle using total horizontal speed and old vertical component
+        // Holding vertical velocity constant naturally damps hood adjustment
+        hoodAngle = Math.atan2(vz, nvr);
 
-        double ndr = nvr * time;
-
-        // ---------- recompute launch components ----------
-        hoodAngle = clamp(
-                Math.atan2(vz, nvr),
-                HOOD_MIN_ANGLE,
-                HOOD_MAX_ANGLE
-        );
-
-        double denom2 =
+        double den2 = // Denominator for compensated launch speed
                 2.0 * Math.pow(Math.cos(hoodAngle), 2)
                         * (ndr * Math.tan(hoodAngle) - y_point);
 
-        if (denom2 <= EPS) {
-            return;
-        }
-
+        if (den2 <= 0) return;
+        // New (compensated) launch speed
         flywheelSpeed =
-                Math.sqrt(g * ndr * ndr / denom2);
+                Math.sqrt(g * ndr * ndr / den2);
 
-        // ---------- turret lead ----------
-        turretVelCompOffset = Math.atan2(perpendicularComponent, ivr);
+        // Turret lead
+        turretVelCompOffset = Math.atan2(vrt, ivr);
     }
 
     public double getDist() { return follower.getPose().distanceFrom(targetPose); }
-    public double getAim()  //calculate adjusted turret angle in degrees
-    {
-        field_angle = (90 - Math.toDegrees(Math.atan2(distanceY, distanceX)));
-        // return Math.toDegrees((heading)-Math.PI/2) + field_angle;
-        return -UtilMethods.AngleDifference(Math.toDegrees(unnormalizedHeading), 0) + field_angle;
-        //equivalent: Math.toDegrees(currentpose.getHeading() - Math.PI/2)
-        //(90 - Math.toDegrees(Math.atan2(distanceY,distanceX)))
+    public double getAim() { //calculate adjusted turret angle in degrees
+        return turretVelCompOffset;
     }
 
     public double getHood() {
-        /*
-        dist = getDist();
-        if      (dist >= 45.00 && dist <  65.00) return LUT1.get(dist);
-        else if (dist >= 65.00 && dist <  85.00) return LUT2.get(dist);
-        else if (dist >= 85.00 && dist <= 95.00) return LUT3.get(dist);
-        else                                     return 0;
-
-         */
         return hoodAngle;
     }
 
     public double getSpeed() {
-        /*
-        dist = getDist();
-        if (shooterOff) return 0;
-        if      (dist >= 45.00 && dist <  65.00) return -1400;
-        else if (dist >= 65.00 && dist <  85.00) return -1500;
-        else if (dist >= 85.00 && dist <= 95.00) return -1600;
-        else                                     return -1600;
-
-         */
         return flywheelSpeed;
     }
 
