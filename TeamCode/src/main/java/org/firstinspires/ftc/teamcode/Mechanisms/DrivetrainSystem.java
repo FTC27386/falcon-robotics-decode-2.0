@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
 import static androidx.core.math.MathUtils.clamp;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.GOAL_POS_BLUE;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.GOAL_POS_RED;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.HOOD_MAX_ANGLE;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.HOOD_MIN_ANGLE;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.PASS_THROUGH_POINT_RADIUS;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.SCORE_ANGLE;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.SCORE_HEIGHT;
-import static org.firstinspires.ftc.teamcode.opMode.teleOp.num;
+import static org.firstinspires.ftc.teamcode.Utility.FieldConfig.gravity;
+import static org.firstinspires.ftc.teamcode.Utility.RobotConfig.zone_buffer;
+import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.PASS_THROUGH_POINT_RADIUS;
+import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.SCORE_ANGLE;
+import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.SCORE_HEIGHT;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
