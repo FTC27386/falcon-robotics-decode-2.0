@@ -35,6 +35,7 @@ public class RobotConstants {
                 second_shooter_motor_name = "flywheel_bottom",
                 left_turret_servo_name = "left_turret_servo",
                 right_turret_servo_name = "right_turret_servo",
+                turret_motor_name="turret",
                 hood_servo_name = "hood",
                 intake_motor_name = "intake",
                 intake_servo_name = "intake_pivot_servo",
@@ -73,6 +74,7 @@ public class RobotConstants {
                 latch_open_pos = 1,
                 pivot_up_pos = 0,
                 pivot_down_pos = 1,
+                turret_hardstop_angle = 90,
                 zone_buffer = 7.5 * Math.sqrt(2);
         public static Pose autoEndPose;
         public static int top_climb_position = 10400; // 13400 is the real maximum
@@ -81,4 +83,8 @@ public class RobotConstants {
         public double Apriltag_20y = 144-15.4;
         public double Apriltag_24x = 144-14.64;
         public double Apriltag_24y = 128.6;
+        public double Rev_encoder_CPR = 8192;
+        public static double encoder_tick_to_degree_conversion = 0.0116325827206;
+        //degree of the turret
+        //small gear rots per large gear rots * 360 deg divided by 8192
 }

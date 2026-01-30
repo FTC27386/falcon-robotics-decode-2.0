@@ -71,7 +71,7 @@ public class AutoStepThru extends CommandOpMode {
                         , Math.toRadians(90)
                 ))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
-        schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getAim())));
+        schedule(new RunCommand(() -> r.getS().setTurretSetPoint(r.getD().getAim())));
         shoot.whenPressed(new magDump(r));
         AutoCommands = new Command[]{
                 new InstantCommand(() -> r.setShooterValues()),
@@ -130,7 +130,7 @@ public class AutoStepThru extends CommandOpMode {
         telemetry.addData("flywheel speed", r.getS().getCurrentSpeed());
         telemetry.addData("Hood", r.getD().getHood());
         telemetry.addData("flywheel response", r.getS().getFlywheelSignal());
-        telemetry.addData("turret ticks", r.getS().getTurretPosition());
+        telemetry.addData("turret ticks", r.getS().getTurretSetPoint());
         telemetry.addData("lift power", r.getL().getPIDResponse());
         telemetry.addData("lift pose", r.getL().getLiftPose());
         telemetry.addData("Distance", r.getD().getDist());
