@@ -8,7 +8,7 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.PathsMirrored;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
-import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
+import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name = "Far Auto Red LEAVE ONLY")
@@ -39,8 +39,8 @@ public class FZAutoLeaveONLYRed extends CommandOpMode {
     public void run()
     {
         super.run();
-        RobotConstants.setCurrent_color(RobotConstants.ALLIANCE_COLOR.RED);
-        RobotConstants.setAutoEndPose(r.getD().getCurrentPose());
+        RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.RED);
+        RobotConfig.setAutoEndPose(r.getD().getCurrentPose());
         telemetry.addData("turretPose",r.getS().getTurretPosition());
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());
         telemetry.addData("robot Y", r.getD().getCurrentPose().getY());

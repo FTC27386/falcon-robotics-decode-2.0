@@ -67,39 +67,39 @@ public class MotorTest extends OpMode {
     Servo hood,
             blocker,
             pivot;
-    public static double x = 0;
-    public static double turretPosition = 0.5;
-    public static double servoOffset = 0;
-    public static double intakePos = 0;
-    public static double hoodPos = 0;
+    private static double x = 0;
+    private static double turretPosition = 0.5;
+    private static double servoOffset = 0;
+    private static double intakePos = 0;
+    private static double hoodPos = 0;
 
     @Override
     public void init() {
-        leftTurretServo = hardwareMap.get(Servo.class, RobotConstants.left_turret_servo_name);
-        rightTurretServo = hardwareMap.get(Servo.class, RobotConstants.right_turret_servo_name);
-        blocker = hardwareMap.get(Servo.class, RobotConstants.transfer_servo_name);
-        hood = hardwareMap.get(Servo.class, RobotConstants.hood_servo_name);
-        intake_raiser = hardwareMap.get(Servo.class,RobotConstants.intake_servo_name);
+        leftTurretServo = hardwareMap.get(Servo.class, RobotConfig.left_turret_servo_name);
+        rightTurretServo = hardwareMap.get(Servo.class, RobotConfig.right_turret_servo_name);
+        blocker = hardwareMap.get(Servo.class, RobotConfig.transfer_servo_name);
+        hood = hardwareMap.get(Servo.class, RobotConfig.hood_servo_name);
+        intake_raiser = hardwareMap.get(Servo.class, RobotConfig.intake_servo_name);
 
         leftTurretServo.setDirection(Servo.Direction.FORWARD);
         rightTurretServo.setDirection(Servo.Direction.FORWARD);
         blocker.setDirection(Servo.Direction.FORWARD);
         hood.setDirection(Servo.Direction.FORWARD);
 
-        intake = hardwareMap.get(DcMotor.class, RobotConstants.intake_motor_name);
+        intake = hardwareMap.get(DcMotor.class, RobotConfig.intake_motor_name);
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        flywheel1 = hardwareMap.get(DcMotor.class, RobotConstants.first_shooter_motor_name);
-        flywheel2 = hardwareMap.get(DcMotor.class, RobotConstants.second_shooter_motor_name);
+        flywheel1 = hardwareMap.get(DcMotor.class, RobotConfig.first_shooter_motor_name);
+        flywheel2 = hardwareMap.get(DcMotor.class, RobotConfig.second_shooter_motor_name);
         flywheel1.setDirection(DcMotor.Direction.REVERSE);
         flywheel2.setDirection(DcMotor.Direction.FORWARD);
         flywheel1.setZeroPowerBehavior(FLOAT); //Makes the flywheel1 not turn itself off
         flywheel2.setZeroPowerBehavior(FLOAT);
 
-        frontLeftDrive = hardwareMap.get(DcMotor.class, RobotConstants.left_front_drive_motor_name);
-        frontRightDrive = hardwareMap.get(DcMotor.class, RobotConstants.right_front_drive_motor_name);
-        backLeftDrive = hardwareMap.get(DcMotor.class, RobotConstants.left_back_drive_motor_name);
-        backRightDrive = hardwareMap.get(DcMotor.class, RobotConstants.right_back_drive_motor_name);
+        frontLeftDrive = hardwareMap.get(DcMotor.class, RobotConfig.left_front_drive_motor_name);
+        frontRightDrive = hardwareMap.get(DcMotor.class, RobotConfig.right_front_drive_motor_name);
+        backLeftDrive = hardwareMap.get(DcMotor.class, RobotConfig.left_back_drive_motor_name);
+        backRightDrive = hardwareMap.get(DcMotor.class, RobotConfig.right_back_drive_motor_name);
 
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.

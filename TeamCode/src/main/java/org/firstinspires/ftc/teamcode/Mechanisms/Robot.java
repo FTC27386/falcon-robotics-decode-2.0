@@ -10,77 +10,44 @@ public class Robot {
     LiftSystem l;
     VisionSystem v;
 
-
+    public VisionSystem getV() { return v; }
+    public DrivetrainSystem getD() {
+        return d;
+    }
     public ShooterSystem getS() {
         return s;
     }
-
     public IntakeSystem getI() {
         return i;
-    }
-
-    public DrivetrainSystem getD() {
-        return d;
     }
     public LiftSystem getL() {
         return l;
     }
-    public VisionSystem getV() { return v; }
+
 
     public Robot(final HardwareMap hmap) {
+        v = new VisionSystem(hmap);
+        d = new DrivetrainSystem(hmap);
         s = new ShooterSystem(hmap);
         i = new IntakeSystem(hmap);
-        d = new DrivetrainSystem(hmap);
         l = new LiftSystem(hmap);
-        v = new VisionSystem(hmap);
+
         for (LynxModule mod : hmap.getAll(LynxModule.class)) {
             mod.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
     }
 
     public void periodic() {
-        i.periodic();
-        s.periodic();
-        d.periodic();
-        l.periodic();
         v.periodic();
+        d.periodic();
+        s.periodic();
+        i.periodic();
+        l.periodic();
     }
 
     public void setShooterValues() {
-        s.setSpeed(d.getSpeed());
+        s.setFlywheelSpeed(d.getFlywheel());
         s.setHoodAngle(d.getHood());
-        s.setTurretPosition(d.getAim());
-    }
-
-    public void setManualShooterValues(double speed, double hood) {
-        s.setSpeed(speed);
-        s.setHoodAngle(hood);
-        s.setTurretPosition(d.getAim());
-    }
-
-    public void setAutoValuesBlue() {
-        s.setSpeed(-1620);
-        s.setHoodAngle(0.24);
-        s.setTurretPosition(48);
-    }
-    public void setAutoValuesRed() {
-        s.setSpeed(-1620);
-        s.setHoodAngle(0.24);
-        //75
-        s.setTurretPosition(-48.75);
-    }
-    public void setAutoValuesFarZoneBlue() {
-        s.setSpeed(-2200);
-        s.setHoodAngle(.95);
-        s.setTurretPosition(67.3);
-    }
-    public void setAutoValuesFarZoneRed() {
-        s.setSpeed(-2200);
-        s.setHoodAngle(.95);
-        s.setTurretPosition(-67.3);
-    }
-
-    public void sortShot() {
-
+        s.setTurretPosition(d.getTurret());
     }
 }

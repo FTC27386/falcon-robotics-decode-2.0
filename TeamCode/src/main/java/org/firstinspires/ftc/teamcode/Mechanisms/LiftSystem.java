@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.controller.PIDController;
 
-import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
+import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 
 public class LiftSystem extends SubsystemBase {
 
@@ -20,10 +20,10 @@ public class LiftSystem extends SubsystemBase {
     int total_offset = 0;
 
     public LiftSystem(HardwareMap hmap) {
-        motor_controller = new PIDController(RobotConstants.lift_kP, 0, RobotConstants.lift_kD);
+        motor_controller = new PIDController(RobotConfig.lift_kP, 0, RobotConfig.lift_kD);
         motor_controller.setSetPoint(0);
-        lift_motor = hmap.get(DcMotor.class, RobotConstants.lift_motor_name);
-        latch = hmap.get(Servo.class, RobotConstants.lift_servo_name);
+        lift_motor = hmap.get(DcMotor.class, RobotConfig.lift_motor_name);
+        latch = hmap.get(Servo.class, RobotConfig.lift_servo_name);
         latch.setDirection(Servo.Direction.REVERSE);
         lift_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -39,7 +39,7 @@ public class LiftSystem extends SubsystemBase {
             currentPos = lift_motor.getCurrentPosition();
             power = activated ?
                     motor_controller.calculate(currentPos, lift_target+total_offset) : 0;
-            lift_motor.setPower(power + RobotConstants.lift_kF);
+            lift_motor.setPower(power + RobotConfig.lift_kF);
         }
     }
 
@@ -47,16 +47,8 @@ public class LiftSystem extends SubsystemBase {
         this.activated = activated;
     }
 
-    public void unlatch() {
-        latch.setPosition(RobotConstants.latch_open_pos);
-    }
-
-    public void latch() {
-        latch.setPosition(RobotConstants.latch_close_pos);
-    }
-
     public void down() {
-        lift_target = RobotConstants.top_climb_position;
+        lift_target = RobotConfig.top_climb_position;
     }
 
     public double getPIDResponse() {

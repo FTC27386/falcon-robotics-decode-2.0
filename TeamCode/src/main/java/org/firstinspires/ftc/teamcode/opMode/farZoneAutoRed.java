@@ -8,14 +8,14 @@ import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.autoFarShotRed;
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.PathsMirrored;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
-import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
+import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name = "Far Auto Red")
@@ -38,9 +38,9 @@ public class farZoneAutoRed extends CommandOpMode {
 
         schedule(
                 new SequentialCommandGroup(
-                        new InstantCommand(()-> r.setAutoValuesRed()),
+                        new InstantCommand(()-> r.setShooterValues()),
                         new followPath(r, mirroredPaths.farAutoStartPath),
-                        new autoFarShotRed(r),
+                        new BOPBOPBOP(r),
                         new runIntake(r),
                         new followPath(r, mirroredPaths.prepareIntakeHPZonePath),
                         new followPathSlow(r, mirroredPaths.intakeHPZonePath),
@@ -51,7 +51,7 @@ public class farZoneAutoRed extends CommandOpMode {
                                         new idleIntake(r)
                                 )
                         ),
-                        new autoFarShotRed(r),
+                        new BOPBOPBOP(r),
                         new followPath(r, mirroredPaths.farLeavePath)
                 )
         );
@@ -60,8 +60,8 @@ public class farZoneAutoRed extends CommandOpMode {
     public void run()
     {
         super.run();
-        RobotConstants.setCurrent_color(RobotConstants.ALLIANCE_COLOR.RED);
-        RobotConstants.setAutoEndPose(r.getD().getCurrentPose());
+        RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.RED);
+        RobotConfig.setAutoEndPose(r.getD().getCurrentPose());
         telemetry.addData("turretPose",r.getS().getTurretPosition());
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());
         telemetry.addData("robot Y", r.getD().getCurrentPose().getY());

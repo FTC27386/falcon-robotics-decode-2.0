@@ -14,7 +14,6 @@ public class runIntake extends CommandBase {
 
     @Override
     public void initialize() {
-        robot.getI().close();
         robot.getI().intake();
         addRequirements(robot.getI());
     }

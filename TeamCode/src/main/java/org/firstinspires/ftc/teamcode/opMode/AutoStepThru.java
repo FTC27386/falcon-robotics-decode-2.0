@@ -13,10 +13,10 @@ import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.goToLiftPose;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.defaultDrive;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeTimed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
@@ -64,40 +64,35 @@ public class AutoStepThru extends CommandOpMode {
         climb.whenPressed(new goToLiftPose(r, paths.park));
         intake.whenPressed(new runIntakeTimed(r, 2000));
         relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc(new Pose(8, 8, Math.toRadians(90)))));
-        changeTarget.whenPressed(new InstantCommand(() -> r.getD().relocTargetPose(
-                new Pose(
-                        r.getD().getCurrentPose().getX() - 12
-                        , r.getD().getCurrentPose().getY() + 12
-                        , Math.toRadians(90)
-                ))));
+
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
-        schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getAim())));
-        shoot.whenPressed(new magDump(r));
+        schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getTurret())));
+        shoot.whenPressed(new BOPBOPBOP(r));
         AutoCommands = new Command[]{
                 new InstantCommand(() -> r.setShooterValues()),
-                new InstantCommand(() -> r.getI().close()),
+                new InstantCommand(() -> r.getS().setGate(false)),
                 new followPath(r, paths.closeAutoStartPath),
-                new magDump(r),
+                new BOPBOPBOP(r),
                 new runIntake(r),
                 new InstantCommand(() -> r.setShooterValues()),
                 new followPath( r, paths.intakeFirstRowPath), //intake 1st line
                 new idleIntake(r),
                 new followPath(r, paths.returnFromTopRowPath), //return to shoot point
-                new magDump(r),
+                new BOPBOPBOP(r),
                 new followPath(r, paths.prepareIntakeMiddleRowPath),
                 new runIntake(r),
                 new InstantCommand(() -> r.setShooterValues()),
                 new followPath(r, paths.intakeMiddleRowPath),
                 new idleIntake(r),
                 new followPath(r, paths.returnFromMiddleRowPath),
-                new magDump(r),
+                new BOPBOPBOP(r),
                 new followPath(r, paths.prepareIntakeBottomRowPath),
                 new runIntake(r),
                 new InstantCommand(() -> r.setShooterValues()),
                 new followPath(r, paths.intakeBottomRowPath),
                 new idleIntake(r),
                 new followPath(r, paths.returnFromBottomRowPath),
-                new magDump(r),
+                new BOPBOPBOP(r),
                 new followPath(r, paths.goToGatePath)
         };
 
@@ -121,10 +116,10 @@ public class AutoStepThru extends CommandOpMode {
         index = clamp(index, 0, AutoCommands.length);
 
 
-        telemetry.addData("x:", r.getD().x);
-        telemetry.addData("y:", r.getD().y);
+        telemetry.addData("x:", r.getD().getCurrentPose().getX());
+        telemetry.addData("y:", r.getD().getCurrentPose().getY());
         telemetry.addData("heading", r.getD().getCurrentPose().getHeading());
-        telemetry.addData("adjustment", r.getD().getAim());
+        telemetry.addData("turret", r.getD().getTurret());
         telemetry.addData("flywheel target velocity", r.getS().getSpeedControl().getSetPoint());
         telemetry.addData("flywheel error", r.getS().getSpeedControl().getPositionError());
         telemetry.addData("flywheel speed", r.getS().getCurrentSpeed());

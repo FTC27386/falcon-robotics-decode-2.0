@@ -6,17 +6,18 @@ import com.seattlesolvers.solverslib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 
-public class zonelessPulseGate extends SequentialCommandGroup {
+public class pulseGateOverride extends SequentialCommandGroup {
     Robot r;
     int delay;
 
-    public zonelessPulseGate(Robot r, int delay) {
+    public pulseGateOverride(Robot r, int delay) {
         this.r = r;
         this.delay = delay;
-        addRequirements(r.getI());
+        addRequirements(r.getS());
         addCommands(
+                new InstantCommand(() -> r.getS().setGate(true)),
                 new WaitCommand(delay),
-                new InstantCommand(() -> r.getI().close()),
+                new InstantCommand(() -> r.getS().setGate(false)),
                 new WaitCommand(200)
         );
     }

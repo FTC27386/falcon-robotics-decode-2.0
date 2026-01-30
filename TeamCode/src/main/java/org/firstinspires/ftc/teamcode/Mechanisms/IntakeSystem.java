@@ -5,64 +5,35 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
-import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
+import org.firstinspires.ftc.teamcode.Utility.IntakeConfig;
+import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 
 public class IntakeSystem extends SubsystemBase {
     DcMotor intakeMotor;
-    Servo gate;
-    Servo pivot;
-    double targetpower,
-            gatePosition = RobotConstants.transfer_open_pos,
-            pivotPosition = RobotConstants.pivot_down_pos;
+    double targetPower;
 
     public IntakeSystem(HardwareMap hMap) {
-        pivot = hMap.get(Servo.class, RobotConstants.intake_servo_name);
-        gate = hMap.get(Servo.class, RobotConstants.transfer_servo_name);
-        intakeMotor = hMap.get(DcMotor.class, RobotConstants.intake_motor_name);
+        intakeMotor = hMap.get(DcMotor.class, RobotConfig.intake_motor_name);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    }
-
-    public void close() {
-        gatePosition = (RobotConstants.transfer_closed_pos);
-    }
-
-    public void open() {
-        gatePosition = (RobotConstants.transfer_open_pos);
-    }
-
-    public void toggle(boolean x) {
-        if (x) {
-            open();
-        }
-        else {
-            close();
-        }
-    }
-
-    public void intake() {
-        targetpower = -1;
-    }
-
-    public void idleIntake() {
-        targetpower = -0.2;
-    } // Passively run intake
-    public void stopIntake()
-    {
-        targetpower = 0;
-    }
-    public void outtake() {
-        targetpower = 1;
     }
 
     @Override
     public void periodic() {
-        intakeMotor.setPower(targetpower);
-        gate.setPosition(gatePosition);
-        pivot.setPosition(pivotPosition);
+        intakeMotor.setPower(targetPower);
     }
 
-    public void stow() {
-        pivotPosition = (RobotConstants.pivot_up_pos);
+    public void intake() {
+        targetPower = -1;
     }
-    public void deploy() {pivotPosition=(RobotConstants.pivot_down_pos);}
+    public void outtake() {
+        targetPower = 1;
+    }
+    public void idleIntake() {
+        targetPower = -0.2;
+    } // Passively run intake
+    public void stopIntake()
+    {
+        targetPower = 0;
+    }
+
 }

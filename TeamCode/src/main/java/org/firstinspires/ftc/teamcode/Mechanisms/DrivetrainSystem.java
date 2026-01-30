@@ -1,193 +1,113 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
-import static androidx.core.math.MathUtils.clamp;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.GOAL_POS_BLUE;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.GOAL_POS_RED;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.HOOD_MAX_ANGLE;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.HOOD_MIN_ANGLE;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.PASS_THROUGH_POINT_RADIUS;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.SCORE_ANGLE;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConstants.SCORE_HEIGHT;
-import static org.firstinspires.ftc.teamcode.opMode.teleOp.num;
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.Vector;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
-import com.seattlesolvers.solverslib.util.InterpLUT;
 
-import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
+import org.firstinspires.ftc.teamcode.Utility.FieldConfig;
+import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.Utility.UtilMethods;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-import java.util.function.Supplier;
-
 public class DrivetrainSystem extends SubsystemBase {
-    public Pose
-            currentPose = new Pose(0, 0, Math.toRadians(90)),
-            calculatedPose,
-            realTurretPose = new Pose(0,0),
-            goalPose,
-            targetPose;
     public Follower follower;
-    private final InterpLUT LUT1 = new InterpLUT();
-    private final InterpLUT LUT2 = new InterpLUT();
-    private final InterpLUT LUT3 = new InterpLUT();
-    public boolean shooterOff = false;
-
-    public double
-            x,
-            y,
-            distance,
-            distanceX,
-            distanceY,
-            dist,
-            heading,
-            unnormalizedHeading,
-            field_angle,
-            hoodAngle,
-            turretVelCompOffset,
-            flywheelSpeed,
-            other_distance;
-    public Supplier<Pose> poseSupplier = this::getCurrentPose;
-    boolean robotCentricDrive = false;
+    private Pose currentPose = new Pose(0, 0, Math.toRadians(90));
+    private Pose realTurretPose = new Pose(0, 0);
+    private Pose targetPose;
+    private double x;
+    private double y;
+    ShooterSetpoint setpoint = new ShooterSetpoint(0, 0, 0, false);
 
     public DrivetrainSystem(HardwareMap hMap) {
         follower = Constants.createFollower(hMap);
-        follower.setStartingPose(RobotConstants.autoEndPose == null ? new Pose(8, 8, Math.toRadians(90)) : RobotConstants.autoEndPose);
+        follower.setStartingPose(RobotConfig.autoEndPose == null ? new Pose(8, 8, Math.toRadians(90)) : RobotConfig.autoEndPose);
         follower.update();
-        if (RobotConstants.current_color == null || RobotConstants.current_color == RobotConstants.ALLIANCE_COLOR.BLUE) {
-            targetPose = new Pose(0, 144);
-            goalPose = GOAL_POS_BLUE;
-        } else {
-            targetPose = new Pose(144, 144);
-            goalPose = GOAL_POS_RED;
+
+        if (RobotConfig.current_color == null) {
+            RobotConfig.current_color = RobotConfig.ALLIANCE_COLOR.BLUE;
         }
 
-        //-1400
-        LUT1.add(45.00, 0.2);
-        LUT1.add(55.00, 0.25);
-        LUT1.add(65.00, 0.4);
-        LUT1.createLUT();
-
-        //-1500
-        LUT2.add(65.00, 0.25);
-        LUT2.add(75.00, 0.35);
-        LUT2.add(85.00, 0.4);
-        LUT2.createLUT();
-
-        //-1600
-        LUT3.add(85.00, 0.3);
-        LUT3.add(90.00, 0.25);
-        LUT3.add(95.70, 0.3);
-        LUT3.createLUT();
+        this.targetPose = RobotConfig.current_color == RobotConfig.ALLIANCE_COLOR.BLUE
+                ? FieldConfig.TARGET_POS_BLUE.copy()
+                : FieldConfig.TARGET_POS_RED.copy();
     }
 
     @Override
     public void periodic() {
         follower.update();
         currentPose = follower.getPose();
-        calculatedPose = getPredictedPose(num);
-        realTurretPose = computeOffset(calculatedPose, RobotConstants.turret_offset_inches);
+        realTurretPose = computeOffset(currentPose, RobotConfig.turret_offset_inches); // get turret pose in robot coordinates
 
-        x = currentPose.getX();
-        y = currentPose.getY();
+        x = currentPose.getX(); // robot x position
+        y = currentPose.getY(); // robot y position
 
-        distanceX = targetPose.getX() - realTurretPose.getX();
-        distanceY = targetPose.getY() - realTurretPose.getY();
+        Pose shiftedTargetPose = getShiftedTargetPose(targetPose, realTurretPose, follower.getVelocity());
+        updateShooterSetpoint(targetPose, realTurretPose);
 
-        heading = currentPose.getHeading();
-        unnormalizedHeading = follower.getTotalHeading();
-        calculateShotVectorAndUpdateTurret();
-    }
-    public void calculateShotVectorAndUpdateTurret() {
-
-        final double g = 32.174 * 12;     // gravity (in/s^2)
-        double distance = realTurretPose.distanceFrom(goalPose);
-
-        double dx = goalPose.getX() - realTurretPose.getX();
-        double dz = goalPose.getY() - realTurretPose.getY();
-
-        double field_angle = Math.atan2(dz, dx);
-        Vector robotToGoalVector = new Vector(distance, field_angle);
-
-        // effective horizontal distance from release point
-        double x_point = distance - PASS_THROUGH_POINT_RADIUS; //stationary pass-through horizontal distance (in)
-
-        // vertical displacement (can be positive or negative)
-        double y_point = SCORE_HEIGHT; // pass-through height (in)
-
-        double a = SCORE_ANGLE; // radians
-
-        hoodAngle = Math.atan(2.0 * y_point / x_point - Math.tan(a));
-
-        double den1 =
-                2.0 * Math.pow(Math.cos(hoodAngle), 2)
-                        * (x_point * Math.tan(hoodAngle) - y_point);
-
-        if (den1 <= 0) return;
-
-        flywheelSpeed = Math.sqrt(g * x_point * x_point / den1);
-
-        // ---------- robot velocity ----------
-        Vector robotVelocity = follower.getVelocity();
-
-        double coordinateTheta =
-                robotVelocity.getTheta() - robotToGoalVector.getTheta();
-
-        double vrr =
-                -Math.cos(coordinateTheta) * robotVelocity.getMagnitude();
-        // robot radial velocity (toward/away from goal) (in/s)
-
-        double vrt =
-                Math.sin(coordinateTheta) * robotVelocity.getMagnitude();
-        // robot tangential velocity (sideways) (in/s)
-
-        // ---------- velocity compensation ----------
-        double vx = flywheelSpeed * Math.cos(hoodAngle);  // horizontal component
-        double vz  = flywheelSpeed * Math.sin(hoodAngle); // vertical component
-        double time = x_point / vx;                       // time to reach x using stationary solution
-
-        double ivr = vx + vrr; // Add robot radial velocity (field-plane forward direction) to horizontal component
-
-        double nvr = Math.hypot(ivr, vrt); // Combine forward and sideways robot motion to get total horizontal speed
-        double ndr = nvr * time;           // Convert total horizontal speed into an effective horizontal distance
-                                           // as though the projectile problem only cares about the length of the horizontal path
-
-        // New launch angle using total horizontal speed and old vertical component
-        // Holding vertical velocity constant naturally damps hood adjustment
-        hoodAngle = Math.atan2(vz, nvr);
-
-        double den2 = // Denominator for compensated launch speed
-                2.0 * Math.pow(Math.cos(hoodAngle), 2)
-                        * (ndr * Math.tan(hoodAngle) - y_point);
-
-        if (den2 <= 0) return;
-        // New (compensated) launch speed
-        flywheelSpeed =
-                Math.sqrt(g * ndr * ndr / den2);
-
-        // Turret lead
-        turretVelCompOffset = Math.atan2(vrt, ivr);
     }
 
-    public double getDist() { return follower.getPose().distanceFrom(targetPose); }
-    public double getAim() { //calculate adjusted turret angle in degrees
-        return turretVelCompOffset;
+    private Pose getShiftedTargetPose(Pose baseTarget, Pose releasePose, Vector robotVelocity) {
+        double dist = releasePose.distanceFrom(baseTarget);
+        double time = ShooterLUTs.getTOF(dist);
+
+        double shiftX = robotVelocity.getXComponent() * time;
+        double shiftY = robotVelocity.getYComponent() * time;
+        return new Pose(baseTarget.getX() + shiftX, baseTarget.getY() + shiftY);
+    }
+
+    private void updateShooterSetpoint(Pose shotTarget, Pose releasePose) {
+        double dist = releasePose.distanceFrom(shotTarget);
+
+        double hood = ShooterLUTs.getHood(dist);
+        double flywheel = ShooterLUTs.getFlywheel(dist);
+
+        double distanceX = shotTarget.getX() - releasePose.getX();
+        double distanceY = shotTarget.getY() - releasePose.getY();
+
+        double unnormalizedHeading = follower.getTotalHeading();
+        double field_angle = (90 - Math.toDegrees(Math.atan2(distanceY, distanceX)));
+        double turret = -UtilMethods.AngleDifference(Math.toDegrees(unnormalizedHeading), 0) + field_angle;
+
+        setpoint.hood = hood;
+        setpoint.flywheel = flywheel;
+        setpoint.turret = turret;
+        setpoint.inRange = ShooterLUTs.inRange(dist);
+    }
+
+    public static final class ShooterSetpoint {
+        double flywheel; // servo ticks per second
+        double hood;     // servo position
+        double turret;   // motor position
+        boolean inRange; // shot is valid
+
+        public ShooterSetpoint(double flywheel, double hood, double turret, boolean inRange) {
+            this.flywheel = flywheel;
+            this.hood = hood;
+            this.turret = turret;
+            this.inRange = inRange;
+        }
+    }
+
+    public double getDist() {
+        return realTurretPose.distanceFrom(targetPose);
     }
 
     public double getHood() {
-        return hoodAngle;
+        return setpoint.hood;
     }
 
-    public double getSpeed() {
-        return flywheelSpeed;
+    public double getFlywheel() {
+        return setpoint.flywheel;
     }
 
-    public void toggleShooter()
-    {
-        shooterOff = !shooterOff;
+    public double getTurret() {
+        return setpoint.turret;
+    }
+
+    public boolean shotAllowed() {
+        return setpoint.inRange && (inCloseZone() || inFarZone());
     }
 
     public void teleOpDrive(double axial, double lateral, double yaw) {
@@ -197,28 +117,12 @@ public class DrivetrainSystem extends SubsystemBase {
                 -yaw,
                 true);
     }
-    public Pose computeOffset(Pose pose, double offset)
-    {
+
+    public Pose computeOffset(Pose pose, double offset) {
         double heading = pose.getHeading();
         double NewX = pose.getX() + Math.cos(heading) * offset;
         double NewY = pose.getY() + Math.sin(heading) * offset;
         return new Pose(NewX, NewY);
-    }
-    public Pose getPredictedPose(double secondsInFuture) {
-        // 1. Get current state
-        Pose currentPose = follower.getPose();
-        Vector currentVel = follower.getVelocity(); // Field-centric velocity
-
-        // 2. Calculate displacement (Velocity * Time)
-        double deltaX = currentVel.getXComponent() * secondsInFuture;
-        double deltaY = currentVel.getYComponent() * secondsInFuture;
-
-        // 3. Return the predicted position
-        return new Pose(
-                currentPose.getX() + deltaX,
-                currentPose.getY() + deltaY,
-                currentPose.getHeading() // Heading could change
-        );
     }
 
     public void reloc(Pose reloc) {
@@ -226,23 +130,18 @@ public class DrivetrainSystem extends SubsystemBase {
     }
 
     public Pose getCurrentPose() {
-        return currentPose;
+        return currentPose.copy();
     }
 
     public Pose getTargetPose() {
-        return targetPose;
-    }
-
-    public void relocTargetPose(Pose reloc) {
-        targetPose = reloc;
+        return targetPose.copy();
     }
 
     public boolean inCloseZone() {
-        //return (y > Math.abs(x - 72) + 72 - zone_buffer);
-        return true;
+        return (y > Math.abs(x - 72) + 72 - FieldConfig.ZONE_BUFFER);
     }
+
     public boolean inFarZone() {
-        //return (y < -Math.abs(x - 72) + 24 + zone_buffer);
-        return true;
+        return (y < -Math.abs(x - 72) + 24 + FieldConfig.ZONE_BUFFER);
     }
 }
