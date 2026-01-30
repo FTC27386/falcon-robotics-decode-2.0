@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
+import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 
 @Configurable
 public class Constants {
@@ -47,10 +47,10 @@ public class Constants {
 
 
     public static MecanumConstants driveConstants = new MecanumConstants()
-            .rightFrontMotorName(RobotConstants.right_front_drive_motor_name)
-            .leftFrontMotorName(RobotConstants.left_front_drive_motor_name)
-            .rightRearMotorName(RobotConstants.right_back_drive_motor_name)
-            .leftRearMotorName(RobotConstants.left_back_drive_motor_name)
+            .rightFrontMotorName(RobotConfig.right_front_drive_motor_name)
+            .leftFrontMotorName(RobotConfig.left_front_drive_motor_name)
+            .rightRearMotorName(RobotConfig.right_back_drive_motor_name)
+            .leftRearMotorName(RobotConfig.left_back_drive_motor_name)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)

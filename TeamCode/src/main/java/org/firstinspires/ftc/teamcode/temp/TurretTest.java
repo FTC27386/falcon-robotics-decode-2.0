@@ -32,12 +32,9 @@ import static androidx.core.math.MathUtils.clamp;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.FLOAT;
 
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -46,11 +43,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.seattlesolvers.solverslib.util.InterpLUT;
 
-import org.firstinspires.ftc.robotcore.external.Const;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
+import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 /*
@@ -118,8 +111,8 @@ public class TurretTest extends OpMode {
         MAX_ANGLE = 1;
         MIN_ANGLE = 0;
 
-        leftTurretServo = hardwareMap.get(Servo.class, RobotConstants.left_turret_servo_name);
-        rightTurretServo = hardwareMap.get(Servo.class, RobotConstants.right_turret_servo_name);
+        leftTurretServo = hardwareMap.get(Servo.class, RobotConfig.left_turret_servo_name);
+        rightTurretServo = hardwareMap.get(Servo.class, RobotConfig.right_turret_servo_name);
         blockerServo = hardwareMap.get(Servo.class, "blocker");
 
         leftTurretServo.setDirection(Servo.Direction.FORWARD);
@@ -130,8 +123,8 @@ public class TurretTest extends OpMode {
 
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
-        flywheel1 = hardwareMap.get(DcMotor.class, RobotConstants.first_shooter_motor_name);
-        flywheel2 = hardwareMap.get(DcMotor.class, RobotConstants.second_shooter_motor_name);
+        flywheel1 = hardwareMap.get(DcMotor.class, RobotConfig.first_shooter_motor_name);
+        flywheel2 = hardwareMap.get(DcMotor.class, RobotConfig.second_shooter_motor_name);
         hood = hardwareMap.get(Servo.class, "hood");
 
         intake.setDirection(DcMotor.Direction.REVERSE);

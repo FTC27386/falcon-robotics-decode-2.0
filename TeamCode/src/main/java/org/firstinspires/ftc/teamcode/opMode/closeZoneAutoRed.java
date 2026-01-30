@@ -10,7 +10,6 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.autoCloseShotRed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
@@ -18,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.PathsMirrored;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
-import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
+import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name="Close Auto Red")
@@ -31,7 +30,7 @@ public class closeZoneAutoRed extends CommandOpMode {
     public void initialize()
     {
         super.reset();
-        RobotConstants.setCurrent_color(RobotConstants.ALLIANCE_COLOR.RED);
+        RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.RED);
         r = new Robot(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(PathsMirrored.startingPose);
@@ -39,10 +38,10 @@ public class closeZoneAutoRed extends CommandOpMode {
         paths = new PathsMirrored(follower);
         register(r.getS(), r.getI());
         schedule(new RunCommand(()->r.setShooterValues()));
-        schedule(new InstantCommand(()->r.getS().setSpeed(-1570)));
+        schedule(new InstantCommand(()->r.getS().setFlywheelSpeed(-1570)));
         schedule(
                 new SequentialCommandGroup(
-                        new InstantCommand(()-> r.getI().close()),
+                        new InstantCommand(()-> r.getS().setGate(false)),
                         new followPath(r, paths.closeAutoStartPath),
                         new BOPBOPBOP(r),
                         new runIntakeReverseTimed(r, 100),
@@ -88,7 +87,7 @@ public class closeZoneAutoRed extends CommandOpMode {
     public void run()
     {
         super.run();
-        RobotConstants.setAutoEndPose(r.getD().getCurrentPose());
+        RobotConfig.setAutoEndPose(r.getD().getCurrentPose());
         telemetry.addData("turretPose",r.getS().getTurretPosition());
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());
         telemetry.addData("robot Y", r.getD().getCurrentPose().getY());

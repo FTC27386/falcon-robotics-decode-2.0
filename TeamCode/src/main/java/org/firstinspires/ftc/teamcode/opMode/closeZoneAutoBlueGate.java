@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
-import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
+import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name="Close Auto Blue with Gate")
@@ -30,7 +30,7 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
     public void initialize()
     {
         super.reset();
-        RobotConstants.setCurrent_color(RobotConstants.ALLIANCE_COLOR.BLUE);
+        RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.BLUE);
         r = new Robot(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(Paths.startingPose);
@@ -38,10 +38,10 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
         paths = new Paths(follower);
         register(r.getS(), r.getI());
         schedule(new RunCommand(()->r.setShooterValues()));
-        schedule(new InstantCommand(()->r.getS().setSpeed(-1570)));
+        schedule(new InstantCommand(()->r.getS().setFlywheelSpeed(-1570)));
         schedule(
                 new SequentialCommandGroup(
-                        new InstantCommand(()-> r.getI().close()),
+                        new InstantCommand(()-> r.getS().setGate(false)),
                         new followPath(r, paths.closeAutoStartPath),
                         new BOPBOPBOP(r),
                         new runIntakeReverseTimed(r, 100),
@@ -88,7 +88,7 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
     public void run()
     {
         super.run();
-        RobotConstants.setAutoEndPose(r.getD().getCurrentPose());
+        RobotConfig.setAutoEndPose(r.getD().getCurrentPose());
         telemetry.addData("turretPose",r.getS().getTurretPosition());
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());
         telemetry.addData("robot Y", r.getD().getCurrentPose().getY());

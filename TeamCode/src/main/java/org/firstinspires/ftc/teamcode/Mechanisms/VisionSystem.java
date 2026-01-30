@@ -1,21 +1,14 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
 import com.pedropathing.geometry.Pose;
-import com.qualcomm.hardware.limelightvision.LLFieldMap;
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.Utility.RobotConstants;
-
-import java.util.List;
+import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 
 public class VisionSystem extends SubsystemBase {
 
@@ -25,7 +18,7 @@ public class VisionSystem extends SubsystemBase {
 
 
     public VisionSystem(final HardwareMap hMap) {
-        limelight = hMap.get(Limelight3A.class, RobotConstants.limelight_name);
+        limelight = hMap.get(Limelight3A.class, RobotConfig.limelight_name);
         limelight.setPollRateHz(100); // This sets how often we ask Limelight for data (100 times per second)
         limelight.pipelineSwitch(0);
         limelight.start(); // This tells Limelight to start looking!

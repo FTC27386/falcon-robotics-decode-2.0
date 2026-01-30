@@ -22,7 +22,7 @@ public class preShootSequence extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return robot.getS().atSpeed();
+        return robot.getS().atFlywheelSpeed();
     }
 
 }
