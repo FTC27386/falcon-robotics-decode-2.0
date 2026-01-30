@@ -20,7 +20,6 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Commands.defaultDrive;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeTimed;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.zeroTurret;
 import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
 import org.firstinspires.ftc.teamcode.Mechanisms.PathsMirrored;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
@@ -97,7 +96,7 @@ public class teleOp extends CommandOpMode {
                        ,Math.toRadians(90)
                ))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
-        schedule(new RunCommand(() -> r.getS().setTurretSetPoint(r.getD().getAim())));
+        schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getAim())));
         schedule(new RunCommand(() -> r.getS().setHoodAngle(r.getD().getHood())));
         //schedule(new RunCommand(() -> r.getS().setSpeed(r.getD().getSpeed())));
         //schedule(new RunCommand(() -> r.getV().startLimelight(telemetry)));
@@ -112,8 +111,6 @@ public class teleOp extends CommandOpMode {
                 new InstantCommand(()->r.getI().stopIntake())));
         increaseOffset.whenPressed(new InstantCommand(()->r.getS().nudgeOffset(-4)));
         decreaseOffset.whenPressed(new InstantCommand(()->r.getS().nudgeOffset(4)));
-
-        schedule(new zeroTurret(r));
     }
 
     @Override
