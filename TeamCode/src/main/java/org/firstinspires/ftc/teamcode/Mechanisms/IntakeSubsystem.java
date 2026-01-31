@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
@@ -13,6 +14,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public IntakeSubsystem(HardwareMap hMap) {
         intakeMotor = hMap.get(DcMotor.class, RobotConfig.intake_motor_name);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override

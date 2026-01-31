@@ -8,8 +8,6 @@ public class ShooterConfig {
     public static final double HOOD_MAX_POSITION = 0.57633333333;
     public static final double FLYWHEEL_MIN_SPEED = 0;
     public static final double FLYWHEEL_MAX_SPEED = 2200;
-    public static final double GATE_CLOSED_POS = 0.5;
-    public static final double GATE_OPEN_POS = .25;
     public static double shooter_tolerance = 30;
     public static double shooter_kP = -0.004;
     public static double shooter_kD = 0.00000000;

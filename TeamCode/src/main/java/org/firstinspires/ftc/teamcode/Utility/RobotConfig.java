@@ -32,9 +32,9 @@ public class RobotConfig {
     public static String right_back_drive_motor_name = "back_right_drive";
     public static String transfer_servo_name = "blocker";
     public static String camera = "Webcam 1";
-    public static String turret_encoder_name = "turret_encoder";
-    public static String lift_motor_name = "lift_motor";
-    public static String lift_servo_name = "latch_servo";
+    public static String left_lift_motor_name = "left_park";
+    public static String right_lift_motor_name = "right_park";
+    public static String turret_motor_name = "turret";
     public static String limelight_name = "limelight";
     public static double vera_coefficient = .4167;
     public static double turret_offset_inches = -0.63696;

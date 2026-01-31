@@ -30,10 +30,6 @@ public class Paths {
     public PathChain openGatePath;
     public PathChain returnFromGatePath;
 
-
-
-
-
     public Paths(Follower follower) {
         openGatePath = follower
                 .pathBuilder()

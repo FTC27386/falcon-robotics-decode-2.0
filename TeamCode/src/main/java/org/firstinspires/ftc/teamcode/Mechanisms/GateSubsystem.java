@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
 import static androidx.core.math.MathUtils.clamp;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.GATE_CLOSED_POS;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.GATE_OPEN_POS;
+import static org.firstinspires.ftc.teamcode.Utility.GateConfig.GATE_CLOSED_POS;
+import static org.firstinspires.ftc.teamcode.Utility.GateConfig.GATE_OPEN_POS;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -18,7 +18,6 @@ public class GateSubsystem extends SubsystemBase {
         gate = hMap.get(Servo.class, RobotConfig.transfer_servo_name);
         gate.setDirection(Servo.Direction.FORWARD);
         gatePosition = GATE_CLOSED_POS;
-
     }
 
     @Override

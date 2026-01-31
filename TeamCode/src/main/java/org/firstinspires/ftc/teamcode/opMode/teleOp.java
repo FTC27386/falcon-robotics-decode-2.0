@@ -45,7 +45,7 @@ public class teleOp extends CommandOpMode {
 
         super.reset();
         r = new Robot(hardwareMap);
-        register(r.getS(), r.getD(), r.getI(), r.getL(), r.getV());
+        register(r.getS(), r.getD(), r.getI(), r.getL());
         driverOp = new GamepadEx(gamepad1);
         driver2Op = new GamepadEx(gamepad2);
         Supplier<Double> leftX = driverOp::getLeftX;

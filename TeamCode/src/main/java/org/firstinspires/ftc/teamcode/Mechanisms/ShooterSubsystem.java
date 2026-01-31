@@ -27,17 +27,17 @@ public class ShooterSubsystem extends SubsystemBase {
     private double flywheelPower;
     private double targetTurretAngle;
     private double hoodPosition;
-    private double flywheelSpeed;
+    public double flywheelSpeed;
 
     public ShooterSubsystem(final HardwareMap hMap) {
         shooter1 = new cachedMotor(hMap.get(DcMotorEx.class, RobotConfig.first_shooter_motor_name),0.06);
         shooter2 = new cachedMotor(hMap.get(DcMotorEx.class, RobotConfig.second_shooter_motor_name),0.06);
-        shooter1.thisMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        shooter2.thisMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        shooter1.thisMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        shooter2.thisMotor.setDirection(DcMotorEx.Direction.REVERSE);
         shooter1.thisMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         shooter2.thisMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        turret = hMap.get(DcMotorEx.class, RobotConfig.left_turret_servo_name);
+        turret = hMap.get(DcMotorEx.class, RobotConfig.turret_motor_name);
         turret.setDirection(DcMotorEx.Direction.FORWARD);
         turret.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         turret.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);

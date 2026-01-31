@@ -127,8 +127,6 @@ public class AutoStepThru extends CommandOpMode {
         telemetry.addData("Hood", r.getD().getHood());
         telemetry.addData("flywheel response", r.getS().getFlywheelSignal());
         telemetry.addData("turret ticks", r.getS().getTargetTurretAngle());
-        telemetry.addData("lift power", r.getL().getPIDResponse());
-        telemetry.addData("lift pose", r.getL().getLiftPose());
         telemetry.addData("Distance", r.getD().getDist());
         telemetry.addData("current step", index);
 

@@ -67,22 +67,13 @@ public class MotorTest extends OpMode {
     Servo hood,
             blocker,
             pivot;
-    private static double x = 0;
-    private static double turretPosition = 0.5;
-    private static double servoOffset = 0;
-    private static double intakePos = 0;
-    private static double hoodPos = 0;
+    public static double x = 0;
 
     @Override
     public void init() {
-        leftTurretServo = hardwareMap.get(Servo.class, RobotConfig.left_turret_servo_name);
-        rightTurretServo = hardwareMap.get(Servo.class, RobotConfig.right_turret_servo_name);
         blocker = hardwareMap.get(Servo.class, RobotConfig.transfer_servo_name);
         hood = hardwareMap.get(Servo.class, RobotConfig.hood_servo_name);
-        intake_raiser = hardwareMap.get(Servo.class, RobotConfig.intake_servo_name);
 
-        leftTurretServo.setDirection(Servo.Direction.FORWARD);
-        rightTurretServo.setDirection(Servo.Direction.FORWARD);
         blocker.setDirection(Servo.Direction.FORWARD);
         hood.setDirection(Servo.Direction.FORWARD);
 
@@ -118,13 +109,7 @@ public class MotorTest extends OpMode {
 
     @Override
     public void loop() {
-        if (gamepad1.dpadUpWasPressed()) x+= 0.01;
-        if (gamepad1.dpadDownWasPressed()) x-= 0.01;
-        x = clamp(x, 0, 1);
-        hood.setPosition(x);
-        intake_raiser.setPosition(intakePos);
-        leftTurretServo.setPosition(turretPosition);
-        rightTurretServo.setPosition(turretPosition + servoOffset);
+        blocker.setPosition(x);
         telemetry.addData("x", x);
     }
 }

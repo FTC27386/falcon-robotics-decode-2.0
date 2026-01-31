@@ -1,68 +1,70 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
+import static org.firstinspires.ftc.teamcode.Utility.LiftConfig.LIFT_POWER;
+import static org.firstinspires.ftc.teamcode.Utility.LiftConfig.LIFT_TIME;
+import static org.firstinspires.ftc.teamcode.Utility.LiftConfig.PASSIVE_POWER;
+import static org.firstinspires.ftc.teamcode.Utility.LiftConfig.ZERO_POWER;
+import static org.firstinspires.ftc.teamcode.Utility.LiftConfig.ZERO_TIME;
+
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
-import com.seattlesolvers.solverslib.controller.PIDController;
 
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 
 public class LiftSubsystem extends SubsystemBase {
 
-    DcMotor lift_motor;
-    Servo latch;
-    PIDController motor_controller;
+    CRServo leftLiftServo;
+    CRServo rightLiftServo;
     double power;
-    int currentPos;
-    boolean activated = false;
-    double lift_target = 0;
-    int total_offset = 0;
+    boolean runningTimed = false;
+    boolean lift = false;
+    double timedPower = -0.1;
+    double timedMs = 1000;
+    ElapsedTime timer = new ElapsedTime();
 
     public LiftSubsystem(HardwareMap hmap) {
-        motor_controller = new PIDController(RobotConfig.lift_kP, 0, RobotConfig.lift_kD);
-        motor_controller.setSetPoint(0);
-        lift_motor = hmap.get(DcMotor.class, RobotConfig.lift_motor_name);
-        latch = hmap.get(Servo.class, RobotConfig.lift_servo_name);
-        latch.setDirection(Servo.Direction.REVERSE);
-        lift_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    }
-
-    public double getLiftPose() {
-        return currentPos;
+        leftLiftServo = hmap.get(CRServo.class, RobotConfig.left_lift_motor_name);
+        rightLiftServo = hmap.get(CRServo.class, RobotConfig.right_lift_motor_name);
+        leftLiftServo.setDirection(CRServo.Direction.REVERSE);
+        rightLiftServo.setDirection(CRServo.Direction.FORWARD);
+        zero();
     }
 
     @Override
     public void periodic() {
-        if (activated) {
-            currentPos = lift_motor.getCurrentPosition();
-            power = activated ?
-                    motor_controller.calculate(currentPos, lift_target+total_offset) : 0;
-            lift_motor.setPower(power + RobotConfig.lift_kF);
+        if (runningTimed) {
+            if (timer.milliseconds() >= timedMs) {
+                if (lift) {
+                    power = PASSIVE_POWER;
+                }
+                else {
+                    power = 0;
+                }
+                runningTimed = false;
+            }
+            else {
+                power = timedPower;
+            }
         }
+
+        leftLiftServo.setPower(power);
+        rightLiftServo.setPower(power);
     }
 
-    public void setActivated(boolean activated) {
-        this.activated = activated;
+    public void zero() {
+        timer.reset();
+        runningTimed = true;
+        lift = false;
+        timedPower = ZERO_POWER;
+        timedMs = ZERO_TIME;
     }
-
-    public void down() {
-        lift_target = RobotConfig.top_climb_position;
+    public void activate() {
+        timer.reset();
+        runningTimed = true;
+        lift = true;
+        timedPower = LIFT_POWER;
+        timedMs = LIFT_TIME;
     }
-
-    public double getPIDResponse() {
-        return motor_controller.calculate();
-    }
-
-    public void nudgeLift(int offset)
-    {
-        total_offset+=offset;
-    }
-    public void resetOffset()
-    {
-        total_offset = 0;
-    }
-
-
 }
