@@ -7,22 +7,16 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 
 public class preShootSequence extends CommandBase {
 
-    private final Robot robot;
+    private final Robot r;
 
 
-    public preShootSequence(Robot robot) {
-        this.robot = robot;
-        addRequirements(robot.getS());
-    }
-
-    @Override
-    public void initialize() {
-        robot.setShooterValues();
+    public preShootSequence(Robot r) {
+        this.r = r;
     }
 
     @Override
     public boolean isFinished() {
-        return robot.getS().atFlywheelSpeed();
+        return r.getS().readyToFire();
     }
 
 }

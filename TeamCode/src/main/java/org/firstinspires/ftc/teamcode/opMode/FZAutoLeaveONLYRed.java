@@ -27,7 +27,7 @@ public class FZAutoLeaveONLYRed extends CommandOpMode {
         follower.setStartingPose(PathsMirrored.startingPoseFarZone);
         follower.update();
         mirroredPaths = new PathsMirrored(follower);
-        register(r.getS(), r.getI());
+        register(r.getS(), r.getG(), r.getI());
 
         schedule(
                 new SequentialCommandGroup(
@@ -41,7 +41,7 @@ public class FZAutoLeaveONLYRed extends CommandOpMode {
         super.run();
         RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.RED);
         RobotConfig.setAutoEndPose(r.getD().getCurrentPose());
-        telemetry.addData("turretPose",r.getS().getTurretPosition());
+        telemetry.addData("turretPose",r.getS().getTargetTurretAngle());
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());
         telemetry.addData("robot Y", r.getD().getCurrentPose().getY());
         telemetry.addData("robot heading", Math.toDegrees(r.getD().getCurrentPose().getHeading()));

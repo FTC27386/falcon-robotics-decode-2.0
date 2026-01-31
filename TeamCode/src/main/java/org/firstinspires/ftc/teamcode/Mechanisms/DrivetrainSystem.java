@@ -66,9 +66,15 @@ public class DrivetrainSystem extends SubsystemBase {
         double distanceX = shotTarget.getX() - releasePose.getX();
         double distanceY = shotTarget.getY() - releasePose.getY();
 
-        double unnormalizedHeading = follower.getTotalHeading();
-        double field_angle = (90 - Math.toDegrees(Math.atan2(distanceY, distanceX)));
-        double turret = -UtilMethods.AngleDifference(Math.toDegrees(unnormalizedHeading), 0) + field_angle;
+        // follower heading assumed radians
+        double heading = follower.getTotalHeading(); // robot heading in field frame (rad)
+
+
+        double fieldAngleRad = Math.atan2(distanceY, distanceX);
+        // direction from robot  goal in field frame (rad)
+
+        double turret = UtilMethods.angleWrapRad(fieldAngleRad - heading);
+        // desired turret angle relative to robot frame (rad)
 
         setpoint.hood = hood;
         setpoint.flywheel = flywheel;

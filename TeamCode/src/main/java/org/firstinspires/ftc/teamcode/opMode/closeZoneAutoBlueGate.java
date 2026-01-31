@@ -9,7 +9,7 @@ import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
@@ -36,14 +36,14 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
         follower.setStartingPose(Paths.startingPose);
         follower.update();
         paths = new Paths(follower);
-        register(r.getS(), r.getI());
+        register(r.getS(), r.getG(), r.getI());
         schedule(new RunCommand(()->r.setShooterValues()));
         schedule(new InstantCommand(()->r.getS().setFlywheelSpeed(-1570)));
         schedule(
                 new SequentialCommandGroup(
-                        new InstantCommand(()-> r.getS().setGate(false)),
+                        new InstantCommand(()-> r.getG().close()),
                         new followPath(r, paths.closeAutoStartPath),
-                        new BOPBOPBOP(r),
+                        new magDump(r),
                         new runIntakeReverseTimed(r, 100),
                         new runIntake(r),
                 new followPathSlow(r, paths.intakeFirstRowPath), //intake 1st line
@@ -55,7 +55,7 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
                                                 new idleIntake(r))
 
                 ),
-                new BOPBOPBOP(r),
+                new magDump(r),
                 new runIntakeReverseTimed(r, 100),
                 new followPath(r, paths.prepareIntakeMiddleRowPath),
                 new runIntake(r),
@@ -67,7 +67,7 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
                                 new WaitCommand(1000),
                                 new idleIntake(r))
                 ),
-                new BOPBOPBOP(r),
+                new magDump(r),
                 new runIntakeReverseTimed(r, 100),
                 /*
                 new followPath(r, paths.prepareIntakeBottomRowPath),
@@ -79,7 +79,7 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
                                 new WaitCommand(1000),
                                 new idleIntake(r))
                 ),
-                new BOPBOPBOP(r),
+                new magDump(r),
                 new runIntakeReverseTimed(r, 100),
                 */
                 new followPath(r, paths.goToGatePath)));
@@ -89,7 +89,7 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
     {
         super.run();
         RobotConfig.setAutoEndPose(r.getD().getCurrentPose());
-        telemetry.addData("turretPose",r.getS().getTurretPosition());
+        telemetry.addData("turretPose",r.getS().getTargetTurretAngle());
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());
         telemetry.addData("robot Y", r.getD().getCurrentPose().getY());
         telemetry.addData("robot heading", Math.toDegrees(r.getD().getCurrentPose().getHeading()));

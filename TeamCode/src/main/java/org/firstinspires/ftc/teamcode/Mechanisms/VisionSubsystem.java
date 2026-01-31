@@ -10,14 +10,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 
-public class VisionSystem extends SubsystemBase {
+public class VisionSubsystem extends SubsystemBase {
 
     private Limelight3A limelight;
     private static final double FIELD_SIZE_IN = 144.0;
     private static final double METERS_TO_INCHES = 39.37;
 
 
-    public VisionSystem(final HardwareMap hMap) {
+    public VisionSubsystem(final HardwareMap hMap) {
         limelight = hMap.get(Limelight3A.class, RobotConfig.limelight_name);
         limelight.setPollRateHz(100); // This sets how often we ask Limelight for data (100 times per second)
         limelight.pipelineSwitch(0);

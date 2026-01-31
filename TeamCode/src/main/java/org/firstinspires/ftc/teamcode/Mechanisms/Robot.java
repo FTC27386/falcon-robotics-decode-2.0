@@ -4,33 +4,37 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Robot {
-    ShooterSystem s;
-    IntakeSystem i;
+    VisionSubsystem v;
     DrivetrainSystem d;
-    LiftSystem l;
-    VisionSystem v;
+    ShooterSubsystem s;
+    GateSubsystem g;
+    IntakeSubsystem i;
+    LiftSubsystem l;
 
-    public VisionSystem getV() { return v; }
+
+    public VisionSubsystem getV() { return v; }
     public DrivetrainSystem getD() {
         return d;
     }
-    public ShooterSystem getS() {
+    public ShooterSubsystem getS() {
         return s;
     }
-    public IntakeSystem getI() {
+    public GateSubsystem getG() { return g; }
+    public IntakeSubsystem getI() {
         return i;
     }
-    public LiftSystem getL() {
+    public LiftSubsystem getL() {
         return l;
     }
 
 
     public Robot(final HardwareMap hmap) {
-        v = new VisionSystem(hmap);
+        v = new VisionSubsystem(hmap);
         d = new DrivetrainSystem(hmap);
-        s = new ShooterSystem(hmap);
-        i = new IntakeSystem(hmap);
-        l = new LiftSystem(hmap);
+        s = new ShooterSubsystem(hmap);
+        g = new GateSubsystem(hmap);
+        i = new IntakeSubsystem(hmap);
+        l = new LiftSubsystem(hmap);
 
         for (LynxModule mod : hmap.getAll(LynxModule.class)) {
             mod.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
@@ -41,6 +45,7 @@ public class Robot {
         v.periodic();
         d.periodic();
         s.periodic();
+        g.periodic();
         i.periodic();
         l.periodic();
     }
@@ -48,6 +53,6 @@ public class Robot {
     public void setShooterValues() {
         s.setFlywheelSpeed(d.getFlywheel());
         s.setHoodAngle(d.getHood());
-        s.setTurretPosition(d.getTurret());
+        s.setTargetTurretAngle(d.getTurret());
     }
 }

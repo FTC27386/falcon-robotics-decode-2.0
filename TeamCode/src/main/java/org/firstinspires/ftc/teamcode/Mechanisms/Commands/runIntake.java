@@ -6,16 +6,16 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 
 public class runIntake extends CommandBase {
 
-    private final Robot robot;
+    private final Robot r;
 
-    public runIntake(Robot robot) {
-        this.robot = robot;
+    public runIntake(Robot r) {
+        this.r = r;
+        addRequirements(r.getI());
     }
 
     @Override
     public void initialize() {
-        robot.getI().intake();
-        addRequirements(robot.getI());
+        r.getI().intake();
     }
 
     @Override

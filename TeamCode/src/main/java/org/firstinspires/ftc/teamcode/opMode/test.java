@@ -12,10 +12,8 @@ import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.defaultDrive;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.manualShot;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeTimed;
@@ -39,6 +37,7 @@ public class test extends CommandOpMode {
     Button climb;
     Button stop;
     private Robot r;
+    public static double turretAngle;
     public static double flywheelSpeed;
     public static double hoodAngle;
 
@@ -73,9 +72,11 @@ public class test extends CommandOpMode {
         outtake.whenPressed(new runIntakeReverseTimed(r, 2000));
         relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc(new Pose(8, 8, Math.toRadians(90)))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
-        schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getTurret())));
-        schedule(new RunCommand(() -> r.getS().setHoodAngle(hoodAngle)));
-        schedule(new RunCommand(() -> r.getS().setFlywheelSpeed(flywheelSpeed)));
+        schedule(new RunCommand(() -> {
+            r.getS().setTargetTurretAngle(turretAngle);
+            r.getS().setHoodAngle(hoodAngle);
+            r.getS().setFlywheelSpeed(flywheelSpeed);
+        }, r.getS()));
         shoot.whenPressed(new manualShot(r));
     }
 
