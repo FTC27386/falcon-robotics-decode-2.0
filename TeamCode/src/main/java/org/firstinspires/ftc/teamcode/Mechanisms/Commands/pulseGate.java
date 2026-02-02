@@ -13,11 +13,15 @@ public class pulseGate extends SequentialCommandGroup {
     public pulseGate(Robot r, int delay) {
         this.r = r;
         this.delay = delay;
-        addRequirements(r.getS());
+        addRequirements(r.getG());
         addCommands(
-                new InstantCommand(() -> r.getS().setGate(r.getD().shotAllowed())),
-                new WaitCommand(delay),
-                new InstantCommand(() -> r.getS().setGate(false)),
+                new InstantCommand(() -> {
+                    if (r.getD().shotAllowed() && r.getS().readyToFire()) {
+                        r.getG().open();
+                        new WaitCommand(delay);
+                    }
+                }),
+                new InstantCommand(() -> r.getG().close()),
                 new WaitCommand(200)
         );
     }

@@ -12,7 +12,6 @@ public class BOPBOPBOP extends SequentialCommandGroup {
 
     public BOPBOPBOP(Robot r) {
         this.r = r;
-        addRequirements(r.getI(), r.getS());
         addCommands(
                 new oneShot(r),
                 new oneShot(r),

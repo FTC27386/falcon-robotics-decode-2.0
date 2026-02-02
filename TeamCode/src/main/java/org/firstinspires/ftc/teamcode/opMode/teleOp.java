@@ -7,7 +7,6 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
-import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
@@ -46,7 +45,7 @@ public class teleOp extends CommandOpMode {
 
         super.reset();
         r = new Robot(hardwareMap);
-        register(r.getS(), r.getD(), r.getI(), r.getL(), r.getV());
+        register(r.getS(), r.getD(), r.getI(), r.getL());
         driverOp = new GamepadEx(gamepad1);
         driver2Op = new GamepadEx(gamepad2);
         Supplier<Double> leftX = driverOp::getLeftX;
@@ -71,9 +70,7 @@ public class teleOp extends CommandOpMode {
         outtake.whenPressed(new runIntakeReverseTimed(r, 2000));
         relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc(new Pose(8, 8, Math.toRadians(90)))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
-        schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getTurret())));
-        schedule(new RunCommand(() -> r.getS().setHoodAngle(r.getD().getHood())));
-        schedule(new RunCommand(() -> r.getS().setFlywheelSpeed(r.getD().getFlywheel())));
+        schedule(new RunCommand(() -> r.setShooterValues()));
         shoot.whenPressed(new magDump(r));
     }
 

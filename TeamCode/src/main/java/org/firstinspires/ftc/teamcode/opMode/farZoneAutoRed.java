@@ -8,9 +8,10 @@ import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.PathsMirrored;
@@ -34,13 +35,13 @@ public class farZoneAutoRed extends CommandOpMode {
         follower.setStartingPose(PathsMirrored.startingPoseFarZone);
         follower.update();
         mirroredPaths = new PathsMirrored(follower);
-        register(r.getS(), r.getI());
+        register(r.getS(), r.getG(), r.getI());
 
         schedule(
                 new SequentialCommandGroup(
                         new InstantCommand(()-> r.setShooterValues()),
                         new followPath(r, mirroredPaths.farAutoStartPath),
-                        new BOPBOPBOP(r),
+                        new magDump(r),
                         new runIntake(r),
                         new followPath(r, mirroredPaths.prepareIntakeHPZonePath),
                         new followPathSlow(r, mirroredPaths.intakeHPZonePath),
@@ -51,7 +52,7 @@ public class farZoneAutoRed extends CommandOpMode {
                                         new idleIntake(r)
                                 )
                         ),
-                        new BOPBOPBOP(r),
+                        new magDump(r),
                         new followPath(r, mirroredPaths.farLeavePath)
                 )
         );
@@ -62,7 +63,7 @@ public class farZoneAutoRed extends CommandOpMode {
         super.run();
         RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.RED);
         RobotConfig.setAutoEndPose(r.getD().getCurrentPose());
-        telemetry.addData("turretPose",r.getS().getTurretPosition());
+        telemetry.addData("turretPose",r.getS().getTargetTurretAngle());
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());
         telemetry.addData("robot Y", r.getD().getCurrentPose().getY());
         telemetry.addData("robot heading", Math.toDegrees(r.getD().getCurrentPose().getHeading()));

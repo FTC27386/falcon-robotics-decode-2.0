@@ -11,9 +11,9 @@ public class manualShot extends SequentialCommandGroup {
 
     public manualShot(Robot r) {
         this.r = r;
-        addRequirements(r.getI(), r.getS());
+        addRequirements(r.getG());
         addCommands(
-                new InstantCommand(() -> r.getS().setGate(false)),
+                new InstantCommand(() -> r.getG().close()),
                 new runIntake(r),
                 new pulseGateOverride(r, 1200),
                 new idleIntake(r)

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Mechanisms.Commands;
 
+import com.seattlesolvers.solverslib.command.ConditionalCommand;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 
@@ -11,10 +12,8 @@ public class oneShot extends SequentialCommandGroup {
 
     public oneShot(Robot r) {
         this.r = r;
-        addRequirements(r.getI(), r.getS());
+        addRequirements(r.getG());
         addCommands(
-                new InstantCommand(() -> r.getS().setGate(false)),
-                new preShootSequence(r),
                 new runIntake(r),
                 new pulseGate(r, 100),
                 new idleIntake(r)

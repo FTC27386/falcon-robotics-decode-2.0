@@ -6,16 +6,16 @@ import com.seattlesolvers.solverslib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 
-public class liftoff extends SequentialCommandGroup {
+public class zeroLift extends SequentialCommandGroup {
     private final Robot r;
-    public liftoff(Robot r) {
+    public zeroLift(Robot r) {
         this.r = r;
         addRequirements(r.getL());
     }
 
     @Override
     public void initialize() {
-        r.getL().activate();
+        r.getL().zero();
     }
 
     @Override

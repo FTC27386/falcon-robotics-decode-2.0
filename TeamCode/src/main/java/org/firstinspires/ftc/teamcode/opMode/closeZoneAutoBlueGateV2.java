@@ -9,10 +9,10 @@ import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
@@ -20,8 +20,8 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name="Close Auto Blue with Gate")
-public class closeZoneAutoBlueGate extends CommandOpMode {
+@Autonomous(name="Close Auto Blue Gate Cycle")
+public class closeZoneAutoBlueGateV2 extends CommandOpMode {
     Follower follower;
     private Robot r;
     Paths paths;
@@ -37,14 +37,13 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
         follower.update();
         paths = new Paths(follower);
         register(r.getS(), r.getG(), r.getI());
-        schedule(new RunCommand(()->r.setShooterValues()));
-        schedule(new InstantCommand(()->r.getS().setFlywheelSpeed(-1570)));
+        schedule(new RunCommand(() -> r.setShooterValues()));
+        schedule(new InstantCommand(() -> r.getS().setFlywheelSpeed(-1570)));
         schedule(
                 new SequentialCommandGroup(
-                        new InstantCommand(()-> r.getG().close()),
+                        new InstantCommand(() -> r.getG().close()),
                         new followPath(r, paths.closeAutoStartPath),
                         new magDump(r),
-                        new runIntakeReverseTimed(r, 100),
                         new runIntake(r),
                 new followPathSlow(r, paths.intakeFirstRowPath), //intake 1st line
                         new followPathSlow(r, paths.openGatePath),
@@ -56,7 +55,6 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
 
                 ),
                 new magDump(r),
-                new runIntakeReverseTimed(r, 100),
                 new followPath(r, paths.prepareIntakeMiddleRowPath),
                 new runIntake(r),
                 new followPathSlow(r, paths.intakeMiddleRowPath),
@@ -68,7 +66,6 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
                                 new idleIntake(r))
                 ),
                 new magDump(r),
-                new runIntakeReverseTimed(r, 100),
                 /*
                 new followPath(r, paths.prepareIntakeBottomRowPath),
                 new runIntake(r),
@@ -80,7 +77,6 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
                                 new idleIntake(r))
                 ),
                 new magDump(r),
-                new runIntakeReverseTimed(r, 100),
                 */
                 new followPath(r, paths.goToGatePath)));
     }

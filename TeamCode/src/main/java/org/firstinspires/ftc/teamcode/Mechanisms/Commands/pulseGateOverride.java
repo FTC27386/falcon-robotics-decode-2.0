@@ -13,11 +13,11 @@ public class pulseGateOverride extends SequentialCommandGroup {
     public pulseGateOverride(Robot r, int delay) {
         this.r = r;
         this.delay = delay;
-        addRequirements(r.getS());
+        addRequirements(r.getG());
         addCommands(
-                new InstantCommand(() -> r.getS().setGate(true)),
+                new InstantCommand(() -> r.getG().open()),
                 new WaitCommand(delay),
-                new InstantCommand(() -> r.getS().setGate(false)),
+                new InstantCommand(() -> r.getG().close()),
                 new WaitCommand(200)
         );
     }

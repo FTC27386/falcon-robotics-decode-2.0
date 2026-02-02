@@ -12,7 +12,6 @@ import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.defaultDrive;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
@@ -39,6 +38,7 @@ public class test extends CommandOpMode {
     Button climb;
     Button stop;
     private Robot r;
+    public static double turretAngle;
     public static double flywheelSpeed;
     public static double hoodAngle;
 
@@ -48,7 +48,7 @@ public class test extends CommandOpMode {
 
         super.reset();
         r = new Robot(hardwareMap);
-        register(r.getS(), r.getD(), r.getI(), r.getL(), r.getV());
+        register(r.getS(), r.getD(), r.getI(), r.getL());
         driverOp = new GamepadEx(gamepad1);
         driver2Op = new GamepadEx(gamepad2);
         Supplier<Double> leftX = driverOp::getLeftX;
@@ -73,7 +73,7 @@ public class test extends CommandOpMode {
         outtake.whenPressed(new runIntakeReverseTimed(r, 2000));
         relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc(new Pose(8, 8, Math.toRadians(90)))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
-        schedule(new RunCommand(() -> r.getS().setTurretPosition(r.getD().getTurret())));
+        schedule(new RunCommand(() -> r.getS().setTargetTurretAngle(turretAngle)));
         schedule(new RunCommand(() -> r.getS().setHoodAngle(hoodAngle)));
         schedule(new RunCommand(() -> r.getS().setFlywheelSpeed(flywheelSpeed)));
         shoot.whenPressed(new manualShot(r));
@@ -81,12 +81,13 @@ public class test extends CommandOpMode {
 
     @Override
     public void run() {
-        telemetry.addData("distance", r.getD().getDist());
-        telemetry.addData("flywheel", r.getD().getFlywheel());
-        telemetry.addData("hood", r.getD().getHood());
-        telemetry.addData("turret", r.getD().getTurret());
+        telemetry.addData("flywheel target", r.getS().getFlywheelPIDController().getSetPoint());
+        telemetry.addData("flywheel current", r.getS().flywheelSpeed);
+        telemetry.addData("hood", r.getS().getHoodAngle());
+        telemetry.addData("turret", r.getS().atTurretPosition());
         telemetry.addData("x:", r.getD().getCurrentPose().getX());
         telemetry.addData("y:", r.getD().getCurrentPose().getY());
+        telemetry.addData("heading", r.getD().getCurrentPose().getHeading());
         telemetry.addData("in close zone?", r.getD().inCloseZone());
         telemetry.addData("in far zone?", r.getD().inFarZone());
         telemetry.update();

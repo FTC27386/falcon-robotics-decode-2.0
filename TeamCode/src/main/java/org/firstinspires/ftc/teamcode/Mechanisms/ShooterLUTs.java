@@ -77,7 +77,7 @@ public final class ShooterLUTs {
     }
 
     private static double clampedDistance(double distance) {
-        return clamp(distance, MIN_DIST, MAX_DIST);
+        return clamp(distance, MIN_DIST+0.01, MAX_DIST-0.01);
     }
 
     public static double getMinDist() { return MIN_DIST; }

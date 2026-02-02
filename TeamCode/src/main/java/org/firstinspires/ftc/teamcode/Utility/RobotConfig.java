@@ -32,28 +32,16 @@ public class RobotConfig {
     public static String right_back_drive_motor_name = "back_right_drive";
     public static String transfer_servo_name = "blocker";
     public static String camera = "Webcam 1";
-    public static String turret_encoder_name = "turret_encoder";
-    public static String lift_motor_name = "lift_motor";
-    public static String lift_servo_name = "latch_servo";
+    public static String left_lift_motor_name = "left_park";
+    public static String right_lift_motor_name = "right_park";
+    public static String turret_motor_name = "turret";
     public static String limelight_name = "limelight";
-
-    public static double shooter_tolerance = 30;
     public static double vera_coefficient = .4167;
     public static double turret_offset_inches = -0.63696;
     public static double lift_kP = 0.001; //0.0003
     public static double lift_kD = 0.0;
     public static double lift_kF = 0.3;
-    public static double shooter_kP = -0.004;
-    public static double shooter_kD = 0.00000000;
-    public static double shooter_kV = -0.00039;
-    public static double shooter_kS = 0.056; // "lower limit" power
-    public static double turret_kP = 0;
-    public static double turret_kD = 0.0;
-    public static double turret_kL = 0;
-    public static double offset_between_servos = 0;
-    public static double turret_conversion_factor_DEGREES = (0.0015962441314554);
-    public static double turret_conversion_factor_RADIANS = (double)(1/5) * (double)(170/60) * (double)(1/355) * (double)(360/(2*Math.PI)); // For mason's weird ahh
-    public static double rpm_conversion_factor = (double)(Math.PI * 2) * (double)(1/60);
+
 
     public static Pose autoEndPose;
     public static int top_climb_position = 10400; // 13400 is the real maximum
