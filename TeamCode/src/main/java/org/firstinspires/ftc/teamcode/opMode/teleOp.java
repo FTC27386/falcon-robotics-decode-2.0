@@ -35,7 +35,7 @@ public class teleOp extends CommandOpMode {
     Button changeTarget;
     GamepadEx driverOp;
     GamepadEx driver2Op;
-    Button climb;
+    Button lift;
     Button stop;
     private Robot r;
 
@@ -45,7 +45,7 @@ public class teleOp extends CommandOpMode {
 
         super.reset();
         r = new Robot(hardwareMap);
-        register(r.getS(), r.getD(), r.getI(), r.getL());
+        register(r.getV(), r.getD(), r.getS(), r.getG(), r.getI(), r.getL());
         driverOp = new GamepadEx(gamepad1);
         driver2Op = new GamepadEx(gamepad2);
         Supplier<Double> leftX = driverOp::getLeftX;
@@ -60,10 +60,10 @@ public class teleOp extends CommandOpMode {
         relocalize = driverOp.getGamepadButton(GamepadKeys.Button.OPTIONS);
         changeTarget = driverOp.getGamepadButton(GamepadKeys.Button.SHARE);
         shoot = driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER);
-        climb = driverOp.getGamepadButton(GamepadKeys.Button.TOUCHPAD);
+        lift = driverOp.getGamepadButton(GamepadKeys.Button.TOUCHPAD);
         stop = driverOp.getGamepadButton(GamepadKeys.Button.DPAD_UP);
 
-        climb.whenPressed(new followPath(r,
+        lift.whenPressed(new followPath(r,
                 RobotConfig.current_color == null || RobotConfig.current_color == RobotConfig.ALLIANCE_COLOR.RED?
                         paths.park : mirroredPaths.park));
         intake.whenPressed(new runIntakeTimed(r, 2000));
@@ -71,7 +71,7 @@ public class teleOp extends CommandOpMode {
         relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc(new Pose(8, 8, Math.toRadians(90)))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
         schedule(new RunCommand(() -> r.setShooterValues()));
-        shoot.whenPressed(new magDump(r));
+        shoot.toggleWhenPressed(new magDump(r));
     }
 
     @Override

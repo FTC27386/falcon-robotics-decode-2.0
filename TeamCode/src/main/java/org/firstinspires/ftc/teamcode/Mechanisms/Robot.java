@@ -12,14 +12,18 @@ public class Robot {
     LiftSubsystem l;
 
 
-    public VisionSubsystem getV() { return v; }
+    public VisionSubsystem getV() {
+        return v;
+    }
     public DrivetrainSystem getD() {
         return d;
     }
     public ShooterSubsystem getS() {
         return s;
     }
-    public GateSubsystem getG() { return g; }
+    public GateSubsystem getG() {
+        return g;
+    }
     public IntakeSubsystem getI() {
         return i;
     }

@@ -16,7 +16,7 @@ public class preShootSequence extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return r.getS().readyToFire();
+        return r.getS().readyToFire() && r.getD().shotAllowed();
     }
 
 }

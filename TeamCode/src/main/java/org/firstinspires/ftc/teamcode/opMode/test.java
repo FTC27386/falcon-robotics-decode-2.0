@@ -48,7 +48,7 @@ public class test extends CommandOpMode {
 
         super.reset();
         r = new Robot(hardwareMap);
-        register(r.getS(), r.getD(), r.getI(), r.getL());
+        register(r.getV(), r.getD(), r.getS(), r.getG(), r.getI(), r.getL());
         driverOp = new GamepadEx(gamepad1);
         driver2Op = new GamepadEx(gamepad2);
         Supplier<Double> leftX = driverOp::getLeftX;
@@ -82,7 +82,7 @@ public class test extends CommandOpMode {
     @Override
     public void run() {
         telemetry.addData("flywheel target", r.getS().getFlywheelPIDController().getSetPoint());
-        telemetry.addData("flywheel current", r.getS().flywheelSpeed);
+        telemetry.addData("flywheel current", r.getS().getFlywheelSpeed());
         telemetry.addData("hood", r.getS().getHoodAngle());
         telemetry.addData("turret", r.getS().atTurretPosition());
         telemetry.addData("x:", r.getD().getCurrentPose().getX());

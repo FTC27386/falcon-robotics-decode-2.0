@@ -5,10 +5,13 @@ import static androidx.core.math.MathUtils.clamp;
 import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.HOOD_MAX_POSITION;
 import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.HOOD_MIN_POSITION;
 import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.TURRET_CONVERSION_FACTOR_RADIANS;
+import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.TURRET_MAX_POW;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.controller.PIDController;
 
@@ -27,20 +30,28 @@ public class ShooterSubsystem extends SubsystemBase {
     private double flywheelPower;
     private double targetTurretAngle;
     private double hoodPosition;
-    public double flywheelSpeed;
+    private double flywheelSpeed;
+    private boolean resetTurret;
+    ElapsedTime turretResetTimer = new ElapsedTime();
 
     public ShooterSubsystem(final HardwareMap hMap) {
         shooter1 = new cachedMotor(hMap.get(DcMotorEx.class, RobotConfig.first_shooter_motor_name),0.06);
         shooter2 = new cachedMotor(hMap.get(DcMotorEx.class, RobotConfig.second_shooter_motor_name),0.06);
         shooter1.thisMotor.setDirection(DcMotorEx.Direction.FORWARD);
         shooter2.thisMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        shooter1.thisMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        shooter2.thisMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        shooter1.thisMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooter2.thisMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooter1.thisMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shooter2.thisMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         turret = hMap.get(DcMotorEx.class, RobotConfig.turret_motor_name);
         turret.setDirection(DcMotorEx.Direction.FORWARD);
-        turret.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         turret.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        ElapsedTime timer = new ElapsedTime();
+        timer.startTime();
+
 
         hood = hMap.get(Servo.class, RobotConfig.hood_servo_name);
         hood.setDirection(Servo.Direction.FORWARD);
@@ -49,7 +60,7 @@ public class ShooterSubsystem extends SubsystemBase {
         turretPIDController = new PIDController(ShooterConfig.turret_kP, 0, ShooterConfig.turret_kD);
 
         hoodPosition = HOOD_MIN_POSITION;
-
+        resetTurret();
     }
 
     @Override
@@ -67,28 +78,27 @@ public class ShooterSubsystem extends SubsystemBase {
         shooter1.setPower(flywheelPower);
         shooter2.setPower(flywheelPower);
 
-        // QUICK N' DIRTY
-        double targetAngle = targetTurretAngle; // radians, ideally already wrapped [-pi, pi]
-        targetAngle = UtilMethods.angleWrapRad(targetAngle);
-
-        double currentAngle = turret.getCurrentPosition() * TURRET_CONVERSION_FACTOR_RADIANS;
-
-        double error = UtilMethods.angleWrapRad(targetAngle - currentAngle);
-
-        double turretPower = Math.signum(error) * 0.2;
-
-        turret.setPower(turretPower);
-
         // FORWARD IN RADIANS IS 0 RADIANS
-        /*
         double currentTurretPosition = turret.getCurrentPosition() * TURRET_CONVERSION_FACTOR_RADIANS;
         currentTurretPosition = UtilMethods.angleWrapRad(currentTurretPosition);
-        double targetTurretRad = turretPosition;
+        double targetTurretRad = targetTurretAngle;
         double error = UtilMethods.angleWrapRad(targetTurretRad - currentTurretPosition);
         double turretPower = turretPIDController.calculate(error, 0);
         turretPower = clamp(turretPower, -TURRET_MAX_POW, TURRET_MAX_POW);
-        turret.setPower(turretPower);
-         */
+
+        if (resetTurret) {
+            if (turretResetTimer.milliseconds() <= 2000) {
+                turret.setPower(0.1);
+            }
+            else {
+                turret.setPower(0);
+                resetTurret = false;
+                turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            }
+        }
+        else {
+            turret.setPower(turretPower);
+        }
 
         // Encoder ticks increase linearly with turret rotation
         // Encoder = 0 rad -> turret forward
@@ -108,7 +118,6 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void setFlywheelSpeed(double speed) {
-        speed = clamp(speed, ShooterConfig.FLYWHEEL_MIN_SPEED, ShooterConfig.FLYWHEEL_MAX_SPEED);
         flywheelPIDController.setSetPoint(speed);
     }
 
@@ -120,15 +129,14 @@ public class ShooterSubsystem extends SubsystemBase {
         return flywheelPIDController.atSetPoint();
     }
 
-    public void resetTurret() {
-        turret.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
     public void setTargetTurretAngle(double targetTurretAngle) { // this will set an angle in radians
-        targetTurretAngle = UtilMethods.angleWrapRad(targetTurretAngle);
+        this.targetTurretAngle = UtilMethods.angleWrapRad(targetTurretAngle);
         turretPIDController.setSetPoint(targetTurretAngle);
     }
-
+    public void resetTurret() {
+        resetTurret = true;
+        turretResetTimer.reset();
+    }
     public boolean atTurretPosition() {
         return turretPIDController.atSetPoint();
     }
