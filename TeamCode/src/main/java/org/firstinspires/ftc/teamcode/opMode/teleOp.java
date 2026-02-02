@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
 import org.firstinspires.ftc.teamcode.Mechanisms.PathsMirrored;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
+import org.firstinspires.ftc.teamcode.Utility.SlewRateLimiter;
 
 import java.util.function.Supplier;
 
@@ -38,11 +39,12 @@ public class teleOp extends CommandOpMode {
     Button climb;
     Button stop;
     private Robot r;
+    SlewRateLimiter axialLimit;
 
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
+        axialLimit = new SlewRateLimiter(.3,.3,0);
         super.reset();
         r = new Robot(hardwareMap);
         register(r.getS(), r.getD(), r.getI(), r.getL());
