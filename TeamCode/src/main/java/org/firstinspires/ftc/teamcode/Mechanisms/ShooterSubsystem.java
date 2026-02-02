@@ -78,11 +78,9 @@ public class ShooterSubsystem extends SubsystemBase {
         shooter1.setPower(flywheelPower);
         shooter2.setPower(flywheelPower);
 
-        // FORWARD IN RADIANS IS 0 RADIANS
-        double currentTurretPosition = turret.getCurrentPosition() * TURRET_CONVERSION_FACTOR_RADIANS;
-        currentTurretPosition = UtilMethods.angleWrapRad(currentTurretPosition);
-        double targetTurretRad = targetTurretAngle;
-        double error = UtilMethods.angleWrapRad(targetTurretRad - currentTurretPosition);
+        // FORWARD IN RADIANS IS PI/2 RADIANS
+        double currentTurretPosition = UtilMethods.angleWrapRad(turret.getCurrentPosition() * TURRET_CONVERSION_FACTOR_RADIANS);
+        double error = UtilMethods.angleWrapRad(turretPIDController.getSetPoint() - currentTurretPosition);
         double turretPower = turretPIDController.calculate(error, 0);
         turretPower = clamp(turretPower, -TURRET_MAX_POW, TURRET_MAX_POW);
 
@@ -101,7 +99,7 @@ public class ShooterSubsystem extends SubsystemBase {
         }
 
         // Encoder ticks increase linearly with turret rotation
-        // Encoder = 0 rad -> turret forward
+        // Encoder = pi/2 rad -> turret forward
         // Positive ticks correspond to positive rotation direction (CCW)
 
         hoodPosition = clamp(hoodPosition, HOOD_MIN_POSITION, HOOD_MAX_POSITION);
@@ -130,7 +128,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void setTargetTurretAngle(double targetTurretAngle) { // this will set an angle in radians
-        this.targetTurretAngle = UtilMethods.angleWrapRad(targetTurretAngle);
+        targetTurretAngle = UtilMethods.angleWrapRad(targetTurretAngle);
         turretPIDController.setSetPoint(targetTurretAngle);
     }
     public void resetTurret() {
