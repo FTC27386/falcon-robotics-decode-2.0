@@ -39,12 +39,10 @@ public class teleOp extends CommandOpMode {
     Button lift;
     Button stop;
     private Robot r;
-    SlewRateLimiter axialLimit;
 
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        axialLimit = new SlewRateLimiter(.3,.3,0);
         super.reset();
         r = new Robot(hardwareMap);
         register(r.getV(), r.getD(), r.getS(), r.getG(), r.getI(), r.getL());
