@@ -14,6 +14,8 @@ public class ShooterConfig {
     public static double TURRET_OFFSET = 0;
     public static double TURRET_MAX_POW = 1;
     public static double TURRET_TOLERANCE_RADIANS = 0.05;
+    public static double TURRET_MIN = 0;
+    public static double TURRET_MAX = 0;
     //public static double TURRET_CONVERSION_FACTOR_RADIANS = 0.0057674767602;
     public static double TURRET_CONVERSION_FACTOR_RADIANS = 0.000203026868985;
     public static double turret_kP = -1.7; // proportional gain (main steering force)

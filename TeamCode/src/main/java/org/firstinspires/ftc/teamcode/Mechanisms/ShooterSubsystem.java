@@ -37,8 +37,8 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterSubsystem(final HardwareMap hMap) {
         shooterTop = new cachedMotor(hMap.get(DcMotorEx.class, RobotConfig.first_shooter_motor_name),0.06);
         shooterBottom = new cachedMotor(hMap.get(DcMotorEx.class, RobotConfig.second_shooter_motor_name),0.06);
-        shooterTop.thisMotor.setDirection(DcMotorEx.Direction.FORWARD);
-        shooterBottom.thisMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        shooterTop.thisMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        shooterBottom.thisMotor.setDirection(DcMotorEx.Direction.FORWARD);
         shooterTop.thisMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         shooterBottom.thisMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         shooterTop.thisMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

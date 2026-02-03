@@ -38,7 +38,7 @@ public class test extends CommandOpMode {
     Button stop;
     private Robot r;
     public static double turretAngle;
-    public static double flywheelSpeed;
+    public static double flywheelSpeed = 1000;
     public static double hoodAngle;
 
     @Override
@@ -89,6 +89,7 @@ public class test extends CommandOpMode {
         telemetry.addData("hood", r.getS().getHoodAngle());
         telemetry.addData("x:", r.getD().getCurrentPose().getX());
         telemetry.addData("y:", r.getD().getCurrentPose().getY());
+        telemetry.addData("distance", r.getD().getDist());
         telemetry.addData("heading", r.getD().getCurrentPose().getHeading());
         telemetry.addData("error of turret", r.getS().getError());
         telemetry.update();
