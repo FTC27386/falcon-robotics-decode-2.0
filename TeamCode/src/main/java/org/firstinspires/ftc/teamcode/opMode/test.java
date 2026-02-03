@@ -14,7 +14,6 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.defaultDrive;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.manualShot;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeTimed;
@@ -71,25 +70,27 @@ public class test extends CommandOpMode {
                         paths.park : mirroredPaths.park));
         intake.whenPressed(new runIntakeTimed(r, 2000));
         outtake.whenPressed(new runIntakeReverseTimed(r, 2000));
-        relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc(new Pose(8, 8, Math.toRadians(90)))));
+        relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc(new Pose(9, 9, Math.toRadians(90)))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
-        schedule(new RunCommand(() -> r.getS().setTargetTurretAngle(turretAngle)));
-        schedule(new RunCommand(() -> r.getS().setHoodAngle(hoodAngle)));
+        schedule(new RunCommand(() -> r.getS().setTurretAngle(r.getD().getTurret())));
         schedule(new RunCommand(() -> r.getS().setFlywheelSpeed(flywheelSpeed)));
+        schedule(new RunCommand(() -> r.getS().setHoodAngle(hoodAngle)));
         shoot.whenPressed(new manualShot(r));
     }
 
     @Override
     public void run() {
-        telemetry.addData("flywheel target", r.getS().getFlywheelPIDController().getSetPoint());
-        telemetry.addData("flywheel current", r.getS().getFlywheelSpeed());
+        telemetry.addData("flywheel power", r.getS().getFlywheelPower());
+        telemetry.addData("flywheel speed", r.getS().getFlywheelSpeed());
+        telemetry.addData("flywheel target", r.getS().getFlywheelTarget());
+        telemetry.addData("turret power", r.getS().getTurretPower());
+        telemetry.addData("turret angle", r.getS().getTurretAngle());
+        telemetry.addData("turret target", r.getS().getTurretTarget());
         telemetry.addData("hood", r.getS().getHoodAngle());
-        telemetry.addData("turret", r.getS().atTurretPosition());
         telemetry.addData("x:", r.getD().getCurrentPose().getX());
         telemetry.addData("y:", r.getD().getCurrentPose().getY());
         telemetry.addData("heading", r.getD().getCurrentPose().getHeading());
-        telemetry.addData("in close zone?", r.getD().inCloseZone());
-        telemetry.addData("in far zone?", r.getD().inFarZone());
+        telemetry.addData("error of turret", r.getS().getError());
         telemetry.update();
         super.run();
     }

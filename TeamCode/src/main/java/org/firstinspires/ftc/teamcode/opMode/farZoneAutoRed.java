@@ -11,7 +11,6 @@ import com.seattlesolvers.solverslib.command.WaitCommand;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.PathsMirrored;
@@ -63,7 +62,7 @@ public class farZoneAutoRed extends CommandOpMode {
         super.run();
         RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.RED);
         RobotConfig.setAutoEndPose(r.getD().getCurrentPose());
-        telemetry.addData("turretPose",r.getS().getTargetTurretAngle());
+        telemetry.addData("turretPose",r.getS().getTurretTarget());
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());
         telemetry.addData("robot Y", r.getD().getCurrentPose().getY());
         telemetry.addData("robot heading", Math.toDegrees(r.getD().getCurrentPose().getHeading()));

@@ -36,6 +36,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -57,8 +58,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "MotorTest", group = "Robot")
 
 public class MotorTest extends OpMode {
-    DcMotor flywheel1, flywheel2;
-    Servo leftTurretServo, rightTurretServo, intake_raiser;
+    DcMotorEx flywheelTop, flywheelBottom, turret;
     DcMotor frontLeftDrive,
             frontRightDrive,
             backLeftDrive,
@@ -66,13 +66,19 @@ public class MotorTest extends OpMode {
             intake;
     Servo hood,
             blocker,
-            pivot;
-    public static double x = 0;
+            left_park,
+            right_park;
+    public static double x = 0,
+    turret_pow=0;
 
     @Override
     public void init() {
         blocker = hardwareMap.get(Servo.class, RobotConfig.transfer_servo_name);
         hood = hardwareMap.get(Servo.class, RobotConfig.hood_servo_name);
+        left_park = hardwareMap.get(Servo.class, RobotConfig.left_lift_motor_name);
+        right_park = hardwareMap.get(Servo.class, RobotConfig.right_lift_motor_name);
+        left_park.setDirection(Servo.Direction.REVERSE);
+        right_park.setDirection(Servo.Direction.FORWARD);
 
         blocker.setDirection(Servo.Direction.FORWARD);
         hood.setDirection(Servo.Direction.FORWARD);
@@ -80,18 +86,18 @@ public class MotorTest extends OpMode {
         intake = hardwareMap.get(DcMotor.class, RobotConfig.intake_motor_name);
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        flywheel1 = hardwareMap.get(DcMotor.class, RobotConfig.first_shooter_motor_name);
-        flywheel2 = hardwareMap.get(DcMotor.class, RobotConfig.second_shooter_motor_name);
-        flywheel1.setDirection(DcMotor.Direction.REVERSE);
-        flywheel2.setDirection(DcMotor.Direction.FORWARD);
-        flywheel1.setZeroPowerBehavior(FLOAT); //Makes the flywheel1 not turn itself off
-        flywheel2.setZeroPowerBehavior(FLOAT);
+        flywheelTop = hardwareMap.get(DcMotorEx.class, RobotConfig.first_shooter_motor_name);
+        flywheelBottom = hardwareMap.get(DcMotorEx.class, RobotConfig.second_shooter_motor_name);
+        flywheelTop.setDirection(DcMotor.Direction.FORWARD);
+        flywheelBottom.setDirection(DcMotor.Direction.REVERSE);
+        flywheelTop.setZeroPowerBehavior(FLOAT); //Makes the flywheel1 not turn itself off
+        flywheelBottom.setZeroPowerBehavior(FLOAT);
 
         frontLeftDrive = hardwareMap.get(DcMotor.class, RobotConfig.left_front_drive_motor_name);
         frontRightDrive = hardwareMap.get(DcMotor.class, RobotConfig.right_front_drive_motor_name);
         backLeftDrive = hardwareMap.get(DcMotor.class, RobotConfig.left_back_drive_motor_name);
         backRightDrive = hardwareMap.get(DcMotor.class, RobotConfig.right_back_drive_motor_name);
-
+        turret = hardwareMap.get(DcMotorEx.class, "turret");
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -105,11 +111,16 @@ public class MotorTest extends OpMode {
         frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
     public void loop() {
-        blocker.setPosition(x);
+        turret.setPower(turret_pow);
+        //flywheelTop.setPower(x);
+        //flywheelBottom.setPower(x);
+        //left_park.setPosition(x);
+        //right_park.setPosition(x);
         telemetry.addData("x", x);
     }
 }

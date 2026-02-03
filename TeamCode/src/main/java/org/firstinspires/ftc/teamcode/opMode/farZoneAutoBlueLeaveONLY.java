@@ -41,7 +41,7 @@ public class farZoneAutoBlueLeaveONLY extends CommandOpMode {
         super.run();
         RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.BLUE);
         RobotConfig.setAutoEndPose(r.getD().getCurrentPose());
-        telemetry.addData("turretPose",r.getS().getTargetTurretAngle());
+        telemetry.addData("turretPose",r.getS().getTurretTarget());
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());
         telemetry.addData("robot Y", r.getD().getCurrentPose().getY());
         telemetry.addData("robot heading", Math.toDegrees(r.getD().getCurrentPose().getHeading()));

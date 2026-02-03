@@ -57,6 +57,6 @@ public class Robot {
     public void setShooterValues() {
         s.setFlywheelSpeed(d.getFlywheel());
         s.setHoodAngle(d.getHood());
-        s.setTargetTurretAngle(d.getTurret());
+        s.setTurretAngle(d.getTurret());
     }
 }

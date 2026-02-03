@@ -13,7 +13,6 @@ import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.goToLiftPose;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.defaultDrive;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
@@ -67,7 +66,7 @@ public class AutoStepThru extends CommandOpMode {
         relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc(new Pose(8, 8, Math.toRadians(90)))));
 
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
-        schedule(new RunCommand(() -> r.getS().setTargetTurretAngle(r.getD().getTurret())));
+        schedule(new RunCommand(() -> r.getS().setTurretAngle(r.getD().getTurret())));
         shoot.whenPressed(new magDump(r));
         AutoCommands = new Command[]{
                 new InstantCommand(() -> r.setShooterValues()),
@@ -121,12 +120,11 @@ public class AutoStepThru extends CommandOpMode {
         telemetry.addData("y:", r.getD().getCurrentPose().getY());
         telemetry.addData("heading", r.getD().getCurrentPose().getHeading());
         telemetry.addData("turret", r.getD().getTurret());
-        telemetry.addData("flywheel target velocity", r.getS().getFlywheelPIDController().getSetPoint());
-        telemetry.addData("flywheel error", r.getS().getFlywheelPIDController().getPositionError());
+        telemetry.addData("flywheel target velocity", r.getS().getFlywheelTarget());
         telemetry.addData("flywheel speed", r.getS().getFlywheelSpeed());
         telemetry.addData("Hood", r.getD().getHood());
-        telemetry.addData("flywheel response", r.getS().getFlywheelSignal());
-        telemetry.addData("turret ticks", r.getS().getTargetTurretAngle());
+        telemetry.addData("flywheel response", r.getS().getFlywheelPower());
+        telemetry.addData("turret ticks", r.getS().getTurretTarget());
         telemetry.addData("Distance", r.getD().getDist());
         telemetry.addData("current step", index);
 

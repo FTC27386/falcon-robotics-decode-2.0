@@ -37,7 +37,7 @@ public class RobotConfig {
     public static String turret_motor_name = "turret";
     public static String limelight_name = "limelight";
     public static double vera_coefficient = .4167;
-    public static double turret_offset_inches = -0.63696;
+    public static double turret_offset_inches = -1.5554562992;
     public static double lift_kP = 0.001; //0.0003
     public static double lift_kD = 0.0;
     public static double lift_kF = 0.3;
