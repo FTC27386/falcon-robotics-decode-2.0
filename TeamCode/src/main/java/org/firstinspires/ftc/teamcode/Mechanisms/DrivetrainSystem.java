@@ -120,7 +120,7 @@ public class DrivetrainSystem extends SubsystemBase {
 
     public void teleOpDrive(double axial, double lateral, double yaw) {
         follower.setTeleOpDrive(
-                -axialLimiter.calculate(-axial),
+                -axial,
                 -lateral,
                 -yaw,
                 true);

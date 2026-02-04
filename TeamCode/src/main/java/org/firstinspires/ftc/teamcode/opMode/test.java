@@ -11,6 +11,7 @@ import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
+import com.seattlesolvers.solverslib.gamepad.SlewRateLimiter;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.defaultDrive;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
@@ -40,15 +41,18 @@ public class test extends CommandOpMode {
     public static double turretAngle;
     public static double flywheelSpeed = 1000;
     public static double hoodAngle;
+    public SlewRateLimiter axial;
 
     @Override
     public void initialize() {
+        axial = new SlewRateLimiter(.67,0);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         super.reset();
         r = new Robot(hardwareMap);
         register(r.getV(), r.getD(), r.getS(), r.getG(), r.getI(), r.getL());
         driverOp = new GamepadEx(gamepad1);
+        driverOp.setJoystickSlewRateLimiters(null,axial,null,null);
         driver2Op = new GamepadEx(gamepad2);
         Supplier<Double> leftX = driverOp::getLeftX;
         Supplier<Double> leftY = driverOp::getLeftY;
