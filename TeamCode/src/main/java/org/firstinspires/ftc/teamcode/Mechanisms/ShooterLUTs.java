@@ -22,9 +22,12 @@ public final class ShooterLUTs {
 
     // This data is much more readable using a class.
     private static final LutPoint[] POINTS = {
-            new LutPoint(0, 0, 0, 0),
-            new LutPoint(1, 1, 1, 1),
-            new LutPoint(2, 2, 2, 2),
+            new LutPoint(49.9867, 0.1, 1300, 0),
+            new LutPoint(71.0165, 0.2, 1400, 1),
+            new LutPoint(85.0043, 0.3, 1500, 2),
+            new LutPoint(100.4949, 0.45, 1600, 3),
+            new LutPoint(134.9972, 0.5, 1900, 4),
+            new LutPoint(167.000, 0.55, 2100, 5),
     };
 
     private static final double MIN_DIST = POINTS[0].distanceInches;

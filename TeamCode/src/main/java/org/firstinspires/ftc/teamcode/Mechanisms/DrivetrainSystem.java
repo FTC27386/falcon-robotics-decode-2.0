@@ -135,6 +135,11 @@ public class DrivetrainSystem extends SubsystemBase {
         follower.setPose(reloc);
     }
 
+    public void relocHeading(Pose reloc) {
+        follower.setPose(new Pose(x, y, UtilMethods.snapToCardinal(currentPose.getHeading())));
+    }
+
+
     public Pose getCurrentPose() {
         return currentPose.copy();
     }
