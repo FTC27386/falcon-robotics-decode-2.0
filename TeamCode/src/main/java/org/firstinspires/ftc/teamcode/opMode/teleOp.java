@@ -11,7 +11,9 @@ import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
+import com.seattlesolvers.solverslib.gamepad.SlewRateLimiter;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorLimelight3A;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.defaultDrive;
@@ -22,7 +24,6 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
 import org.firstinspires.ftc.teamcode.Mechanisms.PathsMirrored;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
-import org.firstinspires.ftc.teamcode.Utility.SlewRateLimiter;
 
 import java.util.function.Supplier;
 
@@ -39,18 +40,24 @@ public class teleOp extends CommandOpMode {
     Button lift;
     Button stop;
     private Robot r;
+    SlewRateLimiter axial;
 
     @Override
     public void initialize() {
+        axial = new SlewRateLimiter(0.3, 0);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         super.reset();
         r = new Robot(hardwareMap);
         register(r.getV(), r.getD(), r.getS(), r.getG(), r.getI(), r.getL());
         driverOp = new GamepadEx(gamepad1);
+        driverOp.setJoystickSlewRateLimiters(null, axial, null, null);
+
         driver2Op = new GamepadEx(gamepad2);
         Supplier<Double> leftX = driverOp::getLeftX;
         Supplier<Double> leftY = driverOp::getLeftY;
         Supplier<Double> rightX = driverOp::getRightX;
+
+
         r.getD().setDefaultCommand(new defaultDrive(r, leftY, leftX, rightX));
         Paths paths = new Paths(r.getD().follower);
         PathsMirrored mirroredPaths = new PathsMirrored(r.getD().follower);

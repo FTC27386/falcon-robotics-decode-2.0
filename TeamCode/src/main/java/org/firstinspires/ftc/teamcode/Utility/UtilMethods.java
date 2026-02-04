@@ -15,6 +15,13 @@ public class UtilMethods {
         while (a < -Math.PI) a += 2.0 * Math.PI;
         return a;
     }
+    public static double constrainToEndpoints(double theta, double min, double max)
+    {
+        while (theta > max) theta -= 2.0 * Math.PI;
+        while (theta < min) theta += 2.0 * Math.PI;
+        return theta;
+
+    }
     public static double squareMagnitude(double input) {
         double sign = input < 0? -1 : 1;
         return input * input * sign;

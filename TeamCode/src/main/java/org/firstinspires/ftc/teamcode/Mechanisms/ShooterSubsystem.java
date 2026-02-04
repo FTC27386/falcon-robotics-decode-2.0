@@ -8,6 +8,8 @@ import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.TURRET_CONVER
 import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.TURRET_MAX_POW;
 import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.TURRET_OFFSET;
 
+import androidx.core.math.MathUtils;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -120,7 +122,7 @@ public class ShooterSubsystem extends SubsystemBase {
         return turretPower;
     }
     public void setTurretAngle(double turretAngle) { // this will set a target angle in radians
-        turretAngle = (turretAngle);
+        turretAngle = UtilMethods.constrainToEndpoints(turretAngle, Math.PI, 3.0* Math.PI);
         turretPIDController.setSetPoint(turretAngle);
     }
 

@@ -50,4 +50,6 @@ public class RobotConfig {
     public double Apriltag_20y = 144-15.4;
     public double Apriltag_24x = 144-14.64;
     public double Apriltag_24y = 128.6;
+
+
 }

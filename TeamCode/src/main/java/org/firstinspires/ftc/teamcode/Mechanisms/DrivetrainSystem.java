@@ -8,10 +8,12 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.teamcode.Utility.FieldConfig;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
+import org.firstinspires.ftc.teamcode.Utility.SlewRateLimiter;
 import org.firstinspires.ftc.teamcode.Utility.UtilMethods;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public class DrivetrainSystem extends SubsystemBase {
+    SlewRateLimiter axialLimiter;
     public Follower follower;
     private Pose currentPose = new Pose(0, 0, Math.toRadians(90));
     private Pose realTurretPose = new Pose(0, 0);
@@ -118,7 +120,7 @@ public class DrivetrainSystem extends SubsystemBase {
 
     public void teleOpDrive(double axial, double lateral, double yaw) {
         follower.setTeleOpDrive(
-                -axial,
+                -axialLimiter.calculate(-axial),
                 -lateral,
                 -yaw,
                 true);

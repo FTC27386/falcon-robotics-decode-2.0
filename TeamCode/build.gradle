@@ -52,8 +52,8 @@ repositories {
 
 dependencies {
     implementation project(':FtcRobotController')
-    implementation "org.solverslib:core:SNAPSHOT-7cdcc66"
-    implementation("org.solverslib:pedroPathing:0.3.3")
+    implementation "org.solverslib:core:SNAPSHOT-5a81a6b" // core
+    implementation "org.solverslib:pedroPathing:SNAPSHOT-5a81a6b" // pedroPathing
     implementation "dev.frozenmilk.sinister:Sloth:0.2.4"
     implementation "com.acmerobotics.slothboard:dashboard:0.2.0+0.4.16"
 
