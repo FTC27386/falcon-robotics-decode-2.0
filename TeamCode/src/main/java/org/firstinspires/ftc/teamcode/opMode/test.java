@@ -73,8 +73,8 @@ public class test extends CommandOpMode {
         relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc(new Pose(9, 9, Math.toRadians(90)))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
         schedule(new RunCommand(() -> r.getS().setTurretAngle(r.getD().getTurret())));
-        schedule(new RunCommand(() -> r.getS().setFlywheelSpeed(flywheelSpeed)));
-        schedule(new RunCommand(() -> r.getS().setHoodAngle(hoodAngle)));
+        schedule(new RunCommand(() -> r.getS().setFlywheelSpeed(r.getD().getFlywheel())));
+        schedule(new RunCommand(() -> r.getS().setHoodAngle(r.getD().getHood())));
         shoot.whenPressed(new manualShot(r));
     }
 

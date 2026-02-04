@@ -26,5 +26,15 @@ public class UtilMethods {
         double sign = input < 0? -1 : 1;
         return input * input * sign;
     }
+    public static double snapToCardinal(double headingRad) {
+        // Wrap to [0, 2π)
+        double twoPi = 2.0 * Math.PI;
+        double h = headingRad % twoPi;
+        if (h < 0) h += twoPi;
 
+        // Each quadrant is π/2 wide; choose nearest quadrant center by rounding
+        int k = (int) Math.round(h / (Math.PI / 2.0)) % 4;
+
+        return k * (Math.PI / 2.0);
+    }
 }
