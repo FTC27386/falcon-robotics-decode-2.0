@@ -29,7 +29,7 @@ public class Constants {
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(26.8 * .454)
+            .mass(24.5 * .454)
             .centripetalScaling(0.0004)
             .forwardZeroPowerAcceleration(-33.800)
             .lateralZeroPowerAcceleration(-63.8)

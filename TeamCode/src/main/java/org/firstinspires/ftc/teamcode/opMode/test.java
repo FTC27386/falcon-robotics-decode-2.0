@@ -45,7 +45,7 @@ public class test extends CommandOpMode {
 
     @Override
     public void initialize() {
-        axial = new SlewRateLimiter(.67,0);
+        axial = new SlewRateLimiter(12,-1000,0);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         super.reset();

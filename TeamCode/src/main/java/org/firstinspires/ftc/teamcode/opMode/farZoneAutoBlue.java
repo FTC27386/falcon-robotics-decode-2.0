@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
+import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 
@@ -36,7 +37,7 @@ public class farZoneAutoBlue extends CommandOpMode {
         follower.update();
         paths = new FZPaths(follower, RobotConfig.ALLIANCE_COLOR.BLUE);
         register(r.getS(), r.getG(), r.getI());
-
+        schedule(new RunCommand(()->r.getS().setTurretAngle(r.getD().getTurret())));
         schedule(
                 new SequentialCommandGroup(
                         new followPath(r, paths.intakeHP),
