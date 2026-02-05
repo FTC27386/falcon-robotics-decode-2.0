@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Utility.SlewRateLimiter;
 import org.firstinspires.ftc.teamcode.Utility.UtilMethods;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-public class DrivetrainSystem extends SubsystemBase {
+public class DrivetrainSubsystem extends SubsystemBase {
     SlewRateLimiter axialLimiter;
     public Follower follower;
     private Pose currentPose = new Pose(0, 0, Math.toRadians(90));
@@ -22,7 +22,7 @@ public class DrivetrainSystem extends SubsystemBase {
     private double y;
     ShooterSetpoint setpoint = new ShooterSetpoint(0, 0, 0, false);
 
-    public DrivetrainSystem(HardwareMap hMap) {
+    public DrivetrainSubsystem(HardwareMap hMap) {
         follower = Constants.createFollower(hMap);
         follower.setStartingPose(RobotConfig.autoEndPose == null ? new Pose(8, 8, Math.toRadians(90)) : RobotConfig.autoEndPose);
         follower.update();

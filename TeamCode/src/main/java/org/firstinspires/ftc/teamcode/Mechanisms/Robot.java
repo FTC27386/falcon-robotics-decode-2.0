@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Robot {
     VisionSubsystem v;
-    DrivetrainSystem d;
+    DrivetrainSubsystem d;
     ShooterSubsystem s;
     GateSubsystem g;
     IntakeSubsystem i;
@@ -15,7 +15,7 @@ public class Robot {
     public VisionSubsystem getV() {
         return v;
     }
-    public DrivetrainSystem getD() {
+    public DrivetrainSubsystem getD() {
         return d;
     }
     public ShooterSubsystem getS() {
@@ -34,7 +34,7 @@ public class Robot {
 
     public Robot(final HardwareMap hmap) {
         v = new VisionSubsystem(hmap);
-        d = new DrivetrainSystem(hmap);
+        d = new DrivetrainSubsystem(hmap);
         s = new ShooterSubsystem(hmap);
         g = new GateSubsystem(hmap);
         i = new IntakeSubsystem(hmap);
