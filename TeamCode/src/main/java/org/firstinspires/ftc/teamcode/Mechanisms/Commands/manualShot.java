@@ -16,7 +16,7 @@ public class manualShot extends SequentialCommandGroup {
                 new InstantCommand(() -> r.getG().close()),
                 new runIntake(r),
                 new pulseGateOverride(r, 1200),
-                new idleIntake(r)
+                new stopIntake(r)
         );
     }
 }

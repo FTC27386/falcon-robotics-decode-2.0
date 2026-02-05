@@ -46,7 +46,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         y = currentPose.getY(); // robot y position
 
         Pose shiftedTargetPose = getShiftedTargetPose(targetPose, realTurretPose, follower.getVelocity());
-        updateShooterSetpoint(targetPose, realTurretPose);
+        updateShooterSetpoint(shiftedTargetPose, realTurretPose);
 
     }
 
@@ -56,7 +56,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         double shiftX = robotVelocity.getXComponent() * time;
         double shiftY = robotVelocity.getYComponent() * time;
-        return new Pose(baseTarget.getX() + shiftX, baseTarget.getY() + shiftY);
+        return new Pose(baseTarget.getX() - shiftX, baseTarget.getY() - shiftY);
     }
 
     private void updateShooterSetpoint(Pose shotTarget, Pose releasePose) {

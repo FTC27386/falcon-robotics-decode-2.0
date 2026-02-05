@@ -8,6 +8,7 @@ import com.pedropathing.paths.PathChain;
 
 public class V2Paths {
     public static Pose startingPose = new Pose(64.1883, 132.5852, Math.toRadians(180));
+    public static Pose alternatePose = startingPose.mirror();
     public PathChain closeAutoStartPath;
     public PathChain intakeSecondRowPath;
     public PathChain returnToShootPath;
@@ -27,13 +28,13 @@ public class V2Paths {
 
                                 new Pose(60.000, 84.000)
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+                ).setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(180))
                 .build();
         intakeSecondRowPath = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(60.000, 84.000),
-                                new Pose(60.000, 57.000),
-                                new Pose(10.000, 57.000)
+                                new Pose(60.000, 55.000),
+                                new Pose(10.000, 55.000)
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                 .build();
