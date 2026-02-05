@@ -14,10 +14,10 @@ public class magDump extends SequentialCommandGroup {
         this.r = r;
         addRequirements(r.getG());
         addCommands(
-                new preShootSequence(r),
+                new InstantCommand(() -> r.getG().close()),
                 new runIntake(r),
                 new pulseGate(r, 1200),
-                new idleIntake(r)
+                new stopIntake(r)
         );
     }
 }
