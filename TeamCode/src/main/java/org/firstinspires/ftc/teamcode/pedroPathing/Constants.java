@@ -36,12 +36,12 @@ public class Constants {
             .useSecondaryTranslationalPIDF(true)
             .useSecondaryDrivePIDF(true)
             .useSecondaryHeadingPIDF(true)
-            .translationalPIDFCoefficients(new PIDFCoefficients(.4,0,0,0.0))
-            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.003, 0, .022, 0.05))
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.4,0,0,0.0))
+            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.002, 0, .012, 0.012))
             .headingPIDFCoefficients(new PIDFCoefficients(2.7, 0.0, .1, 0 ))
-            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(2,0,0.04,0.05))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(1.0,0,0.0004,0.06,0.03))
-            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.023,0,0.0002,0.04,0.05));
+            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(.05,0,0.02,0.012))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(3.0,0,0.0004,0.06,0.008))
+            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.013,0,0.0002,0.04,0.012));
 
 
 
@@ -57,7 +57,7 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .xVelocity(80.170481)
             .yVelocity(64.797);
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 50, .6, 1);
+    public static PathConstraints pathConstraints = new PathConstraints(0.99, 50, .9, .1);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
