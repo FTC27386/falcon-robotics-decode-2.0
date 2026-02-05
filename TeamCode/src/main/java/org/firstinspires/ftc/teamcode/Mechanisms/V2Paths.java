@@ -11,17 +11,17 @@ public class V2Paths {
 
     public Pose touchGoalPose = new Pose(0,144);
     public Pose shootingPose = new Pose(60, 84);
-    public Pose midSpikePoseA = new Pose(10,57);
+    public Pose midSpikePoseA = new Pose(8,52);
     public Pose gateOpenPose = new Pose(16,60);
     public Pose gateIntakePose = new Pose(10,55);
-    public Pose topSpikeEndpoint = new Pose(20,84);
+    public Pose topSpikeEndpoint = new Pose(18,82);
     public Pose midSpikeControlPoint = new Pose(60,60);
     public Pose midSpikeReturnControlPoint = new Pose(60,57);
     public Pose openGateControlPoint = new Pose(60,64);
     public Pose intakeGateControlPoint = new Pose(18,52);
     public Pose gateReturnControlPoint = new Pose(60,55);
     public Pose thirdSpikeControlPoint = new Pose(60,36);
-    public Pose thirdSpikeEndPose = new Pose(20,36);
+    public Pose thirdSpikeEndPose = new Pose(12,36);
     public Pose leavePose = new Pose(20,64);
     public PathChain closeAutoStartPath;
     public PathChain intakeSecondRowPath;

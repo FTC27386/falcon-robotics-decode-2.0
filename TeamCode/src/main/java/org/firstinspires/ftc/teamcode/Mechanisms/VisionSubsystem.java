@@ -24,10 +24,6 @@ public class VisionSubsystem extends SubsystemBase {
         limelight.start(); // This tells Limelight to start looking!
     }
 
-    public void periodic() {
-
-    }
-
     public void startLimelight(Telemetry telemetry, Pose currentPose) {
         double robotYawDeg = Math.toDegrees(currentPose.getHeading());
         limelight.updateRobotOrientation(robotYawDeg);
@@ -45,15 +41,8 @@ public class VisionSubsystem extends SubsystemBase {
 
             Pose3D botpose_mt2 = result.getBotpose_MT2();
             if (botpose_mt2 != null) {
-                double llX_in = botpose_mt2.getPosition().x * METERS_TO_INCHES;
-                double llY_in = botpose_mt2.getPosition().y * METERS_TO_INCHES;
-
-                // Pedro frame: bottom-left origin
-                double pedroX = llX_in + FIELD_SIZE_IN / 2.0; // forward
-                double pedroY = llY_in + FIELD_SIZE_IN / 2.0; // right
-
-                telemetry.addData("Pedro X", pedroX);
-                telemetry.addData("Pedro Y", pedroY);
+                telemetry.addData("x", botpose_mt2.getPosition().x);
+                telemetry.addData("y", botpose_mt2.getPosition().y);
             }
         } else {
             telemetry.addData("Limelight", "No Targets");
