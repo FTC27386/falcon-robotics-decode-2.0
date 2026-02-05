@@ -16,6 +16,8 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
+import org.firstinspires.ftc.teamcode.Mechanisms.V2CloseZonePaths;
+import org.firstinspires.ftc.teamcode.Mechanisms.V2Paths;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -23,7 +25,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 public class closeZoneAutoBlueGateV2 extends CommandOpMode {
     Follower follower;
     private Robot r;
-    Paths paths;
+    V2Paths paths;
 
     @Override
     public void initialize()
@@ -34,50 +36,33 @@ public class closeZoneAutoBlueGateV2 extends CommandOpMode {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(Paths.startingPose);
         follower.update();
-        paths = new Paths(follower);
+        paths = new V2Paths(follower);
         register(r.getS(), r.getG(), r.getI());
-        schedule(new RunCommand(() -> r.setShooterValues()));
-        schedule(new InstantCommand(() -> r.getS().setFlywheelSpeed(-1570)));
+        //schedule(new RunCommand(() -> r.setShooterValues()));
         schedule(
-                new SequentialCommandGroup(
-                        new InstantCommand(() -> r.getG().close()),
-                        new followPath(r, paths.closeAutoStartPath),
-                        new magDump(r),
-                        new runIntake(r),
-                new followPathSlow(r, paths.intakeFirstRowPath), //intake 1st line
-                        new followPathSlow(r, paths.openGatePath),
-                new ParallelCommandGroup(
-                                new followPath(r,paths.returnFromGatePath),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(1000),
-                                                new idleIntake(r))
-
-                ),
-                new magDump(r),
-                new followPath(r, paths.prepareIntakeMiddleRowPath),
-                new runIntake(r),
-                new followPathSlow(r, paths.intakeMiddleRowPath),
-
-                new ParallelCommandGroup(
-                        new followPath(r,paths.returnFromMiddleRowPath),
-                        new SequentialCommandGroup(
-                                new WaitCommand(1000),
-                                new idleIntake(r))
-                ),
-                new magDump(r),
-                /*
-                new followPath(r, paths.prepareIntakeBottomRowPath),
-                new runIntake(r),
-                new followPathSlow(r, paths.intakeBottomRowPath),
-                new ParallelCommandGroup(
-                        new followPath(r,paths.returnFromBottomRowPath),
-                        new SequentialCommandGroup(
-                                new WaitCommand(1000),
-                                new idleIntake(r))
-                ),
-                new magDump(r),
-                */
-                new followPath(r, paths.goToGatePath)));
+                new followPath(r, paths.Path1),
+                new WaitCommand(500),
+                new followPath(r, paths.Path2), //intake 1st line
+                new WaitCommand(500),
+                new followPath(r, paths.Path3),
+                new WaitCommand(500),
+                new followPath(r, paths.Path4),
+                new WaitCommand(500),
+                new followPath(r, paths.Path5),
+                new WaitCommand(500),
+                new followPath(r, paths.Path6),
+                new WaitCommand(500),
+                new followPath(r, paths.Path7),
+                new WaitCommand(500),
+                new followPath(r, paths.Path8),
+                new WaitCommand(500),
+                new followPath(r, paths.Path9),
+                new WaitCommand(500),
+                new followPath(r, paths.Path10),
+                new WaitCommand(500),
+                new followPath(r, paths.Path11),
+                new WaitCommand(500)
+        );
     }
     @Override
     public void run()
