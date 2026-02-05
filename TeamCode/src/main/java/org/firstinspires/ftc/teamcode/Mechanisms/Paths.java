@@ -8,7 +8,7 @@ import com.pedropathing.paths.PathChain;
 
 public class Paths {
 
-    public static Pose startingPose = new Pose(64.1883,132.5852,0);
+    public static Pose startingPose = new Pose(64.9007,133.4625,0);
     public static Pose startingPoseAlternate = new Pose(53.5946, 7.587, Math.toRadians(90));
     public static Pose startingPoseFarZone = new Pose((54),7,Math.toRadians(0));
     public PathChain closeAutoStartPath;

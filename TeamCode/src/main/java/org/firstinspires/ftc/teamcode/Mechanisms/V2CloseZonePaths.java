@@ -9,7 +9,7 @@ import com.pedropathing.paths.PathChain;
 public class V2CloseZonePaths {
 
     public static Pose startingPose = new Pose(64.1883, 132.5852, 0);
-    public static Pose startingPoseAlternate = new Pose(53.5946, 7.587, Math.toRadians(90));
+    public static Pose startingPoseAlternate = new Pose(53.5946, 7.587, Math.toRadians(180));
     public static Pose startingPoseFarZone = new Pose((54), 7, Math.toRadians(0));
 
     public static class Paths {
@@ -53,7 +53,7 @@ public class V2CloseZonePaths {
                                     new Pose(60.000, 84.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-                    .setReversed(true)
+                    .setReversed()
                     .build();
 
             Path4 = follower.pathBuilder().addPath(
@@ -83,7 +83,7 @@ public class V2CloseZonePaths {
                                     new Pose(60.000, 84.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(140), Math.toRadians(180))
-                    .setReversed(true)
+                    .setReversed()
                     .build();
 
             Path7 = follower.pathBuilder().addPath(
@@ -103,7 +103,7 @@ public class V2CloseZonePaths {
                                     new Pose(60.000, 84.000)
                             )
                     ).setConstantHeadingInterpolation(Math.toRadians(180))
-                    .setReversed(true)
+                    .setReversed()
                     .build();
 
             Path9 = follower.pathBuilder().addPath(
@@ -123,7 +123,7 @@ public class V2CloseZonePaths {
                                     new Pose(60.000, 84.000)
                             )
                     ).setTangentHeadingInterpolation()
-                    .setReversed(true)
+                    .setReversed()
                     .build();
 
             Path11 = follower.pathBuilder().addPath(

@@ -39,7 +39,7 @@ public class test extends CommandOpMode {
     Button stop;
     private Robot r;
     public static double turretAngle;
-    public static double flywheelSpeed = 1000;
+    public static double flywheelSpeed = 0;
     public static double hoodAngle;
     public SlewRateLimiter axial;
 
@@ -77,13 +77,20 @@ public class test extends CommandOpMode {
         relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc(new Pose(9, 9, Math.toRadians(90)))));
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
         schedule(new RunCommand(() -> r.getS().setTurretAngle(r.getD().getTurret())));
-        schedule(new RunCommand(() -> r.getS().setFlywheelSpeed(r.getD().getFlywheel())));
-        schedule(new RunCommand(() -> r.getS().setHoodAngle(r.getD().getHood())));
+        schedule(new RunCommand(() -> r.getS().setFlywheelSpeed(flywheelSpeed)));
+        schedule(new RunCommand(() -> r.getS().setHoodAngle(hoodAngle)));
         shoot.whenPressed(new manualShot(r));
     }
 
     @Override
     public void run() {
+        telemetry.addData("x:", r.getD().getCurrentPose().getX());
+        telemetry.addData("y:", r.getD().getCurrentPose().getY());
+        telemetry.addData("distance", r.getD().getDist());
+        telemetry.addData("hood", r.getS().getHoodAngle());
+        telemetry.addData("flywheel target", r.getS().getFlywheelTarget());
+
+        /*
         telemetry.addData("flywheel power", r.getS().getFlywheelPower());
         telemetry.addData("flywheel speed", r.getS().getFlywheelSpeed());
         telemetry.addData("flywheel target", r.getS().getFlywheelTarget());
@@ -96,8 +103,9 @@ public class test extends CommandOpMode {
         telemetry.addData("distance", r.getD().getDist());
         telemetry.addData("heading", r.getD().getCurrentPose().getHeading());
         telemetry.addData("error of turret", r.getS().getError());
+
+         */
         telemetry.update();
         super.run();
     }
-
 }

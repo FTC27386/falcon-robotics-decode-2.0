@@ -90,7 +90,6 @@ public class ShooterSubsystem extends SubsystemBase {
         // Encoder = pi/2 rad -> turret forward
         // Positive ticks correspond to positive rotation direction (CCW)
 
-        hoodPosition = clamp(hoodPosition, HOOD_MIN_POSITION, HOOD_MAX_POSITION);
         hood.setPosition(hoodPosition);
     }
     public double getFlywheelSpeed() {
@@ -134,7 +133,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void setHoodAngle(double hoodAngle) {
-        hoodAngle = clamp(hoodAngle, HOOD_MIN_POSITION, HOOD_MAX_POSITION);
+        //hoodAngle = clamp(hoodAngle, HOOD_MIN_POSITION, HOOD_MAX_POSITION);
         hoodPosition = hoodAngle;
     }
 

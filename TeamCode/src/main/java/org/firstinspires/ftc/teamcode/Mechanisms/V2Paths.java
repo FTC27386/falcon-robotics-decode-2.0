@@ -7,110 +7,96 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 
 public class V2Paths {
-    public PathChain Path1;
-    public PathChain Path2;
-    public PathChain Path3;
-    public PathChain Path4;
-    public PathChain Path5;
-    public PathChain Path6;
-    public PathChain Path7;
-    public PathChain Path8;
-    public PathChain Path9;
-    public PathChain Path10;
-    public PathChain Path11;
+    public static Pose startingPose = new Pose(64.1883, 132.5852, Math.toRadians(180));
+    public PathChain closeAutoStartPath;
+    public PathChain intakeSecondRowPath;
+    public PathChain returnToShootPath;
+    public PathChain openGatePath;
+    public PathChain intakeFromGatePath;
+    public PathChain returnFromGateToShootPath;
+    public PathChain intakeFirstRowPath;
+    public PathChain returnFromIntakeFirstToShootPath;
+    public PathChain intakeThirdRowPath;
+    public PathChain returnFromThirdRowToShootPath;
+    public PathChain parkPath;
 
     public V2Paths(Follower follower) {
-        Path1 = follower.pathBuilder().addPath(
+        closeAutoStartPath = follower.pathBuilder().addPath(
                         new BezierLine(
                                 new Pose(0.000, 144.000),
 
                                 new Pose(60.000, 84.000)
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
-
                 .build();
-
-        Path2 = follower.pathBuilder().addPath(
+        intakeSecondRowPath = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(60.000, 84.000),
                                 new Pose(60.000, 57.000),
                                 new Pose(10.000, 57.000)
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-
                 .build();
-
-        Path3 = follower.pathBuilder().addPath(
+        returnToShootPath = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(10.000, 57.000),
                                 new Pose(60.000, 57.000),
                                 new Pose(60.000, 84.000)
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-                .setReversed()
-                .build();
 
-        Path4 = follower.pathBuilder().addPath(
+                .build();
+        openGatePath = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(60.000, 84.000),
                                 new Pose(60.000, 60.000),
-                                new Pose(16.000, 60.000)
+                                new Pose(14.000, 60.000)
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(140))
-
                 .build();
-
-        Path5 = follower.pathBuilder().addPath(
+        intakeFromGatePath = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(16.000, 60.000),
                                 new Pose(18.000, 52.000),
                                 new Pose(10.000, 52.000)
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(140))
-
                 .build();
-
-        Path6 = follower.pathBuilder().addPath(
+        returnFromGateToShootPath = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(10.000, 52.000),
                                 new Pose(60.000, 55.000),
                                 new Pose(60.000, 84.000)
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(140), Math.toRadians(180))
-                .setReversed()
-                .build();
 
-        Path7 = follower.pathBuilder().addPath(
+                .build();
+        intakeFirstRowPath = follower.pathBuilder().addPath(
                         new BezierLine(
                                 new Pose(60.000, 84.000),
 
                                 new Pose(20.000, 84.000)
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
-
                 .build();
-
-        Path8 = follower.pathBuilder().addPath(
+        returnFromIntakeFirstToShootPath = follower.pathBuilder().addPath(
                         new BezierLine(
                                 new Pose(20.000, 84.000),
 
                                 new Pose(60.000, 84.000)
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
-                .setReversed()
-                .build();
 
-        Path9 = follower.pathBuilder().addPath(
+                .build();
+        intakeThirdRowPath = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 new Pose(60.000, 84.000),
                                 new Pose(60.000, 36.000),
                                 new Pose(20.000, 36.000)
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-
                 .build();
-
-        Path10 = follower.pathBuilder().addPath(
+        returnFromThirdRowToShootPath = follower.pathBuilder().addPath(
                         new BezierLine(
                                 new Pose(20.000, 36.000),
 
@@ -119,15 +105,13 @@ public class V2Paths {
                 ).setTangentHeadingInterpolation()
                 .setReversed()
                 .build();
-
-        Path11 = follower.pathBuilder().addPath(
+        parkPath = follower.pathBuilder().addPath(
                         new BezierLine(
                                 new Pose(60.000, 84.000),
 
                                 new Pose(20.000, 64.000)
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
-
                 .build();
     }
 }
