@@ -5,38 +5,47 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.pedropathing.paths.PathConstraints;
 
 public class V2Paths {
     public static Pose startingPose = new Pose(64.1883, 132.5852, Math.toRadians(180));
 
     public Pose touchGoalPose = new Pose(0,144);
-    public Pose shootingPose = new Pose(60, 84);
-    public Pose midSpikePoseA = new Pose(8,52);
-    public Pose gateOpenPose = new Pose(16,60);
-    public Pose gateIntakePose = new Pose(10,55);
-    public Pose topSpikeEndpoint = new Pose(18,82);
-    public Pose midSpikeControlPoint = new Pose(60,60);
-    public Pose midSpikeReturnControlPoint = new Pose(60,57);
-    public Pose openGateControlPoint = new Pose(60,64);
-    public Pose intakeGateControlPoint = new Pose(18,52);
-    public Pose gateReturnControlPoint = new Pose(60,55);
-    public Pose thirdSpikeControlPoint = new Pose(60,36);
-    public Pose thirdSpikeEndPose = new Pose(12,36);
-    public Pose leavePose = new Pose(20,64);
-    public PathChain closeAutoStartPath;
+    public Pose shootingPose = new Pose(56, 84);
+
+    public Pose midSpikePose = new Pose(10,60);
+    public Pose midSpikeControlPoint = new Pose(shootingPose.getX(), midSpikePose.getY());
+    public Pose midSpikeReturnControlPoint = new Pose(shootingPose.getX(), midSpikePose.getY());
+
+    public Pose gateOpenPose = new Pose(12,58);
+    public Pose openGateControlPoint = new Pose(shootingPose.getX(), gateOpenPose.getY());
+    public Pose gateIntakePose = new Pose(10,53);
+    public Pose gateIntakeControlPoint = new Pose(gateOpenPose.getX(), gateIntakePose.getY());
+    public Pose gateReturnControlPoint = new Pose(shootingPose.getX(), gateIntakePose.getY());
+
+    public Pose topSpikePose = new Pose(10,80);
+
+    public Pose bottomSpikePose = new Pose(10,36);
+    public Pose bottomSpikeControlPoint = new Pose(shootingPose.getX(), bottomSpikePose.getY());
+
+    public Pose leavePose = new Pose(50,64);
+
+    public PathChain startPath;
     public PathChain intakeSecondRowPath;
-    public PathChain returnToShootPath;
+    public PathChain secondRowReturnToShootPath;
     public PathChain openGatePath;
     public PathChain intakeFromGatePath;
     public PathChain returnFromGateToShootPath;
-    public PathChain intakeFirstRowPath;
-    public PathChain returnFromIntakeFirstToShootPath;
-    public PathChain intakeThirdRowPath;
+    public PathChain startIntakeFirstRowPath;
+    public PathChain returnFromIntakeFirstRowToShootPath;
+    public PathChain startIntakeThirdRowPath;
     public PathChain returnFromThirdRowToShootPath;
     public PathChain parkPath;
 
+    PathConstraints preciseConstraints = new PathConstraints(0.998,0.002,0.003,0.02,50,.90,30,.1);
+
     public V2Paths(Follower follower) {
-        closeAutoStartPath = follower.pathBuilder().addPath(
+        startPath = follower.pathBuilder().addPath(
                         new BezierLine(
                                 touchGoalPose,
                                 shootingPose
@@ -47,34 +56,33 @@ public class V2Paths {
                         new BezierCurve(
                                 shootingPose,
                                 midSpikeControlPoint,
-                                midSpikePoseA
+                                midSpikePose
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                ).setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
-        returnToShootPath = follower.pathBuilder().addPath(
+        secondRowReturnToShootPath = follower.pathBuilder().addPath(
                         new BezierCurve(
-                                midSpikePoseA,
+                                midSpikePose,
                                 midSpikeReturnControlPoint,
                                 shootingPose
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-
+                ).setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
         openGatePath = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 shootingPose,
-                               openGateControlPoint,
-                               gateOpenPose
+                                openGateControlPoint,
+                                gateOpenPose
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(140))
                 .build();
         intakeFromGatePath = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 gateOpenPose,
-                                intakeGateControlPoint,
+                                gateIntakeControlPoint,
                                 gateIntakePose
                         )
-                ).setConstantHeadingInterpolation(Math.toRadians(140))
+                ).setConstantHeadingInterpolation(Math.toRadians(130))
                 .build();
         returnFromGateToShootPath = follower.pathBuilder().addPath(
                         new BezierCurve(
@@ -82,39 +90,34 @@ public class V2Paths {
                                 gateReturnControlPoint,
                                 shootingPose
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(140), Math.toRadians(180))
-
+                ).setLinearHeadingInterpolation(Math.toRadians(130), Math.toRadians(180))
                 .build();
-        intakeFirstRowPath = follower.pathBuilder().addPath(
+        startIntakeFirstRowPath = follower.pathBuilder().addPath(
                         new BezierLine(
-                               shootingPose,
-
-                                topSpikeEndpoint
+                                shootingPose,
+                                topSpikePose
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
-        returnFromIntakeFirstToShootPath = follower.pathBuilder().addPath(
+        returnFromIntakeFirstRowToShootPath = follower.pathBuilder().addPath(
                         new BezierLine(
-                                topSpikeEndpoint,
-
+                                topSpikePose,
                                 shootingPose
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
-
                 .build();
-        intakeThirdRowPath = follower.pathBuilder().addPath(
+        startIntakeThirdRowPath = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 shootingPose,
-                                thirdSpikeControlPoint,
-                               thirdSpikeEndPose
+                                bottomSpikeControlPoint,
+                                bottomSpikePose
                         )
-                ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                ).setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
         returnFromThirdRowToShootPath = follower.pathBuilder().addPath(
                         new BezierLine(
-                                thirdSpikeEndPose,
-
-                               shootingPose
+                                bottomSpikePose,
+                                shootingPose
                         )
                 ).setTangentHeadingInterpolation()
                 .setReversed()
@@ -122,7 +125,6 @@ public class V2Paths {
         parkPath = follower.pathBuilder().addPath(
                         new BezierLine(
                                 shootingPose,
-
                                 leavePose
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))

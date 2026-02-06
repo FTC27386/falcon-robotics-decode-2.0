@@ -63,7 +63,7 @@ public class AutoStepThru extends CommandOpMode {
 
         climb.whenPressed(new goToLiftPose(r, paths.park));
         intake.whenPressed(new runIntakeTimed(r, 2000));
-        relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc(new Pose(8, 8, Math.toRadians(90)))));
+        relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc()));
 
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
         schedule(new RunCommand(() -> r.getS().setTurretAngle(r.getD().getTurret())));

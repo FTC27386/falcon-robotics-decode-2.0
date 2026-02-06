@@ -36,6 +36,7 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
         follower.setStartingPose(Paths.startingPose);
         follower.update();
         paths = new Paths(follower);
+
         register(r.getS(), r.getG(), r.getI());
         schedule(new RunCommand(()->r.setShooterValues()));
         schedule(new InstantCommand(()->r.getS().setFlywheelSpeed(-1570)));

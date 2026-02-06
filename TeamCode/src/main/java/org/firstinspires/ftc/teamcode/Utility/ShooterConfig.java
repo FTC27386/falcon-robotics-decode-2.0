@@ -11,7 +11,6 @@ public class ShooterConfig {
     public static double shooter_kD = 0.00000000;
     public static double shooter_kV = -0.00039;
     public static double shooter_kS = 0.056; // "lower limit" power
-    public static double TURRET_OFFSET = 0;
     public static double TURRET_MAX_POW = 1;
     public static double TURRET_TOLERANCE_RADIANS = 0.05;
     public static double TURRET_MIN = 0;

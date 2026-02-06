@@ -6,7 +6,6 @@ import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.HOOD_MAX_POSI
 import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.HOOD_MIN_POSITION;
 import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.TURRET_CONVERSION_FACTOR_RADIANS;
 import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.TURRET_MAX_POW;
-import static org.firstinspires.ftc.teamcode.Utility.ShooterConfig.TURRET_OFFSET;
 
 import androidx.core.math.MathUtils;
 
@@ -79,7 +78,7 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterBottom.setPower(flywheelPower);
 
         // FORWARD IN RADIANS IS PI/2 RADIANS
-        turretAngle = (turret.getCurrentPosition() * TURRET_CONVERSION_FACTOR_RADIANS + TURRET_OFFSET);
+        turretAngle = (turret.getCurrentPosition() * TURRET_CONVERSION_FACTOR_RADIANS);
         error = turretPIDController.getSetPoint() - turretAngle;
         turretPower = turretPIDController.calculate(error, 0);
         turretPower = clamp(turretPower, -TURRET_MAX_POW, TURRET_MAX_POW);
@@ -131,12 +130,10 @@ public class ShooterSubsystem extends SubsystemBase {
     public boolean atTurretAngle() {
         return turretPIDController.atSetPoint();
     }
-
     public void setHoodAngle(double hoodAngle) {
         //hoodAngle = clamp(hoodAngle, HOOD_MIN_POSITION, HOOD_MAX_POSITION);
         hoodPosition = hoodAngle;
     }
-
     public double getHoodAngle() {
         return hoodPosition;
     }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Mechanisms.Commands;
 
+import com.seattlesolvers.solverslib.command.ConditionalCommand;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
@@ -16,13 +17,11 @@ public class pulseGate extends SequentialCommandGroup {
         addRequirements(r.getG());
         addCommands(
                 new InstantCommand(() -> {
-                    if (r.getD().shotAllowed()) {
+                    if (r.getD().shotAllowed() && r.getS().readyToFire()) {
                         r.getG().open();
                     }
                 }),
-                new WaitCommand(delay),
-                new InstantCommand(() -> r.getG().close()),
-                new WaitCommand(200)
+                new WaitCommand(delay)
         );
     }
 }

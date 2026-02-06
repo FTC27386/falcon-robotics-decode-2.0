@@ -3,10 +3,8 @@ package org.firstinspires.ftc.teamcode.Mechanisms;
 import static org.firstinspires.ftc.teamcode.Utility.LiftConfig.MAX_POS;
 import static org.firstinspires.ftc.teamcode.Utility.LiftConfig.MIN_POS;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
@@ -20,9 +18,9 @@ public class LiftSubsystem extends SubsystemBase {
         rightLiftServo = hmap.get(Servo.class, RobotConfig.right_lift_motor_name);
         leftLiftServo.setDirection(Servo.Direction.REVERSE);
         rightLiftServo.setDirection(Servo.Direction.FORWARD);
-        zero();
+        deactivate();
     }
-    public void zero() {
+    public void deactivate() {
         leftLiftServo.setPosition(MIN_POS);
         rightLiftServo.setPosition(MIN_POS);
     }
