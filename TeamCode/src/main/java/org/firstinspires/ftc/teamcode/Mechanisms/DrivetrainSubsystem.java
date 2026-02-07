@@ -18,13 +18,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private Pose currentPose = new Pose(0, 0, Math.toRadians(90));
     private Pose realTurretPose = new Pose(0, 0);
     private Pose targetPose;
+    private Pose relocPose;
     private double x;
     private double y;
+    private double turretOffset = 0;
     ShooterSetpoint setpoint = new ShooterSetpoint(0, 0, 0, false);
 
     public DrivetrainSubsystem(HardwareMap hMap) {
         follower = Constants.createFollower(hMap);
-        follower.setStartingPose(RobotConfig.autoEndPose == null ? new Pose(8, 8, Math.toRadians(90)) : RobotConfig.autoEndPose);
+        follower.setStartingPose(RobotConfig.autoEndPose == null ? new Pose(9, 9, Math.toRadians(90)) : RobotConfig.autoEndPose);
         follower.update();
 
         if (RobotConfig.current_color == null) {
@@ -34,6 +36,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         this.targetPose = RobotConfig.current_color == RobotConfig.ALLIANCE_COLOR.BLUE
                 ? FieldConfig.TARGET_POS_BLUE.copy()
                 : FieldConfig.TARGET_POS_RED.copy();
+
+        this.relocPose = RobotConfig.current_color == RobotConfig.ALLIANCE_COLOR.BLUE
+                ? FieldConfig.RELOC_POSE_BLUE.copy()
+                : FieldConfig.RELOC_POSE_RED.copy();
     }
 
     @Override
@@ -71,11 +77,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // follower heading assumed radians
         double heading = follower.getTotalHeading(); // robot heading in field frame (rad)
 
-
         double fieldAngleRad = Math.atan2(distanceY, distanceX);
         // direction from robot  goal in field frame (rad)
 
-        double turret = UtilMethods.angleWrapRad(fieldAngleRad - heading);
+        double turret = UtilMethods.angleWrapRad(fieldAngleRad - heading - turretOffset);
         // desired turret angle relative to robot frame (rad)
 
         setpoint.hood = hood;
@@ -133,14 +138,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return new Pose(NewX, NewY);
     }
 
-    public void reloc(Pose reloc) {
-        follower.setPose(reloc);
+    public void reloc() {
+        follower.setPose(relocPose);
+        turretOffset = 0;
     }
-
-    public void relocHeading(Pose reloc) {
-        follower.setPose(new Pose(x, y, UtilMethods.snapToCardinal(currentPose.getHeading())));
-    }
-
 
     public Pose getCurrentPose() {
         return currentPose.copy();
@@ -149,11 +150,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public Pose getTargetPose() {
         return targetPose.copy();
     }
-
+    public void decreaseOffset() {
+        turretOffset -= Math.toRadians(1);
+    }
+    public void increaseOffset() {
+        turretOffset += Math.toRadians(1);
+    }
     public boolean inCloseZone() {
         return (y > Math.abs(x - 72) + 72 - FieldConfig.ZONE_BUFFER);
     }
-
     public boolean inFarZone() {
         return (y < -Math.abs(x - 72) + 24 + FieldConfig.ZONE_BUFFER);
     }

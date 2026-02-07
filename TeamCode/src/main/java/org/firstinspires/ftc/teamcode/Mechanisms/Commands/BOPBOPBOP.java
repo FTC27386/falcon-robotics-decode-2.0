@@ -12,10 +12,21 @@ public class BOPBOPBOP extends SequentialCommandGroup {
 
     public BOPBOPBOP(Robot r) {
         this.r = r;
+
+        addRequirements(r.getG());
         addCommands(
-                new oneShot(r),
-                new oneShot(r),
-                new oneShot(r)
-        );
+                new shootIntake(r, r.getD().inCloseZone()),
+                new pulseGate(r, 200),
+                new InstantCommand(() -> r.getG().close()),
+                new WaitCommand(200),
+
+                new pulseGate(r, 200),
+                new InstantCommand(() -> r.getG().close()),
+                new WaitCommand(200),
+
+                new pulseGate(r, 200),
+                new InstantCommand(() -> r.getG().close()),
+
+                new idleIntake(r));
     }
 }

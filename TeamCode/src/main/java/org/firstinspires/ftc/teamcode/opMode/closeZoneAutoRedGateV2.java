@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.Mechanisms.V2Paths;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name="Close Auto Blue Prototype")
-public class closeZoneAutoBlueGateV2 extends CommandOpMode {
+@Autonomous(name="Close Auto Red Prototype")
+public class closeZoneAutoRedGateV2 extends CommandOpMode {
     Follower follower;
     private Robot r;
     V2Paths paths;
@@ -26,10 +26,10 @@ public class closeZoneAutoBlueGateV2 extends CommandOpMode {
     public void initialize()
     {
         super.reset();
-        RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.BLUE);
+        RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.RED);
         r = new Robot(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(V2Paths.startingPose);
+        follower.setStartingPose(V2Paths.startingPose.mirror());
         follower.update();
         paths = new V2Paths(follower, RobotConfig.current_color);
         register(r.getD(), r.getS(), r.getG(), r.getI());

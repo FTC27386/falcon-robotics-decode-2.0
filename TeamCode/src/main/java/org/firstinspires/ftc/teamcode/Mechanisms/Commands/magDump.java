@@ -4,6 +4,7 @@ import com.seattlesolvers.solverslib.command.ConditionalCommand;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 
+import org.firstinspires.ftc.robotcore.internal.camera.delegating.DelegatingCaptureSequence;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 
 public class magDump extends SequentialCommandGroup {
@@ -12,12 +13,14 @@ public class magDump extends SequentialCommandGroup {
 
     public magDump(Robot r) {
         this.r = r;
+
         addRequirements(r.getG());
         addCommands(
-                new InstantCommand(() -> r.getG().close()),
-                new runIntake(r),
-                new pulseGate(r, 1200),
-                new stopIntake(r)
-        );
+                new shootIntake(r, r.getD().inCloseZone()),
+                new pulseGate(r, 200),
+                new pulseGate(r, 200),
+                new pulseGate(r, 200),
+                new idleIntake(r),
+                new InstantCommand(() -> r.getG().close()));
     }
 }

@@ -1,5 +1,12 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
+import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.FAR_ZONE_INTAKE;
+import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.IDLE_INTAKE_POWER;
+import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.INTAKE_POWER;
+import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.OUTTAKE_POWER;
+import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.STOP_INTAKE;
+import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.STOP_INTAKE_POWER;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,10 +18,11 @@ public class IntakeSubsystem extends SubsystemBase {
     DcMotor intakeMotor;
     double targetPower;
 
+
     public IntakeSubsystem(HardwareMap hMap) {
         intakeMotor = hMap.get(DcMotor.class, RobotConfig.intake_motor_name);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     @Override
@@ -23,17 +31,25 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void intake() {
-        targetPower = -1;
+        targetPower = INTAKE_POWER;
     }
     public void outtake() {
-        targetPower = 1;
+        targetPower = OUTTAKE_POWER;
     }
     public void idleIntake() {
-        targetPower = -0.2;
+        targetPower = IDLE_INTAKE_POWER;
     } // Passively run intake
-    public void stopIntake()
-    {
-        targetPower = 0;
+    public void farZoneIntake() { targetPower = FAR_ZONE_INTAKE; }
+    public void zonedIntake(boolean inCloseZone) {
+        if (inCloseZone) {
+            intake();
+        }
+        else {
+            farZoneIntake();
+        }
+    }
+    public void stopIntake() {
+        targetPower = STOP_INTAKE_POWER;
     }
 
 }
