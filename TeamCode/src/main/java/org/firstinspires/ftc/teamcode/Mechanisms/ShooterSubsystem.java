@@ -28,6 +28,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private Servo hood;
     private cachedMotor shooterTop;
     private cachedMotor shooterBottom;
+    private boolean stop = false;
     private double flywheelPower;
     private double hoodPosition;
     private double error;
@@ -74,22 +75,19 @@ public class ShooterSubsystem extends SubsystemBase {
         double rawCalcPower = flywheelPIDController.calculate(-flywheelSpeed);
         flywheelPower = rawCalcPower + (ShooterConfig.shooter_kS) + (flywheelPIDController.getSetPoint() * ShooterConfig.shooter_kV);
 
-        shooterTop.setPower(flywheelPower);
-        shooterBottom.setPower(flywheelPower);
-
         // FORWARD IN RADIANS IS PI/2 RADIANS
         turretAngle = (turret.getCurrentPosition() * TURRET_CONVERSION_FACTOR_RADIANS);
         error = turretPIDController.getSetPoint() - turretAngle;
         turretPower = turretPIDController.calculate(error, 0);
         turretPower = clamp(turretPower, -TURRET_MAX_POW, TURRET_MAX_POW);
 
+        shooterTop.setPower(flywheelPower);
+        shooterBottom.setPower(flywheelPower);
         turret.setPower(turretPower);
-
-        // Encoder ticks increase linearly with turret rotation
-        // Encoder = pi/2 rad -> turret forward
-        // Positive ticks correspond to positive rotation direction (CCW)
-
         hood.setPosition(hoodPosition);
+    }
+    public void toggle() {
+        stop = !stop;
     }
     public double getFlywheelSpeed() {
         return flywheelSpeed;
@@ -98,7 +96,7 @@ public class ShooterSubsystem extends SubsystemBase {
         return flywheelPower;
     }
     public void setFlywheelSpeed(double speed) {
-        flywheelPIDController.setSetPoint(speed);
+        flywheelPIDController.setSetPoint(stop ? 0 : speed);
     }
     public double getFlywheelTarget() {
         return flywheelPIDController.getSetPoint();
@@ -109,8 +107,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public boolean readyToFire() {
         return atFlywheelSpeed();
     }
-    public double getError()
-    {
+    public double getError() {
         return  error;
     }
     public double getTurretAngle() {
@@ -121,7 +118,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     public void setTurretAngle(double turretAngle) { // this will set a target angle in radians
         turretAngle = UtilMethods.constrainToEndpoints(turretAngle, Math.PI, 3.0* Math.PI);
-        turretPIDController.setSetPoint(turretAngle);
+        turretPIDController.setSetPoint(stop ? Math.toRadians(270) : turretAngle);
     }
 
     public double getTurretTarget() {
@@ -131,8 +128,7 @@ public class ShooterSubsystem extends SubsystemBase {
         return turretPIDController.atSetPoint();
     }
     public void setHoodAngle(double hoodAngle) {
-        //hoodAngle = clamp(hoodAngle, HOOD_MIN_POSITION, HOOD_MAX_POSITION);
-        hoodPosition = hoodAngle;
+        hoodPosition = (stop ? 0 : hoodAngle);
     }
     public double getHoodAngle() {
         return hoodPosition;

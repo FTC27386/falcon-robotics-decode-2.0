@@ -1,23 +1,27 @@
 package org.firstinspires.ftc.teamcode.Mechanisms.Commands;
 
+import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
-import com.seattlesolvers.solverslib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 
-public class liftoff extends SequentialCommandGroup {
+public class toggleShooter extends CommandBase {
+
     private final Robot r;
-    public liftoff(Robot r) {
+
+    public toggleShooter(Robot r) {
         this.r = r;
-        addRequirements(r.getL());
+        addRequirements(r.getS());
     }
 
     @Override
     public void initialize() {
-        r.getL().activate();
+        r.getS().toggle();
     }
 
     @Override
-    public boolean isFinished() { return true; }
+    public boolean isFinished() {
+        return true;
+    }
 }

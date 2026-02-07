@@ -17,7 +17,7 @@ public class pulseGate extends SequentialCommandGroup {
         addRequirements(r.getG());
         addCommands(
                 new InstantCommand(() -> {
-                    if (r.getD().shotAllowed() && r.getS().readyToFire()) {
+                    if (r.getD().shotAllowed()) {
                         r.getG().open();
                     }
                 }),

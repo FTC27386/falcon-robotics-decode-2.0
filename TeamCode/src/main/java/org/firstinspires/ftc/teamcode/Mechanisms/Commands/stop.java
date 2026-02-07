@@ -1,21 +1,21 @@
 package org.firstinspires.ftc.teamcode.Mechanisms.Commands;
 
+import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
-import com.seattlesolvers.solverslib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 
-public class BOPBOPBOP extends SequentialCommandGroup {
+public class stop extends SequentialCommandGroup {
+
     private final Robot r;
 
-
-    public BOPBOPBOP(Robot r) {
+    public stop(Robot r) {
         this.r = r;
+        addRequirements(r.getS(), r.getI());
         addCommands(
-                new oneShot(r),
-                new oneShot(r),
-                new oneShot(r)
+                new toggleShooter(r),
+                new stopIntake(r)
         );
     }
 }

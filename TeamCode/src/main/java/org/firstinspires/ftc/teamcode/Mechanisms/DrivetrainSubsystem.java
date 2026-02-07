@@ -80,7 +80,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         double fieldAngleRad = Math.atan2(distanceY, distanceX);
         // direction from robot  goal in field frame (rad)
 
-        double turret = UtilMethods.angleWrapRad(fieldAngleRad - heading + turretOffset);
+        double turret = UtilMethods.angleWrapRad(fieldAngleRad - heading - turretOffset);
         // desired turret angle relative to robot frame (rad)
 
         setpoint.hood = hood;
