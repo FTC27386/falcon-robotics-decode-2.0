@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 public class shootIntake extends CommandBase {
 
     private final Robot r;
-    private final boolean inCloseZone;
+    boolean inCloseZone;
 
     public shootIntake(Robot r, boolean inCloseZone) {
         this.inCloseZone = inCloseZone;

@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Far Auto Pathfollowing")
+@Autonomous(name = "Far Auto Blue V2")
 public class farZoneAutoBlue extends CommandOpMode {
     Follower follower;
     private Robot r;
@@ -54,7 +54,6 @@ public class farZoneAutoBlue extends CommandOpMode {
     public void run()
     {
         super.run();
-        RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.BLUE);
         RobotConfig.setAutoEndPose(r.getD().getCurrentPose());
         telemetry.addData("turretPose",r.getS().getTurretTarget());
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());

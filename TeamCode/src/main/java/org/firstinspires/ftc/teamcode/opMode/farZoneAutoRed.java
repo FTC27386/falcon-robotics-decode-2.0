@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
+import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 
@@ -13,16 +14,17 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
-import org.firstinspires.ftc.teamcode.Mechanisms.PathsMirrored;
+import org.firstinspires.ftc.teamcode.Mechanisms.FZPaths;
+import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Far Auto Red")
+@Autonomous(name = "Far Auto Blue V2")
 public class farZoneAutoRed extends CommandOpMode {
     Follower follower;
     private Robot r;
-    PathsMirrored mirroredPaths;
+    FZPaths paths;
 
     @Override
     public void initialize()
@@ -31,28 +33,20 @@ public class farZoneAutoRed extends CommandOpMode {
 
         r = new Robot(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(PathsMirrored.startingPoseFarZone);
+        follower.setStartingPose(FZPaths.initPose.mirror());
         follower.update();
-        mirroredPaths = new PathsMirrored(follower);
+        paths = new FZPaths(follower, RobotConfig.ALLIANCE_COLOR.RED);
         register(r.getS(), r.getG(), r.getI());
-
+        schedule(new RunCommand(()->r.getS().setTurretAngle(r.getD().getTurret())));
         schedule(
                 new SequentialCommandGroup(
-                        new InstantCommand(()-> r.setShooterValues()),
-                        new followPath(r, mirroredPaths.farAutoStartPath),
-                        new magDump(r),
-                        new runIntake(r),
-                        new followPath(r, mirroredPaths.prepareIntakeHPZonePath),
-                        new followPathSlow(r, mirroredPaths.intakeHPZonePath),
-                        new ParallelCommandGroup(
-                                new followPath(r, mirroredPaths.returnFromHPZonePath),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(1000),
-                                        new idleIntake(r)
-                                )
-                        ),
-                        new magDump(r),
-                        new followPath(r, mirroredPaths.farLeavePath)
+                        new followPath(r, paths.intakeHP),
+                        new followPath(r, paths.intakeHPreturn),
+                        new followPath(r, paths.intake3rdSpikeA),
+                        new followPath(r, paths.intake3rdSpikeB),
+                        new followPath(r, paths.return3rdSpike),
+                        new followPath(r, paths.blindIntake),
+                        new followPath(r, paths.blindIntakeReturn)
                 )
         );
     }
@@ -60,7 +54,6 @@ public class farZoneAutoRed extends CommandOpMode {
     public void run()
     {
         super.run();
-        RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.RED);
         RobotConfig.setAutoEndPose(r.getD().getCurrentPose());
         telemetry.addData("turretPose",r.getS().getTurretTarget());
         telemetry.addData("robot X", r.getD().getCurrentPose().getX());

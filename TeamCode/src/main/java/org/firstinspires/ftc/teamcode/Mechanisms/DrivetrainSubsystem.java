@@ -26,7 +26,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public DrivetrainSubsystem(HardwareMap hMap) {
         follower = Constants.createFollower(hMap);
-        follower.setStartingPose(RobotConfig.autoEndPose == null ? new Pose(8, 8, Math.toRadians(90)) : RobotConfig.autoEndPose);
+        follower.setStartingPose(RobotConfig.autoEndPose == null ? new Pose(9, 9, Math.toRadians(90)) : RobotConfig.autoEndPose);
         follower.update();
 
         if (RobotConfig.current_color == null) {
