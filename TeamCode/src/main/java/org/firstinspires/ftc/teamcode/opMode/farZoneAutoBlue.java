@@ -8,12 +8,14 @@ import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
+import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.stopIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.FZPaths;
 import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
@@ -36,17 +38,31 @@ public class farZoneAutoBlue extends CommandOpMode {
         follower.setStartingPose(FZPaths.initPose);
         follower.update();
         paths = new FZPaths(follower, RobotConfig.ALLIANCE_COLOR.BLUE);
+
         register(r.getS(), r.getG(), r.getI());
-        schedule(new RunCommand(()->r.getS().setTurretAngle(r.getD().getTurret())));
+        schedule(new RunCommand(()->r.setShooterValues()));
+
         schedule(
                 new SequentialCommandGroup(
-                        new followPath(r, paths.intakeHP),
-                        new followPath(r, paths.intakeHPreturn),
-                        new followPath(r, paths.intake3rdSpikeA),
-                        new followPath(r, paths.intake3rdSpikeB),
-                        new followPath(r, paths.return3rdSpike),
-                        new followPath(r, paths.blindIntake),
-                        new followPath(r, paths.blindIntakeReturn)
+                        new magDump(r,-.8),
+                        new runIntake(r),
+                        new FollowPathCommand(follower, paths.intakeHP),
+                        new WaitCommand(250),
+                        new stopIntake(r),
+                        new FollowPathCommand(follower, paths.intakeHPreturn),
+                        new magDump(r,-.8),
+                        new FollowPathCommand(follower, paths.intake3rdSpikeA),
+                        new FollowPathCommand(follower, paths.intake3rdSpikeB),
+                        new WaitCommand(250),
+                        new stopIntake(r),
+                        new FollowPathCommand(follower, paths.return3rdSpike),
+                        new magDump(r,-.8),
+                        new runIntake(r),
+                        new FollowPathCommand(follower, paths.blindIntake),
+                        new WaitCommand(250),
+                        new stopIntake(r),
+                        new FollowPathCommand(follower, paths.blindIntakeReturn),
+                        new magDump(r,-.8)
                 )
         );
     }

@@ -19,9 +19,9 @@ public class FZPaths {
         public PathChain blindIntake;
         public PathChain blindIntakeReturn;
         public PathChain leave;
-        public static Pose initPose = new Pose(48.000, 9.000,Math.toRadians(180)),
-        HPintake = new Pose(15.000, 9.000),
-        shootingA = new Pose(48.000,9),
+        public static Pose initPose = new Pose(49.55, 10,Math.toRadians(180)),
+        HPintake = new Pose(15.000, 10),
+        shootingA = new Pose(48.000,10),
         approachPt3rdSpike = new Pose(36,30),
         approachFacingPt = new Pose(30,36),
         ctrlPt3rdSpike = new Pose(33.000, 36.000),
