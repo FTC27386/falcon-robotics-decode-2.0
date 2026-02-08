@@ -4,16 +4,28 @@ package org.firstinspires.ftc.teamcode.Utility;
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.Pose;
 
+import org.firstinspires.ftc.onbotjava.handlers.admin.ResetOnBotJava;
+import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
+
 @Config
 public class RobotConfig {
 
     public enum ALLIANCE_COLOR {
         BLUE, RED
     }
+    public static Robot currentRobotInstance = null;
     public static ALLIANCE_COLOR current_color = ALLIANCE_COLOR.BLUE;
     public static void setAutoEndPose(Pose endPose)
     {
             autoEndPose = endPose;
+    }
+    public static void setCurrentRobotInstance(Robot r)
+    {
+        currentRobotInstance = r;
+    }
+    public static Robot getCurrentRobotInstance()
+    {
+        return currentRobotInstance;
     }
     public static void setCurrentColor(ALLIANCE_COLOR color)
     {
@@ -50,6 +62,7 @@ public class RobotConfig {
     public double Apriltag_20y = 144-15.4;
     public double Apriltag_24x = 144-14.64;
     public double Apriltag_24y = 128.6;
+
 
 
 }

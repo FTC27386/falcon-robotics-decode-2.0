@@ -51,6 +51,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         x = currentPose.getX(); // robot x position
         y = currentPose.getY(); // robot y position
 
+        updateTargetAndRelocPose();
+
         Pose shiftedTargetPose = getShiftedTargetPose(targetPose, realTurretPose, follower.getVelocity());
         updateShooterSetpoint(shiftedTargetPose, realTurretPose);
 
@@ -102,7 +104,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
             this.inRange = inRange;
         }
     }
+    public void updateTargetAndRelocPose() {
+        this.targetPose = RobotConfig.current_color == RobotConfig.ALLIANCE_COLOR.BLUE
+                ? FieldConfig.TARGET_POS_BLUE.copy()
+                : FieldConfig.TARGET_POS_RED.copy();
 
+        this.relocPose = RobotConfig.current_color == RobotConfig.ALLIANCE_COLOR.BLUE
+                ? FieldConfig.RELOC_POSE_BLUE.copy()
+                : FieldConfig.RELOC_POSE_RED.copy();
+    }
     public double getDist() {
         return realTurretPose.distanceFrom(targetPose);
     }
@@ -155,6 +165,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
     public void increaseOffset() {
         turretOffset += Math.toRadians(1);
+    }
+    public void joystickOffset(double input) {
+        turretOffset += input * Math.toRadians(.6);
     }
     public boolean inCloseZone() {
         return (y > Math.abs(x - 72) + 72 - FieldConfig.ZONE_BUFFER);

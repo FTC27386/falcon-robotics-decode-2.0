@@ -11,6 +11,7 @@ import androidx.core.math.MathUtils;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
@@ -62,6 +63,39 @@ public class ShooterSubsystem extends SubsystemBase {
 
         hoodPosition = HOOD_MIN_POSITION;
     }
+    public void reverseAll()
+    {
+        shooterTop.thisMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+    public ShooterSubsystem(final HardwareMap hMap, boolean zero) {
+        shooterTop = new cachedMotor(hMap.get(DcMotorEx.class, RobotConfig.first_shooter_motor_name),0.06);
+        shooterBottom = new cachedMotor(hMap.get(DcMotorEx.class, RobotConfig.second_shooter_motor_name),0.06);
+        shooterTop.thisMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        shooterBottom.thisMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        shooterTop.thisMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooterBottom.thisMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        shooterTop.thisMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooterBottom.thisMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooterTop.thisMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shooterBottom.thisMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        turret = hMap.get(DcMotorEx.class, RobotConfig.turret_motor_name);
+        turret.setDirection(DcMotorEx.Direction.FORWARD);
+        turret.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        if(zero)
+        {
+            turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
+        hood = hMap.get(Servo.class, RobotConfig.hood_servo_name);
+        hood.setDirection(Servo.Direction.FORWARD);
+
+        flywheelPIDController = new PIDController(ShooterConfig.shooter_kP, 0, ShooterConfig.shooter_kD);
+        turretPIDController = new PIDController(ShooterConfig.turret_kP, 0, ShooterConfig.turret_kD);
+
+        hoodPosition = HOOD_MIN_POSITION;
+    }
 
     @Override
     public void periodic() {
@@ -77,13 +111,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
         // FORWARD IN RADIANS IS PI/2 RADIANS
         turretAngle = (turret.getCurrentPosition() * TURRET_CONVERSION_FACTOR_RADIANS);
-        error = turretPIDController.getSetPoint() - turretAngle;
+        error = UtilMethods.squareRootMagnitude(turretPIDController.getSetPoint() - turretAngle);
         turretPower = turretPIDController.calculate(error, 0);
         turretPower = clamp(turretPower, -TURRET_MAX_POW, TURRET_MAX_POW);
 
         shooterTop.setPower(flywheelPower);
         shooterBottom.setPower(flywheelPower);
-        turret.setPower(turretPower);
+        turret.setPower(turretPower+Math.signum(turretPower)*ShooterConfig.turret_kS);
         hood.setPosition(hoodPosition);
     }
     public void toggle() {

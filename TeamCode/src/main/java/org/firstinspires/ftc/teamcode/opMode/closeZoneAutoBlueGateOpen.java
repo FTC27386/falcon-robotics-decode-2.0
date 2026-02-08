@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opMode;
 
 import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
@@ -15,30 +16,31 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
-import org.firstinspires.ftc.teamcode.Mechanisms.PathsMirrored;
+import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name="Close Auto Red with Gate")
-public class closeZoneAutoRedGate extends CommandOpMode {
+@Disabled
+@Autonomous(name="Close Auto Blue Gate Open")
+public class closeZoneAutoBlueGateOpen extends CommandOpMode {
     Follower follower;
     private Robot r;
-    PathsMirrored paths;
+    Paths paths;
 
     @Override
     public void initialize()
     {
         super.reset();
-        RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.RED);
+        RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.BLUE);
         r = new Robot(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(PathsMirrored.startingPose);
+        follower.setStartingPose(Paths.startingPose);
         follower.update();
-        paths = new PathsMirrored(follower);
+        paths = new Paths(follower);
+
         register(r.getS(), r.getG(), r.getI());
         schedule(new RunCommand(()->r.setShooterValues()));
-        schedule(new InstantCommand(()->r.getS().setFlywheelSpeed(-1570)));
         schedule(
                 new SequentialCommandGroup(
                         new InstantCommand(()-> r.getG().close()),
@@ -69,7 +71,6 @@ public class closeZoneAutoRedGate extends CommandOpMode {
                 ),
                 new magDump(r),
                 new runIntakeReverseTimed(r, 100),
-                /*
                 new followPath(r, paths.prepareIntakeBottomRowPath),
                 new runIntake(r),
                 new followPathSlow(r, paths.intakeBottomRowPath),
@@ -80,8 +81,8 @@ public class closeZoneAutoRedGate extends CommandOpMode {
                                 new idleIntake(r))
                 ),
                 new magDump(r),
+                new InstantCommand(() -> r.getS().toggle()),
                 new runIntakeReverseTimed(r, 100),
-                 */
                 new followPath(r, paths.goToGatePath)));
     }
     @Override

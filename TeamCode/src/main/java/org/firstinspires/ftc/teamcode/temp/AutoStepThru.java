@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.opMode;
+package org.firstinspires.ftc.teamcode.temp;
 
 import static androidx.core.math.MathUtils.clamp;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
@@ -26,6 +26,7 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import java.util.function.Supplier;
 
 @Config
+@Disabled
 @TeleOp(name = "Manual Stepping Thru Auto")
 public class AutoStepThru extends CommandOpMode {
     int index = 0;

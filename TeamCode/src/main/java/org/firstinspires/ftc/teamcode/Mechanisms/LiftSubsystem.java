@@ -22,6 +22,10 @@ public class LiftSubsystem extends SubsystemBase {
         leftLiftServo.setPosition(MIN_POS);
         leftLiftServo.setPosition(MIN_POS);
     }
+    public void reverseAll()
+    {
+        leftLiftServo.setDirection(Servo.Direction.REVERSE);
+    }
     public void toggle() {
         lift = !lift;
         double liftPosition = lift ? MAX_POS : MIN_POS;

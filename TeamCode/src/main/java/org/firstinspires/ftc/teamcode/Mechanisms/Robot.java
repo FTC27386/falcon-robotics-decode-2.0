@@ -11,7 +11,6 @@ public class Robot {
     IntakeSubsystem i;
     LiftSubsystem l;
 
-
     public VisionSubsystem getV() {
         return v;
     }
@@ -36,6 +35,18 @@ public class Robot {
         v = new VisionSubsystem(hmap);
         d = new DrivetrainSubsystem(hmap);
         s = new ShooterSubsystem(hmap);
+        g = new GateSubsystem(hmap);
+        i = new IntakeSubsystem(hmap);
+        l = new LiftSubsystem(hmap);
+
+        for (LynxModule mod : hmap.getAll(LynxModule.class)) {
+            mod.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
+    }
+
+    public Robot(final HardwareMap hmap, boolean zero) {
+        v = new VisionSubsystem(hmap);
+        d = new DrivetrainSubsystem(hmap);
         g = new GateSubsystem(hmap);
         i = new IntakeSubsystem(hmap);
         l = new LiftSubsystem(hmap);

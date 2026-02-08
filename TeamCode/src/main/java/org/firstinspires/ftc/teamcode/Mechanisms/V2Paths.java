@@ -11,11 +11,12 @@ import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 
 public class V2Paths {
     public static Pose startingPose = new Pose(64.1883, 132.5852, Math.toRadians(180));
+    public static Pose alternatePose = new Pose(144-startingPose.getX(), startingPose.getY(), Math.toRadians(0));
 
     public Pose touchGoalPose = new Pose(0,144);
-    public Pose shootingPose = new Pose(56, 84);
+    public Pose shootingPose = new Pose(54, 84);
 
-    public Pose midSpikePose = new Pose(10,60);
+    public Pose midSpikePose = new Pose(10,57);
     public Pose midSpikeControlPoint = new Pose(shootingPose.getX(), midSpikePose.getY());
     public Pose midSpikeReturnControlPoint = new Pose(shootingPose.getX(), midSpikePose.getY());
 
@@ -26,9 +27,8 @@ public class V2Paths {
     public Pose gateReturnControlPoint = new Pose(shootingPose.getX(), gateIntakePose.getY());
 
     public Pose topSpikePose = new Pose(10,80);
-
-    public Pose bottomSpikePose = new Pose(10,36);
-    public Pose bottomSpikeControlPoint = new Pose(shootingPose.getX(), bottomSpikePose.getY());
+    public Pose bottomSpikePoseA = new Pose(shootingPose.getX(), 34);
+    public Pose bottomSpikePoseB = new Pose(10, bottomSpikePoseA.getY());
 
     public Pose leavePose = new Pose(50,64);
 
@@ -41,15 +41,16 @@ public class V2Paths {
     public PathChain startIntakeFirstRowPath;
     public PathChain returnFromIntakeFirstRowToShootPath;
     public PathChain startIntakeThirdRowPath;
+    public PathChain endIntakeThirdRowPath;
     public PathChain returnFromThirdRowToShootPath;
     public PathChain parkPath;
 
-    PathConstraints ramToWall = new PathConstraints(.250,500,.90,.1);
+    PathConstraints ramToWall = new PathConstraints(.250,350,.90,.1);
 
     public V2Paths(Follower follower, RobotConfig.ALLIANCE_COLOR color) {
 
-        if(color == RobotConfig.ALLIANCE_COLOR.BLUE)
-        {startPath = follower.pathBuilder().addPath(
+        if(color == RobotConfig.ALLIANCE_COLOR.BLUE) {
+        startPath = follower.pathBuilder().addPath(
                         new BezierLine(
                                 touchGoalPose,
                                 shootingPose
@@ -63,7 +64,9 @@ public class V2Paths {
                                 midSpikePose
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
+                .setConstraints(ramToWall)
                 .build();
+
         secondRowReturnToShootPath = follower.pathBuilder().addPath(
                         new BezierCurve(
                                 midSpikePose,
@@ -88,6 +91,7 @@ public class V2Paths {
                                 gateIntakePose
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(130))
+                .setConstraints(ramToWall)
                 .build();
         returnFromGateToShootPath = follower.pathBuilder().addPath(
                         new BezierCurve(
@@ -103,6 +107,7 @@ public class V2Paths {
                                 topSpikePose
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
+                .setConstraints(ramToWall)
                 .build();
         returnFromIntakeFirstRowToShootPath = follower.pathBuilder().addPath(
                         new BezierLine(
@@ -112,16 +117,23 @@ public class V2Paths {
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
         startIntakeThirdRowPath = follower.pathBuilder().addPath(
-                        new BezierCurve(
+                        new BezierLine(
                                 shootingPose,
-                                bottomSpikeControlPoint,
-                                bottomSpikePose
+                                bottomSpikePoseA
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
+        endIntakeThirdRowPath = follower.pathBuilder().addPath(
+                        new BezierLine(
+                                bottomSpikePoseA,
+                                bottomSpikePoseB
+                        )
+        ).setConstantHeadingInterpolation(Math.toRadians(180))
+                .setConstraints(ramToWall)
+                .build();
         returnFromThirdRowToShootPath = follower.pathBuilder().addPath(
                         new BezierLine(
-                                bottomSpikePose,
+                                bottomSpikePoseB,
                                 shootingPose
                         )
                 ).setTangentHeadingInterpolation()
@@ -134,8 +146,7 @@ public class V2Paths {
                         )
                 ).setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();}
-        else
-        {
+        else {
             startPath = follower.pathBuilder().addPath(
                             new BezierLine(
                                     touchGoalPose.mirror(),
@@ -150,6 +161,7 @@ public class V2Paths {
                                     midSpikePose.mirror()
                             )
                     ).setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setConstraints(ramToWall)
                     .build();
             secondRowReturnToShootPath = follower.pathBuilder().addPath(
                             new BezierCurve(
@@ -175,6 +187,7 @@ public class V2Paths {
                                     gateIntakePose.mirror()
                             )
                     ).setConstantHeadingInterpolation(Math.toRadians(50))
+                    .setConstraints(ramToWall)
                     .build();
             returnFromGateToShootPath = follower.pathBuilder().addPath(
                             new BezierCurve(
@@ -190,6 +203,15 @@ public class V2Paths {
                                     topSpikePose.mirror()
                             )
                     ).setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setConstraints(ramToWall)
+                    .build();
+            endIntakeThirdRowPath = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    shootingPose.mirror(),
+                                    topSpikePose.mirror()
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setConstraints(ramToWall)
                     .build();
             returnFromIntakeFirstRowToShootPath = follower.pathBuilder().addPath(
                             new BezierLine(
@@ -199,16 +221,23 @@ public class V2Paths {
                     ).setConstantHeadingInterpolation(Math.toRadians(0))
                     .build();
             startIntakeThirdRowPath = follower.pathBuilder().addPath(
-                            new BezierCurve(
+                            new BezierLine(
                                     shootingPose.mirror(),
-                                    bottomSpikeControlPoint.mirror(),
-                                    bottomSpikePose.mirror()
+                                    bottomSpikePoseA.mirror()
                             )
                     ).setConstantHeadingInterpolation(Math.toRadians(0))
                     .build();
+            endIntakeThirdRowPath = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    bottomSpikePoseA.mirror(),
+                                    bottomSpikePoseB.mirror()
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(0))
+                    .setConstraints(ramToWall)
+                    .build();
             returnFromThirdRowToShootPath = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    bottomSpikePose.mirror(),
+                                    bottomSpikePoseB.mirror(),
                                     shootingPose.mirror()
                             )
                     ).setTangentHeadingInterpolation()

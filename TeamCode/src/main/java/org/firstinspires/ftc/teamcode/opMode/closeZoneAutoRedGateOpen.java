@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opMode;
 
 import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
@@ -15,28 +16,26 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
-import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
+import org.firstinspires.ftc.teamcode.Mechanisms.PathsMirrored;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-
-@Autonomous(name="Close Auto Blue with Gate")
-public class closeZoneAutoBlueGate extends CommandOpMode {
+@Disabled
+@Autonomous(name="Close Auto Red Gate Open")
+public class closeZoneAutoRedGateOpen extends CommandOpMode {
     Follower follower;
     private Robot r;
-    Paths paths;
-
+    PathsMirrored paths;
     @Override
     public void initialize()
     {
         super.reset();
-        RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.BLUE);
+        RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.RED);
         r = new Robot(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(Paths.startingPose);
+        follower.setStartingPose(PathsMirrored.startingPose);
         follower.update();
-        paths = new Paths(follower);
-
+        paths = new PathsMirrored(follower);
         register(r.getS(), r.getG(), r.getI());
         schedule(new RunCommand(()->r.setShooterValues()));
         schedule(new InstantCommand(()->r.getS().setFlywheelSpeed(-1570)));
@@ -45,7 +44,6 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
                         new InstantCommand(()-> r.getG().close()),
                         new followPath(r, paths.closeAutoStartPath),
                         new magDump(r),
-                        new runIntakeReverseTimed(r, 100),
                         new runIntake(r),
                 new followPathSlow(r, paths.intakeFirstRowPath), //intake 1st line
                         new followPathSlow(r, paths.openGatePath),
@@ -57,11 +55,9 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
 
                 ),
                 new magDump(r),
-                new runIntakeReverseTimed(r, 100),
                 new followPath(r, paths.prepareIntakeMiddleRowPath),
                 new runIntake(r),
                 new followPathSlow(r, paths.intakeMiddleRowPath),
-
                 new ParallelCommandGroup(
                         new followPath(r,paths.returnFromMiddleRowPath),
                         new SequentialCommandGroup(
@@ -69,8 +65,6 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
                                 new idleIntake(r))
                 ),
                 new magDump(r),
-                new runIntakeReverseTimed(r, 100),
-                /*
                 new followPath(r, paths.prepareIntakeBottomRowPath),
                 new runIntake(r),
                 new followPathSlow(r, paths.intakeBottomRowPath),
@@ -81,13 +75,11 @@ public class closeZoneAutoBlueGate extends CommandOpMode {
                                 new idleIntake(r))
                 ),
                 new magDump(r),
-                new runIntakeReverseTimed(r, 100),
-                */
+                new InstantCommand(() -> r.getS().toggle()),
                 new followPath(r, paths.goToGatePath)));
     }
     @Override
-    public void run()
-    {
+    public void run() {
         super.run();
         RobotConfig.setAutoEndPose(r.getD().getCurrentPose());
         telemetry.addData("turretPose",r.getS().getTurretTarget());

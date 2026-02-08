@@ -17,7 +17,7 @@ public class followPathSlow extends CommandBase {
 
     @Override
     public void initialize() {
-        r.getD().follower.followPath(path, .567, true);
+        r.getD().follower.followPath(path, .7, true);
     }
 
     @Override

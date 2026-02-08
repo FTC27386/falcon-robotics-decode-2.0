@@ -12,6 +12,7 @@ import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 import com.seattlesolvers.solverslib.gamepad.SlewRateLimiter;
 
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.defaultDrive;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntakeReverseTimed;
@@ -20,6 +21,7 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Commands.stop;
 import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
 import org.firstinspires.ftc.teamcode.Mechanisms.PathsMirrored;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
+import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 
 import java.util.function.Supplier;
 
@@ -28,10 +30,13 @@ import java.util.function.Supplier;
 public class teleOp extends CommandOpMode {
     Button intake;
     Button outtake;
-    Button relocalize;
-    Button shoot;
+    Button d1Relocalize;
+    Button d2Relocalize;
+    Button shootClose;
+    Button shootFar;
     Button lift;
-    Button stop;
+    Button d1Stop;
+    Button d2Stop;
     Button increaseTurretOffset;
     Button decreaseTurretOffset;
     GamepadEx driverOp;
@@ -43,9 +48,8 @@ public class teleOp extends CommandOpMode {
     public void initialize() {
         axial = new SlewRateLimiter(12,-1000,0);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
         super.reset();
-        r = new Robot(hardwareMap);
+        r = RobotConfig.getCurrentRobotInstance() == null? new Robot(hardwareMap) : RobotConfig.getCurrentRobotInstance();
         register(r.getV(), r.getD(), r.getS(), r.getG(), r.getI(), r.getL());
         driverOp = new GamepadEx(gamepad1);
         driverOp.setJoystickSlewRateLimiters(null,axial,null,null);
@@ -59,24 +63,38 @@ public class teleOp extends CommandOpMode {
 
         intake = driverOp.getGamepadButton(GamepadKeys.Button.SQUARE);
         outtake = driverOp.getGamepadButton(GamepadKeys.Button.CIRCLE);
-        relocalize = driverOp.getGamepadButton(GamepadKeys.Button.OPTIONS);
-        shoot = driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER);
+
+        d1Relocalize = driverOp.getGamepadButton(GamepadKeys.Button.OPTIONS);
+        d2Relocalize = driver2Op.getGamepadButton(GamepadKeys.Button.OPTIONS);
+
+        shootClose = driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER);
+        shootFar = driverOp.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER);
+
         lift = driverOp.getGamepadButton(GamepadKeys.Button.TOUCHPAD);
-        stop = driverOp.getGamepadButton(GamepadKeys.Button.DPAD_UP);
+
+        d1Stop = driverOp.getGamepadButton(GamepadKeys.Button.DPAD_UP);
+        d2Stop = driver2Op.getGamepadButton(GamepadKeys.Button.DPAD_UP);
+
         decreaseTurretOffset = driver2Op.getGamepadButton(GamepadKeys.Button.DPAD_LEFT);
         increaseTurretOffset = driver2Op.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT);
 
         intake.whenPressed(new runIntakeTimed(r, 2000));
         outtake.whenPressed(new runIntakeReverseTimed(r, 2000));
-        relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc()));
-        shoot.whenPressed(new magDump(r));
+        d1Relocalize.whenPressed(new InstantCommand(() -> r.getD().reloc()));
+        shootClose.whenPressed(new magDump(r));
+        shootFar.whenPressed(new BOPBOPBOP(r));
         lift.whenPressed(new InstantCommand(() -> r.getL().toggle()));
-        stop.whenPressed(new stop(r));
+        d1Stop.whenPressed(new stop(r));
+        d2Stop.whenPressed(new stop(r));
         decreaseTurretOffset.whenPressed(new InstantCommand(() -> r.getD().decreaseOffset()));
         increaseTurretOffset.whenPressed(new InstantCommand(() -> r.getD().increaseOffset()));
 
         schedule(new InstantCommand(() -> r.getD().follower.startTeleOpDrive()));
+        schedule(new InstantCommand(()->r.getL().reverseAll()));
+        schedule(new InstantCommand(()->r.getS().reverseAll()));
         schedule(new RunCommand(() -> r.setShooterValues()));
+        schedule(new RunCommand(()->r.getD().updateTargetAndRelocPose()));
+        schedule(new RunCommand(()->r.getD().joystickOffset(driver2Op.getLeftX())));
     }
 
     @Override
@@ -94,6 +112,7 @@ public class teleOp extends CommandOpMode {
         telemetry.addData("heading", r.getD().getCurrentPose().getHeading());
         telemetry.addData("error of turret", r.getS().getError());
         telemetry.addData("valid shot", r.getD().shotAllowed());
+        telemetry.addData("target pose", r.getD().getTargetPose());
 
         telemetry.update();
         super.run();

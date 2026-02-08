@@ -16,12 +16,9 @@ public class pulseGate extends SequentialCommandGroup {
         this.delay = delay;
         addRequirements(r.getG());
         addCommands(
-                new InstantCommand(() -> {
-                    if (r.getD().shotAllowed()) {
-                        r.getG().open();
-                    }
-                }),
-                new WaitCommand(delay)
+                new InstantCommand(() -> r.getG().open()),
+                new WaitCommand(delay),
+                new InstantCommand(() -> r.getG().close())
         );
     }
 }

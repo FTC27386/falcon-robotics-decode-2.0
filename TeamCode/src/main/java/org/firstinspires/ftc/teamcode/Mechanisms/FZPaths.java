@@ -19,7 +19,8 @@ public class FZPaths {
         public PathChain blindIntake;
         public PathChain blindIntakeReturn;
         public PathChain leave;
-        public static Pose initPose = new Pose(49.55, 10,Math.toRadians(180)),
+        public static Pose startingPose = new Pose(49.55, 10,Math.toRadians(180));
+        public static Pose alternatePose = new Pose(144-startingPose.getX(), startingPose.getY(),Math.toRadians(0)),
         HPintake = new Pose(15.000, 10),
         shootingA = new Pose(48.000,10),
         approachPt3rdSpike = new Pose(36,30),
@@ -37,7 +38,7 @@ public class FZPaths {
         if(color == RobotConfig.ALLIANCE_COLOR.BLUE) {
             intakeHP = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    initPose,
+                                    startingPose,
 
                                     HPintake
                             )
@@ -118,7 +119,7 @@ public class FZPaths {
         {
             intakeHP = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    initPose.mirror(),
+                                    startingPose.mirror(),
 
                                     HPintake.mirror()
                             )
@@ -142,7 +143,7 @@ public class FZPaths {
 
                                     approachPt3rdSpike.mirror()
                             )
-                    ).setHeadingInterpolation(HeadingInterpolator.facingPoint(approachFacingPt))
+                    ).setHeadingInterpolation(HeadingInterpolator.facingPoint(approachFacingPt.mirror()))
                     .build();
 
             intake3rdSpikeB = follower.pathBuilder().addPath(

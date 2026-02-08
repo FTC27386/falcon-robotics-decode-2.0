@@ -8,8 +8,8 @@ import com.pedropathing.paths.PathChain;
 
 public class Paths {
 
-    public static Pose startingPose = new Pose(64.9007,133.4625,0);
-    public static Pose startingPoseAlternate = new Pose(53.5946, 7.587, Math.toRadians(90));
+    public static Pose startingPose = new Pose(64.1883, 132.5852, Math.toRadians(180));
+    public static Pose startingPoseAlternate = new Pose(144-startingPose.getX(), startingPose.getY(), Math.toRadians(0));
     public static Pose startingPoseFarZone = new Pose((54),7,Math.toRadians(0));
     public PathChain closeAutoStartPath;
     public PathChain intakeFirstRowPath;
@@ -46,7 +46,7 @@ public class Paths {
         returnFromGatePath =
                 follower.pathBuilder().addPath(
                         new BezierLine(new Pose(16,70.5),
-                                new Pose(59.1,79)
+                                new Pose(56,79)
                                 )
                 ).setLinearHeadingInterpolation(Math.toRadians(90),Math.toRadians(180))
                         .build();
@@ -75,7 +75,7 @@ public class Paths {
                         new BezierCurve(
                                 new Pose(14.000, 80.000),
                                 new Pose(48.958, 85.407),
-                                new Pose(59.1, 79.000)
+                                new Pose(56, 79.000)
                         )
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
@@ -103,7 +103,7 @@ public class Paths {
                         new BezierCurve(
                                 new Pose(8.000, 57),
                                 new Pose(47.300, 60.000),
-                                new Pose(59.100, 79.000)
+                                new Pose(56, 79.000)
                         )
                 )
                 .setConstantHeadingInterpolation(Math.toRadians(180))
@@ -132,7 +132,7 @@ public class Paths {
                                 new Pose(8.000, 36.000),
                                 new Pose(52.845, 36.228),
                                 new Pose(36.201, 55.993),
-                                new Pose(59.100, 79.000)
+                                new Pose(56, 79.000)
                         )
                 )
                 .setConstantHeadingInterpolation(Math.toRadians(180))

@@ -15,14 +15,14 @@ public class BOPBOPBOP extends SequentialCommandGroup {
 
         addRequirements(r.getG());
         addCommands(
-                new shootIntake(r, r.getD().inCloseZone()),
+                new runIntake(r),
                 new pulseGate(r, 200),
                 new InstantCommand(() -> r.getG().close()),
-                new WaitCommand(200),
+                new WaitCommand(350),
 
                 new pulseGate(r, 200),
                 new InstantCommand(() -> r.getG().close()),
-                new WaitCommand(200),
+                new WaitCommand(350),
 
                 new pulseGate(r, 200),
                 new InstantCommand(() -> r.getG().close()),

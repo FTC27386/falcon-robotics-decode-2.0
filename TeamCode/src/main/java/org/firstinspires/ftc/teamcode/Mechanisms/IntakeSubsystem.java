@@ -4,7 +4,6 @@ import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.FAR_ZONE_INTAK
 import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.IDLE_INTAKE_POWER;
 import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.INTAKE_POWER;
 import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.OUTTAKE_POWER;
-import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.STOP_INTAKE;
 import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.STOP_INTAKE_POWER;
 
 import com.qualcomm.robotcore.hardware.DcMotor;

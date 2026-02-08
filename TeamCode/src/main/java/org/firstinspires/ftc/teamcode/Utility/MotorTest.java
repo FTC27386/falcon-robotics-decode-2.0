@@ -116,11 +116,6 @@ public class MotorTest extends OpMode {
 
     @Override
     public void loop() {
-        turret.setPower(turret_pow);
-        //flywheelTop.setPower(x);
-        //flywheelBottom.setPower(x);
-        //left_park.setPosition(x);
-        //right_park.setPosition(x);
-        telemetry.addData("x", x);
+        blocker.setPosition(0);
     }
 }

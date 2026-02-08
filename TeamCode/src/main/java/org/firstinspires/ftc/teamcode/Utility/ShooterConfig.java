@@ -17,8 +17,9 @@ public class ShooterConfig {
     public static double TURRET_MAX = 0;
     //public static double TURRET_CONVERSION_FACTOR_RADIANS = 0.0057674767602;
     public static double TURRET_CONVERSION_FACTOR_RADIANS = 0.000203026868985;
-    public static double turret_kP = -6.741; // proportional gain (main steering force)
-    public static double turret_kD = 0.05; // derivative gain (motion damper)
+    public static double turret_kP = -2.8; // proportional gain (main steering force) used to be -4.5
+    public static double turret_kD = 0.0; // derivative gain (motion damper) used to be 0.05
+    public static double turret_kS = 0;
 
     public static double turretMinEndpoint = Math.PI;
     public static double turretMaxEndpoint = 3* Math.PI;

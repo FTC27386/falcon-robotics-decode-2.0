@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opMode;
 
 import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
@@ -19,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-
+@Disabled
 @Autonomous(name="Close Auto Blue")
 public class closeZoneAutoBlue extends CommandOpMode {
     Follower follower;
@@ -66,6 +67,7 @@ public class closeZoneAutoBlue extends CommandOpMode {
                                 new idleIntake(r))
                 ),
                 new magDump(r),
+                        new InstantCommand(() -> r.getS().toggle()),
                 new runIntakeReverseTimed(r, 100),
                 /*new followPath(r, paths.prepareIntakeBottomRowPath),
                 new runIntake(r),
