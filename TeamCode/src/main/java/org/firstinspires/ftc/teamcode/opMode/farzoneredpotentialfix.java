@@ -9,77 +9,62 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.stopIntake;
+import org.firstinspires.ftc.teamcode.Mechanisms.FZPaths;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import org.firstinspires.ftc.teamcode.Mechanisms.V2Paths;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name="Close Auto Blue Gate Cycle")
-public class closeZoneAutoBlueGateCycle extends CommandOpMode {
+@Autonomous(name="red far proto")
+public class farzoneredpotentialfix extends CommandOpMode {
     Follower follower;
     public static Robot r;
-    V2Paths paths;
+    FZPaths paths;
 
     @Override
     public void initialize()
     {
         super.reset();
-        RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.BLUE);
+        RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.RED);
         r = new Robot(hardwareMap);
         RobotConfig.setCurrentRobotInstance(r);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(V2Paths.startingPose);
+        follower.setStartingPose(FZPaths.startingPose);
         follower.update();
-        paths = new V2Paths(follower, RobotConfig.current_color);
+        paths = new FZPaths(follower, RobotConfig.current_color);
         register(r.getS(), r.getG(), r.getI());
         schedule(new RunCommand(() -> r.setShooterValues()));
         schedule(new RunCommand(() -> r.getD().updateTargetAndRelocPose()));
         schedule(
                 new SequentialCommandGroup(
-                        new FollowPathCommand(r.getD().follower, paths.startPath),     // drive to shoot
+                        new WaitCommand(2000),
                         new magDump(r),
-                        new InstantCommand(() -> r.getG().close()),
-
-                        new runIntake(r),                                                           // run intake
-                        new followPathSlow(r, paths.intakeSecondRowPath), // get ready to intake second row
-                        new WaitCommand(500),
-                        new idleIntake(r),                                                      // stop intake
-                        new FollowPathCommand(r.getD().follower, paths.secondRowReturnToShootPath),      // drive to shoot
-                        new magDump(r),
-                        new InstantCommand(() -> r.getG().close()),
-
                         new runIntake(r),
-                        new FollowPathCommand(r.getD().follower,  paths.openGatePath,true),
-                        new WaitCommand(500),
-                        new FollowPathCommand(r.getD().follower, paths.intakeFromGatePath, true),
+                        new FollowPathCommand(follower, paths.intakeHP),
+                        new FollowPathCommand(follower, paths.intakeHPSweepPath),
                         new WaitCommand(250),
-                        new idleIntake(r),                                                          // stop intake
-                        new FollowPathCommand(r.getD().follower, paths.returnFromGateToShootPath), // drive to shoot
+                        new idleIntake(r),
+                        new FollowPathCommand(follower, paths.intakeHPreturn),
                         new magDump(r),
-                        new InstantCommand(() -> r.getG().close()),
-
-                        new runIntake(r), // start intake
-                        new FollowPathCommand(r.getD().follower, paths.startIntakeFirstRowPath,0.5), // intake first row
-                        new WaitCommand(500),
-                        new idleIntake(r), // stop intake
-                        new FollowPathCommand(r.getD().follower, paths.returnFromIntakeFirstRowToShootPath), // drive to shoot
-                        new magDump(r), // shoot
-                        new InstantCommand(() -> r.getG().close()),
 
                         new runIntake(r),
-                        new FollowPathCommand(r.getD().follower, paths.startIntakeThirdRowPath),
-                        new followPathSlow(r, paths.endIntakeThirdRowPath),
-                        new WaitCommand(500),
+                        new FollowPathCommand(follower, paths.intake3rdSpikeA),
+                        new FollowPathCommand(follower, paths.intake3rdSpikeB),
+                        new WaitCommand(250),
                         new idleIntake(r),
-                        new FollowPathCommand(r.getD().follower, paths.parkPath),
+                        new FollowPathCommand(follower, paths.return3rdSpike),
                         new magDump(r),
-                        new InstantCommand(() -> r.getG().close())
+
+                        new runIntake(r),
+                        new FollowPathCommand(follower, paths.blindIntake),
+                        new WaitCommand(250),
+                        new idleIntake(r),
+                        new FollowPathCommand(follower, paths.blindIntakeReturn),
+                        new magDump(r)
                 )
         );
 

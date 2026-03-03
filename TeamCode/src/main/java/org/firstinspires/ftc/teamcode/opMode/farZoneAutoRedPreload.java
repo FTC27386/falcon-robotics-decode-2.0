@@ -8,9 +8,10 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.BOPBOPBOP;
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
+import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDumpSlow;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.stopIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.FZPaths;
@@ -28,27 +29,27 @@ public class farZoneAutoRedPreload extends CommandOpMode {
     public void initialize()
     {
         super.reset();
-
         r = new Robot(hardwareMap);
         RobotConfig.setCurrentRobotInstance(r);
         RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.RED);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(FZPaths.alternatePose);
         follower.update();
-        paths = new FZPaths(follower, RobotConfig.ALLIANCE_COLOR.RED);
+        paths = new FZPaths(follower, RobotConfig.current_color);
         register(r.getS(), r.getG(), r.getI());
         schedule(new RunCommand(()->r.setShooterValues()));
         schedule(new RunCommand(()->r.getD().updateTargetAndRelocPose()));
         schedule(
                 new SequentialCommandGroup(
                         new WaitCommand(2000),
-                        new BOPBOPBOP(r),
+                        new magDump(r),
                         new runIntake(r),
                         new FollowPathCommand(follower, paths.intakeHP),
+                        new FollowPathCommand(follower, paths.intakeHPSweepPath),
                         new WaitCommand(250),
                         new idleIntake(r),
                         new FollowPathCommand(follower, paths.intakeHPreturn),
-                        new BOPBOPBOP(r),
+                        new magDump(r),
 
                         new runIntake(r),
                         new FollowPathCommand(follower, paths.intake3rdSpikeA),
@@ -56,14 +57,14 @@ public class farZoneAutoRedPreload extends CommandOpMode {
                         new WaitCommand(250),
                         new idleIntake(r),
                         new FollowPathCommand(follower, paths.return3rdSpike),
-                        new BOPBOPBOP(r),
+                        new magDump(r),
 
                         new runIntake(r),
                         new FollowPathCommand(follower, paths.blindIntake),
                         new WaitCommand(250),
                         new idleIntake(r),
                         new FollowPathCommand(follower, paths.blindIntakeReturn),
-                        new BOPBOPBOP(r)
+                        new magDump(r)
         ));
     }
     @Override

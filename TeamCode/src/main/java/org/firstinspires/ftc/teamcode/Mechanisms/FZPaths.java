@@ -10,7 +10,18 @@ import com.pedropathing.paths.PathChain;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 
 public class FZPaths {
-
+        public static Pose startingPose = new Pose(49.55, 10,Math.toRadians(180));
+        public static Pose alternatePose = new Pose(144-startingPose.getX(), startingPose.getY(),Math.toRadians(0));
+        public Pose HPintake = new Pose(15.000, 10);
+        public Pose HPintakeSweep = new Pose(15,15.9);
+        public Pose shootingA = new Pose(48.000,10);
+        public Pose approachPt3rdSpike = new Pose(36,30);
+        public Pose approachFacingPt = new Pose(30,36);
+        public Pose ctrlPt3rdSpike = new Pose(33.000, 36.000);
+        public Pose endPt3rdSpike = new Pose(12, 36);
+        public Pose shootingB = new Pose(54,15);
+        public Pose blindIntakeEndPt = new Pose(15, 15);
+        public Pose leavePt = new Pose (39,15);
         public PathChain intakeHP;
         public PathChain intakeHPreturn;
         public PathChain intake3rdSpikeA;
@@ -18,20 +29,8 @@ public class FZPaths {
         public PathChain return3rdSpike;
         public PathChain blindIntake;
         public PathChain blindIntakeReturn;
+        public PathChain intakeHPSweepPath;
         public PathChain leave;
-        public static Pose startingPose = new Pose(49.55, 10,Math.toRadians(180));
-        public static Pose alternatePose = new Pose(144-startingPose.getX(), startingPose.getY(),Math.toRadians(0)),
-        HPintake = new Pose(15.000, 10),
-        shootingA = new Pose(48.000,10),
-        approachPt3rdSpike = new Pose(36,30),
-        approachFacingPt = new Pose(30,36),
-        ctrlPt3rdSpike = new Pose(33.000, 36.000),
-        endPt3rdSpike = new Pose(12, 36),
-        shootingB = new Pose(54,15),
-        blindIntakeEndPt = new Pose(15, 15),
-        leavePt = new Pose (39,15);
-
-
 
         public FZPaths(Follower follower, RobotConfig.ALLIANCE_COLOR color) {
 
@@ -39,18 +38,26 @@ public class FZPaths {
             intakeHP = follower.pathBuilder().addPath(
                             new BezierLine(
                                     startingPose,
-
                                     HPintake
                             )
                     ).setTangentHeadingInterpolation()
-
                     .build();
 
-            intakeHPreturn = follower.pathBuilder().addPath(
+            intakeHPSweepPath = follower.pathBuilder().addPath(
                             new BezierLine(
                                     HPintake,
 
-                                    shootingA
+                                    HPintakeSweep
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+                    .build();
+
+
+            intakeHPreturn = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    HPintakeSweep,
+
+                                    shootingB
                             )
                     ).setTangentHeadingInterpolation()
                     .setReversed()
@@ -58,7 +65,7 @@ public class FZPaths {
 
             intake3rdSpikeA = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    shootingA,
+                                    shootingB,
 
                                     approachPt3rdSpike
                             )
@@ -126,12 +133,20 @@ public class FZPaths {
                     ).setTangentHeadingInterpolation()
 
                     .build();
+            intakeHPSweepPath = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    HPintake.mirror(),
+
+                                    HPintakeSweep.mirror()
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(0))
+                    .build();
 
             intakeHPreturn = follower.pathBuilder().addPath(
                             new BezierLine(
                                     HPintake.mirror(),
 
-                                    shootingA.mirror()
+                                    shootingB.mirror()
                             )
                     ).setTangentHeadingInterpolation()
                     .setReversed()
@@ -139,7 +154,7 @@ public class FZPaths {
 
             intake3rdSpikeA = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    shootingA.mirror(),
+                                    shootingB.mirror(),
 
                                     approachPt3rdSpike.mirror()
                             )

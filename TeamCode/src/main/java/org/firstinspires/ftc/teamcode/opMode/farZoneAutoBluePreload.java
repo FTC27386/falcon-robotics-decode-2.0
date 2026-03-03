@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.stopIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.FZPaths;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
+import org.firstinspires.ftc.teamcode.Mechanisms.difffzpaths;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -33,7 +34,7 @@ public class farZoneAutoBluePreload extends CommandOpMode {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(FZPaths.startingPose);
         follower.update();
-        paths = new FZPaths(follower, RobotConfig.current_color);
+        paths = new FZPaths(follower, RobotConfig.ALLIANCE_COLOR.BLUE);
 
         register(r.getS(), r.getG(), r.getI());
         schedule(new RunCommand(()->r.setShooterValues()));
@@ -45,6 +46,7 @@ public class farZoneAutoBluePreload extends CommandOpMode {
                         new BOPBOPBOP(r),
                         new runIntake(r),
                         new FollowPathCommand(follower, paths.intakeHP),
+                        new FollowPathCommand(follower,paths.intakeHPSweepPath),
                         new WaitCommand(250),
                         new stopIntake(r),
                         new FollowPathCommand(follower, paths.intakeHPreturn),
@@ -59,7 +61,7 @@ public class farZoneAutoBluePreload extends CommandOpMode {
                         new FollowPathCommand(follower, paths.blindIntake),
                         new WaitCommand(250),
                         new stopIntake(r),
-                        new FollowPathCommand(follower, paths.blindIntakeReturn),
+                        new FollowPathCommand(follower, paths.return3rdSpike),
                         new BOPBOPBOP(r)
                 )
         );

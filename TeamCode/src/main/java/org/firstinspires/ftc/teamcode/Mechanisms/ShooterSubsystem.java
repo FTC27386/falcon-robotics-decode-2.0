@@ -111,7 +111,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         // FORWARD IN RADIANS IS PI/2 RADIANS
         turretAngle = (turret.getCurrentPosition() * TURRET_CONVERSION_FACTOR_RADIANS);
-        error = UtilMethods.squareRootMagnitude(turretPIDController.getSetPoint() - turretAngle);
+        error = (turretPIDController.getSetPoint() - turretAngle);
         turretPower = turretPIDController.calculate(error, 0);
         turretPower = clamp(turretPower, -TURRET_MAX_POW, TURRET_MAX_POW);
 

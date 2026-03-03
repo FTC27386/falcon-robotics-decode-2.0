@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.FAR_ZONE_INTAK
 import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.IDLE_INTAKE_POWER;
 import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.INTAKE_POWER;
 import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.OUTTAKE_POWER;
+import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.SHOOT_INTAKE_POWER;
 import static org.firstinspires.ftc.teamcode.Utility.IntakeConfig.STOP_INTAKE_POWER;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -38,15 +39,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void idleIntake() {
         targetPower = IDLE_INTAKE_POWER;
     } // Passively run intake
-    public void farZoneIntake() { targetPower = FAR_ZONE_INTAKE; }
-    public void zonedIntake(boolean inCloseZone) {
-        if (inCloseZone) {
-            intake();
-        }
-        else {
-            farZoneIntake();
-        }
-    }
+    public void shootIntake() { targetPower = SHOOT_INTAKE_POWER; }
     public void stopIntake() {
         targetPower = STOP_INTAKE_POWER;
     }

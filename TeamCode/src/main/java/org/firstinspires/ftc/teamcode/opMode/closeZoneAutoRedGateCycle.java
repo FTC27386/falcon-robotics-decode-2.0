@@ -80,7 +80,6 @@ public class closeZoneAutoRedGateCycle extends CommandOpMode {
                         new FollowPathCommand(r.getD().follower, paths.returnFromThirdRowToShootPath),
                         new magDump(r),
                         new InstantCommand(() -> r.getG().close()),
-                        new InstantCommand(() -> r.getS().toggle()),
 
                         new FollowPathCommand(r.getD().follower, paths.parkPath)
                 )

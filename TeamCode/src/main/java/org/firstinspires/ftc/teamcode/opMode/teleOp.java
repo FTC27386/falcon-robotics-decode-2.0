@@ -60,6 +60,7 @@ public class teleOp extends CommandOpMode {
         r.getD().setDefaultCommand(new defaultDrive(r, leftY, leftX, rightX));
         Paths paths = new Paths(r.getD().follower);
         PathsMirrored mirroredPaths = new PathsMirrored(r.getD().follower);
+        new InstantCommand(() -> r.getG().close());
 
         intake = driverOp.getGamepadButton(GamepadKeys.Button.SQUARE);
         outtake = driverOp.getGamepadButton(GamepadKeys.Button.CIRCLE);

@@ -4,31 +4,30 @@ import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPath;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.followPathSlow;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.idleIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.magDump;
 import org.firstinspires.ftc.teamcode.Mechanisms.Commands.runIntake;
-import org.firstinspires.ftc.teamcode.Mechanisms.Commands.stopIntake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import org.firstinspires.ftc.teamcode.Mechanisms.V2Paths;
+import org.firstinspires.ftc.teamcode.Mechanisms.V3Paths;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name="Close Auto Blue Gate Cycle")
-public class closeZoneAutoBlueGateCycle extends CommandOpMode {
+@Autonomous(name="Close Auto Blue Gate Optimal")
+public class closeZoneAutoBlueGateOptimized extends CommandOpMode {
     Follower follower;
     public static Robot r;
-    V2Paths paths;
+    V3Paths paths;
 
     @Override
-    public void initialize()
-    {
+    public void initialize() {
         super.reset();
         RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.BLUE);
         r = new Robot(hardwareMap);
@@ -36,50 +35,44 @@ public class closeZoneAutoBlueGateCycle extends CommandOpMode {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(V2Paths.startingPose);
         follower.update();
-        paths = new V2Paths(follower, RobotConfig.current_color);
+        paths = new V3Paths(follower, RobotConfig.current_color);
         register(r.getS(), r.getG(), r.getI());
         schedule(new RunCommand(() -> r.setShooterValues()));
         schedule(new RunCommand(() -> r.getD().updateTargetAndRelocPose()));
         schedule(
                 new SequentialCommandGroup(
-                        new FollowPathCommand(r.getD().follower, paths.startPath),     // drive to shoot
-                        new magDump(r),
-                        new InstantCommand(() -> r.getG().close()),
-
-                        new runIntake(r),                                                           // run intake
-                        new followPathSlow(r, paths.intakeSecondRowPath), // get ready to intake second row
-                        new WaitCommand(500),
-                        new idleIntake(r),                                                      // stop intake
-                        new FollowPathCommand(r.getD().follower, paths.secondRowReturnToShootPath),      // drive to shoot
-                        new magDump(r),
-                        new InstantCommand(() -> r.getG().close()),
-
+                        new ParallelCommandGroup(
+                                new SequentialCommandGroup(
+                                        new WaitCommand(500),
+                                        new magDump(r)
+                                ),
+                                new FollowPathCommand(r.getD().follower, paths.Start)
+                        ),
                         new runIntake(r),
-                        new FollowPathCommand(r.getD().follower,  paths.openGatePath,true),
-                        new WaitCommand(500),
-                        new FollowPathCommand(r.getD().follower, paths.intakeFromGatePath, true),
-                        new WaitCommand(250),
-                        new idleIntake(r),                                                          // stop intake
-                        new FollowPathCommand(r.getD().follower, paths.returnFromGateToShootPath), // drive to shoot
-                        new magDump(r),
-                        new InstantCommand(() -> r.getG().close()),
-
-                        new runIntake(r), // start intake
-                        new FollowPathCommand(r.getD().follower, paths.startIntakeFirstRowPath,0.5), // intake first row
-                        new WaitCommand(500),
-                        new idleIntake(r), // stop intake
-                        new FollowPathCommand(r.getD().follower, paths.returnFromIntakeFirstRowToShootPath), // drive to shoot
-                        new magDump(r), // shoot
-                        new InstantCommand(() -> r.getG().close()),
-
-                        new runIntake(r),
-                        new FollowPathCommand(r.getD().follower, paths.startIntakeThirdRowPath),
-                        new followPathSlow(r, paths.endIntakeThirdRowPath),
+                        new followPathSlow(r, paths.Intake2nd),
                         new WaitCommand(500),
                         new idleIntake(r),
-                        new FollowPathCommand(r.getD().follower, paths.parkPath),
+                        new FollowPathCommand(r.getD().follower, paths.Intake2ndReturn),
                         new magDump(r),
-                        new InstantCommand(() -> r.getG().close())
+                        new runIntake(r),
+                        new FollowPathCommand(r.getD().follower, paths.GateOpen),
+                        new WaitCommand(150),
+                        new FollowPathCommand(r.getD().follower, paths.GateIntake),
+                        new WaitCommand(1000),
+                        new idleIntake(r),
+                        new FollowPathCommand(r.getD().follower, paths.GateReturn),
+                        new magDump(r),
+                        new FollowPathCommand(r.getD().follower, paths.Intake1st),
+                        new WaitCommand(500),
+                        new idleIntake(r),
+                        new FollowPathCommand(r.getD().follower, paths.Intake1stReturn),
+                        new magDump(r),
+                        new FollowPathCommand(r.getD().follower, paths.StartIntake3rd),
+                        new runIntake(r),
+                        new FollowPathCommand(r.getD().follower, paths.EndIntake3rd),
+                        new WaitCommand(500),
+                        new FollowPathCommand(r.getD().follower, paths.ReturnIntake3rd),
+                        new magDump(r)
                 )
         );
 

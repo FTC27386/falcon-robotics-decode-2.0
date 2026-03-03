@@ -20,11 +20,10 @@ import org.firstinspires.ftc.teamcode.Mechanisms.Paths;
 import org.firstinspires.ftc.teamcode.Mechanisms.Robot;
 import org.firstinspires.ftc.teamcode.Utility.RobotConfig;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-@Disabled
 @Autonomous(name="Close Auto Blue")
 public class closeZoneAutoBlue extends CommandOpMode {
     Follower follower;
-    private Robot r;
+    public static Robot r;
     Paths paths;
 
     @Override
@@ -33,13 +32,13 @@ public class closeZoneAutoBlue extends CommandOpMode {
         super.reset();
         RobotConfig.setCurrentColor(RobotConfig.ALLIANCE_COLOR.BLUE);
         r = new Robot(hardwareMap);
+        RobotConfig.setCurrentRobotInstance(r);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(Paths.startingPose);
         follower.update();
         paths = new Paths(follower);
         register(r.getS(), r.getG(), r.getI());
         schedule(new RunCommand(()->r.setShooterValues()));
-        schedule(new InstantCommand(()->r.getS().setFlywheelSpeed(-1570)));
         schedule(
                 new SequentialCommandGroup(
                         new InstantCommand(()-> r.getG().close()),
@@ -67,9 +66,8 @@ public class closeZoneAutoBlue extends CommandOpMode {
                                 new idleIntake(r))
                 ),
                 new magDump(r),
-                        new InstantCommand(() -> r.getS().toggle()),
                 new runIntakeReverseTimed(r, 100),
-                /*new followPath(r, paths.prepareIntakeBottomRowPath),
+                new followPath(r, paths.prepareIntakeBottomRowPath),
                 new runIntake(r),
                 new followPathSlow(r, paths.intakeBottomRowPath),
                 new ParallelCommandGroup(
@@ -80,7 +78,6 @@ public class closeZoneAutoBlue extends CommandOpMode {
                 ),
                 new magDump(r),
                 new runIntakeReverseTimed(r, 100),
-                 */
                 new followPath(r, paths.goToGatePath)));
     }
     @Override

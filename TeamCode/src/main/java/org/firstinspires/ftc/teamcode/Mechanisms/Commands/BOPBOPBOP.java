@@ -16,7 +16,7 @@ public class BOPBOPBOP extends SequentialCommandGroup {
         addRequirements(r.getG());
         addCommands(
                 new runIntake(r),
-                new pulseGate(r, 200),
+                new magDumpSlow(r),
                 new InstantCommand(() -> r.getG().close()),
                 new WaitCommand(350),
 
